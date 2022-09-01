@@ -1,53 +1,88 @@
 import { z } from 'zod';
 import {
+  stringClassName,
   stringFunctionName,
   stringJsonFilename,
   stringPropPath,
   stringTitle,
   stringTypescriptFilename,
 } from './testing-field-validation.js';
-const factoryFunction = z.strictObject({
+const transformerFunction = z.strictObject({
   filename: stringTypescriptFilename,
-  functionName: stringFunctionName,
-  flags: z
-    .array(z.enum(['function', 'new instance']))
-    .min(1)
-    .default(['function']),
+  className: stringClassName.optional(),
+  functionName: stringFunctionName.optional(),
 });
 
-const givenJsonFile = z.strictObject({
-  a: z.literal('json-file'),
+const givenFile = z.strictObject({
+  from: z.literal('file'),
   filename: stringJsonFilename,
+  parser: z.enum(['json', 'yaml']),
+
   value: stringPropPath.optional(),
-  factory: factoryFunction.optional(),
+  transform: transformerFunction.optional(),
   flags: z
     .array(z.enum(['object', 'array', 'string']))
     .min(1)
     .default(['object']),
 });
 
-const givenYamlFile = z.strictObject({
-  a: z.literal('yaml-file'),
-  filename: stringJsonFilename,
-  value: stringPropPath.optional(),
-  factory: factoryFunction.optional(),
-  flags: z
-    .array(z.enum(['object', 'array', 'string']))
-    .min(1)
-    .default(['object']),
+const givenString = z.strictObject({
+  from: z.literal('string'),
+  value: z.string(),
 });
-const simpleFunctionTestCase = z.object({
-  a: z.literal('simple'),
+
+const givenArrayFile = z.strictObject({
+  filename: stringJsonFilename,
+  parser: z.enum(['json', 'yaml']),
+  value: stringPropPath.optional(),
+  transform: transformerFunction.optional(),
+});
+
+const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
+
+const snapshotFunctionTestCase = z.object({
+  a: z.literal('snapshot'),
   title: stringTitle,
-  param0: z.discriminatedUnion('a', [givenJsonFile, givenYamlFile]),
-  param1: z.discriminatedUnion('a', [givenJsonFile, givenYamlFile]).optional(),
-  param2: z.discriminatedUnion('a', [givenJsonFile, givenYamlFile]).optional(),
-  param3: z.discriminatedUnion('a', [givenJsonFile, givenYamlFile]).optional(),
+  params: z.object({
+    first: givenData,
+    second: givenData.optional(),
+    third: givenData.optional(),
+  }),
+
+  result: z.object({
+    transform: transformerFunction.optional(),
+  }),
+
+  flags: z
+    .array(z.enum(['json-snapshot', 'yaml-snapshot', 'text-snapshot']))
+    .min(1)
+    .default(['json-snapshot']),
+});
+
+const loopSnapshotFunctionTestCase = z.object({
+  a: z.literal('each-snapshot'),
+  title: stringTitle,
+  givenEach: givenArrayFile,
+  result: z.object({
+    transform: transformerFunction.optional(),
+  }),
+  flags: z
+    .array(z.enum(['json-snapshot', 'yaml-snapshot', 'text-snapshot']))
+    .min(1)
+    .default(['json-snapshot']),
 });
 
 const functionTesting = z.object({
   functionName: stringFunctionName,
-  testCases: z.array(simpleFunctionTestCase).min(1).max(30),
+  testCases: z
+    .array(
+      z.discriminatedUnion('a', [
+        snapshotFunctionTestCase,
+        loopSnapshotFunctionTestCase,
+      ])
+    )
+    .min(1)
+    .max(30),
 });
 
 export const schema = z
