@@ -85,7 +85,7 @@ const functionTesting = z.object({
     .max(30),
 });
 
-export const schema = z
+const schema = z
   .object({
     filename: stringTypescriptFilename,
     functions: z.array(functionTesting).min(1).max(60),

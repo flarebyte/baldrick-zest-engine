@@ -22,6 +22,13 @@ export const stringJsonFilename = z
   .max(300)
   .endsWith('.json');
 
+  export const stringDirectory = z
+  .string()
+  .trim()
+  .min(1)
+  .max(300)
+  .endsWith('.json');
+
 export const stringFunctionName = z
   .string()
   .min(1)
