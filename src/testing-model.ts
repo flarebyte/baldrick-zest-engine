@@ -78,17 +78,14 @@ const loopSnapshotFunctionTestCase = z.object({
     .default(['json-snapshot']),
 });
 
+const functionTestCase = z.discriminatedUnion('a', [
+  snapshotFunctionTestCase,
+  loopSnapshotFunctionTestCase,
+]);
+
 const functionTesting = z.object({
   functionName: stringFunctionName,
-  testCases: z
-    .array(
-      z.discriminatedUnion('a', [
-        snapshotFunctionTestCase,
-        loopSnapshotFunctionTestCase,
-      ])
-    )
-    .min(1)
-    .max(30),
+  testCases: z.array(functionTestCase).min(1).max(30),
 });
 
 const schema = z
@@ -99,6 +96,9 @@ const schema = z
   .strict();
 
 export type TestingModel = z.infer<typeof schema>;
+export type TestingFunctionModel = z.infer<typeof functionTesting>;
+
+export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
 
 export type TestingModelValidation =
   | {
