@@ -15,12 +15,11 @@ export const stringTypescriptFilename = z
   .max(300)
   .endsWith('ts');
 
-export const stringJsonFilename = z
+export const stringFilename = z
   .string()
   .trim()
   .min(1)
-  .max(300)
-  .endsWith('.json');
+  .max(300);
 
   export const stringDirectory = z
   .string()

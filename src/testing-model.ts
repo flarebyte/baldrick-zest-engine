@@ -3,7 +3,7 @@ import { formatMessage, ValidationError } from './format-message.js';
 import {
   stringClassName,
   stringFunctionName,
-  stringJsonFilename,
+  stringFilename,
   stringPropPath,
   stringTitle,
   stringTypescriptFilename,
@@ -14,10 +14,11 @@ const transformerFunction = z.strictObject({
   functionName: stringFunctionName.optional(),
 });
 
+const fileParser = z.enum(['string', 'JSON', 'YAML']);
 const givenFile = z.strictObject({
   from: z.literal('file'),
-  filename: stringJsonFilename,
-  parser: z.enum(['json', 'yaml']),
+  filename: stringFilename,
+  parser: fileParser.default('string'),
 
   value: stringPropPath.optional(),
   transform: transformerFunction.optional(),
@@ -33,8 +34,8 @@ const givenString = z.strictObject({
 });
 
 const givenArrayFile = z.strictObject({
-  filename: stringJsonFilename,
-  parser: z.enum(['json', 'yaml']),
+  filename: stringFilename,
+  parser: fileParser.default('string'),
   value: stringPropPath.optional(),
   transform: transformerFunction.optional(),
 });
@@ -50,9 +51,11 @@ const snapshotFunctionTestCase = z.object({
     third: givenData.optional(),
   }),
 
-  result: z.object({
-    transform: transformerFunction.optional(),
-  }),
+  result: z
+    .object({
+      transform: transformerFunction,
+    })
+    .optional(),
 
   flags: z
     .array(z.enum(['json-snapshot', 'yaml-snapshot', 'text-snapshot']))
@@ -64,9 +67,11 @@ const loopSnapshotFunctionTestCase = z.object({
   a: z.literal('each-snapshot'),
   title: stringTitle,
   givenEach: givenArrayFile,
-  result: z.object({
-    transform: transformerFunction.optional(),
-  }),
+  result: z
+    .object({
+      transform: transformerFunction,
+    })
+    .optional(),
   flags: z
     .array(z.enum(['json-snapshot', 'yaml-snapshot', 'text-snapshot']))
     .min(1)

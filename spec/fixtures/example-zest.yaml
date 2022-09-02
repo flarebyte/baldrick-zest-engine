@@ -4,9 +4,9 @@ functions:
   - functionName: safeParseTestingModel
     testCases:
       - a: snapshot
-        title: test a valid model
+        title: a valid zest yaml model
         params:
           first:
             from: file
-            filename: spec/fixtures/example-zest.yaml
             parser: YAML
+            filename: spec/fixtures/example.zest.yaml

@@ -8,5 +8,6 @@ const runTest = (_opts: TestingRunOpts) => async (filename: string) => {
 
 export const run = async (opts: TestingRunOpts) => {
   const testFileNames = await findZestFiles(opts.specDirectory);
+  console.log(testFileNames)
   await testFileNames.map(runTest(opts));
 };
