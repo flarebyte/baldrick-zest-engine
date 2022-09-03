@@ -10,12 +10,9 @@ const getParamData = async (functionParamData: FunctionParamData) => {
     return functionParamData.value;
   }
   const parser = functionParamData.parser;
-  const expect = functionParamData.flags.includes('array')
-    ? 'array'
-    : 'default';
+
   const value = await readDataFile(functionParamData.filename, {
     parser,
-    expect,
   });
   return value;
 };

@@ -22,10 +22,6 @@ const givenFile = z.strictObject({
 
   value: stringPropPath.optional(),
   transform: transformerFunction.optional(),
-  flags: z
-    .array(z.enum(['object', 'array', 'string']))
-    .min(1)
-    .default(['object']),
 });
 
 const givenString = z.strictObject({
