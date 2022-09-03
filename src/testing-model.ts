@@ -100,6 +100,8 @@ const schema = z
 
 export type TestingModel = z.infer<typeof schema>;
 
+export type AnyFunctionModel = z.infer<typeof anyFunction>;
+
 export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
 
 export type FunctionParamData = z.infer<typeof givenData>;

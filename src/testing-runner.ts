@@ -3,6 +3,7 @@ import type {
   TestingFunctionTestCaseModel,
   TestingModel,
   FunctionParamData,
+  AnyFunctionModel,
 } from './testing-model.js';
 
 const getParamData = async (functionParamData: FunctionParamData) => {
@@ -18,11 +19,13 @@ const getParamData = async (functionParamData: FunctionParamData) => {
 };
 
 interface TestCaseExecutionContext {
+  testing: AnyFunctionModel;
+
   params: {
     first: object | string;
     second?: object | string;
-    third?: object | string
-  }
+    third?: object | string;
+  };
 }
 
 const runTestCase =
@@ -32,8 +35,13 @@ const runTestCase =
       const { params, flags } = testCase;
       const { first } = params;
       console.log({ testingModel, params, flags });
-      const value = await getParamData(first);
-      console.log('content>>>', value);
+      const testCaseExecutionContext: TestCaseExecutionContext = {
+        testing: testingModel.testing,
+        params: {
+          first: await getParamData(first),
+        },
+      };
+      console.log('content>>>', testCaseExecutionContext);
     }
   };
 
