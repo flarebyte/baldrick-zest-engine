@@ -14,11 +14,11 @@ const transformerFunction = z.strictObject({
   functionName: stringFunctionName.optional(),
 });
 
-const fileParser = z.enum(['string', 'JSON', 'YAML']);
+const fileParser = z.enum(['Text', 'JSON', 'YAML']);
 const givenFile = z.strictObject({
   from: z.literal('file'),
   filename: stringFilename,
-  parser: fileParser.default('string'),
+  parser: fileParser.default('Text'),
 
   value: stringPropPath.optional(),
   transform: transformerFunction.optional(),
@@ -35,7 +35,7 @@ const givenString = z.strictObject({
 
 const givenArrayFile = z.strictObject({
   filename: stringFilename,
-  parser: fileParser.default('string'),
+  parser: fileParser.default('Text'),
   value: stringPropPath.optional(),
   transform: transformerFunction.optional(),
 });
@@ -95,10 +95,16 @@ const schema = z
   })
   .strict();
 
+/** Types */
+
 export type TestingModel = z.infer<typeof schema>;
 export type TestingFunctionModel = z.infer<typeof functionTesting>;
 
 export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
+
+export type FunctionParamData = z.infer<typeof givenData>;
+
+export type FileParser = z.infer<typeof fileParser>;
 
 export type TestingModelValidation =
   | {

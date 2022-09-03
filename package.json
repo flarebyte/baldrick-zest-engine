@@ -61,11 +61,13 @@
     "release:ci": "baldrick release ci",
     "h": "cat commands.txt",
     "norm": "npx baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix",
-    "norm:g": "baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix"
+    "norm:g": "baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix",
+    "spec": "node --loader ts-node/esm spec/spec.ts"
   },
   "dependencies": {
     "dot-prop": "^7.2.0",
     "fs-jetpack": "^4.3.1",
+    "type-fest": "^2.19.0",
     "winston": "^3.8.1",
     "yaml": "^2.1.1",
     "zod": "^3.18.0"
