@@ -1,7 +1,6 @@
 import { readDataFile } from './testing-io.js';
 import type {
   TestingFunctionTestCaseModel,
-  TestingFunctionModel,
   TestingModel,
   FunctionParamData,
 } from './testing-model.js';
@@ -22,10 +21,9 @@ const getParamData = async (functionParamData: FunctionParamData) => {
 };
 
 const runTestCase =
-  (testingModel: TestingModel, testingFunctionModel: TestingFunctionModel) =>
+  (testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
-    const { filename } = testingModel;
-    const { functionName } = testingFunctionModel;
+    const { filename, functionName } = testingModel;
     if (testCase.a === 'snapshot') {
       const { params, flags } = testCase;
       const { first } = params;
@@ -34,18 +32,9 @@ const runTestCase =
       console.log('content>>>', value);
     }
   };
-const runAllFunctionCases =
-  (testingModel: TestingModel) =>
-  async (testingFunctionModel: TestingFunctionModel) => {
-    const { testCases } = testingFunctionModel;
-    const testCasesAsync = testCases.map(
-      runTestCase(testingModel, testingFunctionModel)
-    );
-    await Promise.all(testCasesAsync);
-  };
 
 export const runZestFileSuite = async (testingModel: TestingModel) => {
-  const { functions } = testingModel;
-  const functionsAsync = functions.map(runAllFunctionCases(testingModel));
-  await Promise.all(functionsAsync);
+  const { testCases } = testingModel;
+  const testCasesAsync = testCases.map(runTestCase(testingModel));
+  await Promise.all(testCasesAsync);
 };

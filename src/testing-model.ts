@@ -83,22 +83,17 @@ const functionTestCase = z.discriminatedUnion('a', [
   loopSnapshotFunctionTestCase,
 ]);
 
-const functionTesting = z.object({
-  functionName: stringFunctionName,
-  testCases: z.array(functionTestCase).min(1).max(30),
-});
-
 const schema = z
   .object({
     filename: stringTypescriptFilename,
-    functions: z.array(functionTesting).min(1).max(60),
-  })
+    functionName: stringFunctionName,
+    testCases: z.array(functionTestCase).min(1).max(30),
+    })
   .strict();
 
 /** Types */
 
 export type TestingModel = z.infer<typeof schema>;
-export type TestingFunctionModel = z.infer<typeof functionTesting>;
 
 export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
 

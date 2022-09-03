@@ -1,12 +1,11 @@
 ---
 filename: test-model.ts
-functions:
-  - functionName: safeParseTestingModel
-    testCases:
-      - a: snapshot
-        title: a valid zest yaml model
-        params:
-          first:
-            from: file
-            parser: YAML
-            filename: spec/fixtures/example.zest.yaml
+functionName: safeParseTestingModel
+testCases:
+  - a: snapshot
+    title: test a valid model
+    params:
+      first:
+        from: file
+        filename: spec/fixtures/example-zest.yaml
+        parser: YAML
