@@ -1,6 +1,7 @@
 ---
-filename: test-model.ts
-functionName: safeParseTestingModel
+testing:
+  filename: example-test-model.ts
+  functionName: safeParseTestingModel
 testCases:
   - a: snapshot
     title: test a valid model

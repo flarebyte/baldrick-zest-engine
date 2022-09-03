@@ -17,21 +17,28 @@ const getParamData = async (functionParamData: FunctionParamData) => {
   return value;
 };
 
+interface TestCaseExecutionContext {
+  params: {
+    first: object | string;
+    second?: object | string;
+    third?: object | string
+  }
+}
+
 const runTestCase =
   (testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
-    const { filename, functionName } = testingModel;
     if (testCase.a === 'snapshot') {
       const { params, flags } = testCase;
       const { first } = params;
-      console.log({ filename, functionName, params, flags });
+      console.log({ testingModel, params, flags });
       const value = await getParamData(first);
       console.log('content>>>', value);
     }
   };
 
 export const runZestFileSuite = async (testingModel: TestingModel) => {
-  const { testCases } = testingModel;
-  const testCasesAsync = testCases.map(runTestCase(testingModel));
+  const { cases } = testingModel;
+  const testCasesAsync = cases.map(runTestCase(testingModel));
   await Promise.all(testCasesAsync);
 };

@@ -15,6 +15,12 @@ export const stringTypescriptFilename = z
   .max(300)
   .endsWith('ts');
 
+  export const stringImport = z
+  .string()
+  .trim()
+  .min(1)
+  .max(300)
+
 export const stringFilename = z
   .string()
   .trim()

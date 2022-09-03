@@ -6,13 +6,23 @@ import {
   stringFilename,
   stringPropPath,
   stringTitle,
-  stringTypescriptFilename,
+  stringImport,
 } from './testing-field-validation.js';
-const transformerFunction = z.strictObject({
-  filename: stringTypescriptFilename,
-  className: stringClassName.optional(),
-  functionName: stringFunctionName.optional(),
+
+const pureFunction = z.strictObject({
+  a: z.literal('pure-function'),
+  import: stringImport,
+  function: stringFunctionName,
 });
+
+const staticMethod = z.strictObject({
+  a: z.literal('static-method'),
+  import: stringImport,
+  class: stringClassName,
+  function: stringFunctionName,
+});
+
+const anyFunction = z.discriminatedUnion('a', [pureFunction, staticMethod]);
 
 const fileParser = z.enum(['Text', 'JSON', 'YAML']);
 const givenFile = z.strictObject({
@@ -21,7 +31,7 @@ const givenFile = z.strictObject({
   parser: fileParser.default('Text'),
 
   value: stringPropPath.optional(),
-  transform: transformerFunction.optional(),
+  transform: anyFunction.optional(),
 });
 
 const givenString = z.strictObject({
@@ -33,7 +43,7 @@ const givenArrayFile = z.strictObject({
   filename: stringFilename,
   parser: fileParser.default('Text'),
   value: stringPropPath.optional(),
-  transform: transformerFunction.optional(),
+  transform: anyFunction.optional(),
 });
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
@@ -49,7 +59,7 @@ const snapshotFunctionTestCase = z.object({
 
   result: z
     .object({
-      transform: transformerFunction,
+      transform: anyFunction,
     })
     .optional(),
 
@@ -65,7 +75,7 @@ const loopSnapshotFunctionTestCase = z.object({
   givenEach: givenArrayFile,
   result: z
     .object({
-      transform: transformerFunction,
+      transform: anyFunction,
     })
     .optional(),
   flags: z
@@ -81,10 +91,9 @@ const functionTestCase = z.discriminatedUnion('a', [
 
 const schema = z
   .object({
-    filename: stringTypescriptFilename,
-    functionName: stringFunctionName,
-    testCases: z.array(functionTestCase).min(1).max(30),
-    })
+    testing: anyFunction,
+    cases: z.array(functionTestCase).min(1).max(30),
+  })
   .strict();
 
 /** Types */

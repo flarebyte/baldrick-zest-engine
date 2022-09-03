@@ -1,7 +1,9 @@
 ---
-filename: test-model.ts
-functionName: safeParseTestingModel
-testCases:
+testing:
+  a: pure-function
+  import: ../src/index.mjs
+  function: safeParseTestingModel
+cases:
   - a: snapshot
     title: test a valid model
     params:
