@@ -24,9 +24,8 @@ const runTestCase =
   (testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
     if (testCase.a === 'snapshot') {
-      const { params, flags } = testCase;
+      const { params } = testCase;
       const { first } = params;
-      console.log({ testingModel, params, flags });
       const testCaseExecutionContext: TestCaseExecutionContext = {
         testing: testingModel.testing,
         title: testCase.title,

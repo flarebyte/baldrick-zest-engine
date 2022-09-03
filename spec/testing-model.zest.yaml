@@ -1,7 +1,7 @@
 ---
 testing:
   a: pure-function
-  import: ../src/index.mjs
+  import: ../src/testing-model.ts
   function: safeParseTestingModel
 cases:
   - a: snapshot

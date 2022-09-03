@@ -26,10 +26,11 @@ export const executeCase = async (
     const imported: FunctionImport = await import(importing);
     const typicalPureFunction = imported[functionName];
     if (typicalPureFunction === undefined) {
+      const functionKeys = Object.keys(imported);
       return {
         status: 'failure',
         context,
-        message: `Function ${functionName} is not exported in ${importing}`,
+        message: `Function ${functionName} is not exported in ${importing}. What about one of these: ${functionKeys}`,
       };
     }
     try {
