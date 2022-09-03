@@ -1,9 +1,11 @@
+import { executeCase } from './case-executor.js';
+import { logTestCaseResult } from './case-logger.js';
+import { TestCaseExecutionContext } from './execution-context-model.js';
 import { readDataFile } from './testing-io.js';
 import type {
   TestingFunctionTestCaseModel,
   TestingModel,
   FunctionParamData,
-  AnyFunctionModel,
 } from './testing-model.js';
 
 const getParamData = async (functionParamData: FunctionParamData) => {
@@ -18,16 +20,6 @@ const getParamData = async (functionParamData: FunctionParamData) => {
   return value;
 };
 
-interface TestCaseExecutionContext {
-  testing: AnyFunctionModel;
-
-  params: {
-    first: object | string;
-    second?: object | string;
-    third?: object | string;
-  };
-}
-
 const runTestCase =
   (testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
@@ -37,11 +29,13 @@ const runTestCase =
       console.log({ testingModel, params, flags });
       const testCaseExecutionContext: TestCaseExecutionContext = {
         testing: testingModel.testing,
+        title: testCase.title,
         params: {
           first: await getParamData(first),
         },
       };
-      console.log('content>>>', testCaseExecutionContext);
+      const executed = await executeCase(testCaseExecutionContext);
+      logTestCaseResult(executed);
     }
   };
 
