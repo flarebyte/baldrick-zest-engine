@@ -1,8 +1,9 @@
 ---
 testing:
-  filename: example-test-model.ts
-  functionName: safeParseTestingModel
-testCases:
+  a: pure-function
+  import: ../src/testing-model.ts
+  function: safeParseTestingModel
+cases:
   - a: snapshot
     title: test a valid model
     params:
