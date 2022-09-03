@@ -47,7 +47,7 @@ const givenArrayFile = z.strictObject({
 });
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
-
+const snapshotType = z.enum(['Text', 'JSON', 'YAML'])
 const snapshotFunctionTestCase = z.object({
   a: z.literal('snapshot'),
   title: stringTitle,
@@ -63,10 +63,7 @@ const snapshotFunctionTestCase = z.object({
     })
     .optional(),
 
-  flags: z
-    .array(z.enum(['json-snapshot', 'yaml-snapshot', 'text-snapshot']))
-    .min(1)
-    .default(['json-snapshot']),
+  snapshot: snapshotType
 });
 
 const loopSnapshotFunctionTestCase = z.object({
@@ -78,10 +75,7 @@ const loopSnapshotFunctionTestCase = z.object({
       transform: anyFunction,
     })
     .optional(),
-  flags: z
-    .array(z.enum(['json-snapshot', 'yaml-snapshot', 'text-snapshot']))
-    .min(1)
-    .default(['json-snapshot']),
+    snapshot: snapshotType
 });
 
 const functionTestCase = z.discriminatedUnion('a', [

@@ -2,6 +2,7 @@ import { getZestYaml } from './testing-io.js';
 import { runZestFileSuite } from './testing-runner.js';
 
 interface TestingRunOpts {
+  snapshotDir: string;
   specFile: string;
 }
 

@@ -11,3 +11,4 @@ cases:
         from: file
         filename: spec/fixtures/example-zest.yaml
         parser: YAML
+    snapshot: YAML
