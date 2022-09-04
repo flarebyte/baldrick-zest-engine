@@ -47,7 +47,7 @@ const givenArrayFile = z.strictObject({
 });
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
-const snapshotType = z.enum(['Text', 'JSON', 'YAML'])
+const snapshotType = z.enum(['Text', 'JSON', 'YAML']);
 const snapshotFunctionTestCase = z.object({
   a: z.literal('snapshot'),
   title: stringTitle,
@@ -63,7 +63,7 @@ const snapshotFunctionTestCase = z.object({
     })
     .optional(),
 
-  snapshot: snapshotType
+  snapshot: snapshotType,
 });
 
 const loopSnapshotFunctionTestCase = z.object({
@@ -75,7 +75,7 @@ const loopSnapshotFunctionTestCase = z.object({
       transform: anyFunction,
     })
     .optional(),
-    snapshot: snapshotType
+  snapshot: snapshotType,
 });
 
 const functionTestCase = z.discriminatedUnion('a', [
@@ -86,6 +86,7 @@ const functionTestCase = z.discriminatedUnion('a', [
 const schema = z
   .object({
     testing: anyFunction,
+    flags: z.string().max(0).default(''),
     cases: z.array(functionTestCase).min(1).max(30),
   })
   .strict();
@@ -98,7 +99,9 @@ export type AnyFunctionModel = z.infer<typeof anyFunction>;
 
 export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
 
-export type TestingFunctionSnapshotTestCaseModel = z.infer<typeof snapshotFunctionTestCase>;
+export type TestingFunctionSnapshotTestCaseModel = z.infer<
+  typeof snapshotFunctionTestCase
+>;
 
 export type FunctionParamData = z.infer<typeof givenData>;
 

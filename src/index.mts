@@ -4,6 +4,7 @@ import { runZestFileSuite } from './testing-runner.js';
 interface TestingRunOpts {
   snapshotDir: string;
   specFile: string;
+  flags: string;
 }
 
 /**
@@ -15,6 +16,6 @@ export const run = async (opts: TestingRunOpts) => {
   if (result.status === 'invalid') {
     console.error(result);
   } else if (result.status === 'valid') {
-    await runZestFileSuite(result.value);
+    await runZestFileSuite({ ...result.value, flags: opts.flags });
   }
 };
