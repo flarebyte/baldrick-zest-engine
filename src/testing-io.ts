@@ -14,7 +14,7 @@ export const getZestYaml = async (
   return safeParseTestingModel(contentObject);
 };
 
-export const readDataFile = async (
+const readDataFile = async (
   filename: string,
   opts: {
     parser: FileParser;

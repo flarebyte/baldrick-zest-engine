@@ -98,6 +98,8 @@ export type AnyFunctionModel = z.infer<typeof anyFunction>;
 
 export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
 
+export type TestingFunctionSnapshotTestCaseModel = z.infer<typeof snapshotFunctionTestCase>;
+
 export type FunctionParamData = z.infer<typeof givenData>;
 
 export type FileParser = z.infer<typeof fileParser>;
