@@ -16,6 +16,6 @@ export const run = async (opts: TestingRunOpts) => {
   if (result.status === 'invalid') {
     console.error(result);
   } else if (result.status === 'valid') {
-    await runZestFileSuite({ ...result.value, flags: opts.flags });
+    await runZestFileSuite({ ...result.value, ...opts });
   }
 };

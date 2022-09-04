@@ -83,11 +83,15 @@ const functionTestCase = z.discriminatedUnion('a', [
   loopSnapshotFunctionTestCase,
 ]);
 
+const runtimeOnly = z.string().max(0).default('');
+
 const schema = z
   .object({
     testing: anyFunction,
-    flags: z.string().max(0).default(''),
     cases: z.array(functionTestCase).min(1).max(30),
+    flags: runtimeOnly,
+    specFile: runtimeOnly,
+    snapshotDir: runtimeOnly,
   })
   .strict();
 
