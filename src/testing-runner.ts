@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { executeCase } from './case-executor.js';
 import {
   logTestCasePreparationIssue,
@@ -60,6 +61,23 @@ async function setupExecutionContext(
     );
     return false;
   }
+  const expectedValue = await readDataFileSafely(
+    path.join(testingModel.snapshotDir, 'temp.yaml'),
+    {
+      parser: testCase.snapshot,
+    }
+  );
+
+  if (expectedValue.status === 'failure') {
+    logTestCasePreparationIssue(
+      testingModel,
+      testCase,
+      'The snapshot has been corrupted'
+    );
+  }
+
+  const expected =
+    expectedValue.status === 'success' ? expectedValue.value : undefined;
 
   if (second === undefined) {
     return {
@@ -68,6 +86,7 @@ async function setupExecutionContext(
       params: {
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
       },
+      expected,
     };
   }
 
@@ -90,6 +109,7 @@ async function setupExecutionContext(
         second:
           typeof secondValue === 'string' ? secondValue : secondValue.value,
       },
+      expected,
     };
   }
 
@@ -110,5 +130,6 @@ async function setupExecutionContext(
       second: typeof secondValue === 'string' ? secondValue : secondValue.value,
       third: typeof thirdValue === 'string' ? thirdValue : thirdValue.value,
     },
+    expected,
   };
 }

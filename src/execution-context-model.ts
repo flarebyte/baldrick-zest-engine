@@ -8,6 +8,7 @@ export interface TestCaseExecutionContext {
     second?: object | string;
     third?: object | string;
   };
+  expected?: object | string;
 }
 
 export type TestCaseResult =
