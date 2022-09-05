@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { diffChars, diffJson } from 'diff';
+import {diff} from 'jest-diff';
 import { TestCaseExecuteResult } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
 import {
@@ -28,7 +28,7 @@ export const checkSnapshot = async (
     typeof executeResult.context.expected === 'string' &&
     typeof executeResult.actual === 'string'
   ) {
-    const diffString = diffChars(
+    const diffString = diff(
       executeResult.context.expected,
       executeResult.actual
     );
@@ -38,7 +38,7 @@ export const checkSnapshot = async (
     typeof executeResult.context.expected === 'object' &&
     typeof executeResult.actual === 'object'
   ) {
-    const diffObject = diffJson(
+    const diffObject = diff(
       executeResult.context.expected,
       executeResult.actual
     );
