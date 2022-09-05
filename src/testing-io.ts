@@ -83,15 +83,22 @@ export const writeSnapshotFile = async (
     parser: FileParser;
   }
 ): Promise<void> => {
-  if (opts.parser === 'JSON') {
-    await writeFile(filename, JSON.stringify(content, null, 2), {
+  if (opts.parser === 'JSON' && typeof content !== 'string') {
+    const jsonContent = JSON.stringify(content, null, 2);
+    await writeFile(filename, jsonContent, {
       encoding: 'utf8',
     });
+    return;
   }
-  if (opts.parser === 'YAML') {
-    await writeFile(filename, YAML.stringify(content), {
-      encoding: 'utf8',
-    });
+  if (opts.parser === 'YAML' && typeof content !== 'string') {
+    const yamlContent = YAML.stringify(content);
+    await writeFile(filename, yamlContent);
+    return;
   }
+  if (opts.parser !== 'Text') {
+    console.warn(`For a string result, the parser should be Text: ${filename}`);
+    return;
+  }
+
   await writeFile(filename, `${content}`, { encoding: 'utf8' });
 };

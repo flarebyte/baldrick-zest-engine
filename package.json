@@ -71,6 +71,7 @@
     "zod": "^3.18.0"
   },
   "devDependencies": {
+    "@types/diff": "^5.0.2",
     "baldrick-dev-ts": "^0.17.0",
     "baldrick-tsconfig-es2021": "^0.5.0",
     "ts-node": "^10.9.1",

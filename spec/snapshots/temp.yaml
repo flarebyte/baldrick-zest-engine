@@ -1,1 +1,18 @@
-[object Object]
+status: valid
+value:
+  testing:
+    a: pure-function
+    import: ../src/testing-model.ts
+    function: safeParseTestingModel
+  cases:
+    - a: snapshot
+      title: test a valid model expected
+      params:
+        first:
+          from: file
+          filename: spec/fixtures/example-zest.yaml
+          parser: YAML
+      snapshot: YAML
+  flags: ""
+  specFile: ""
+  snapshotDir: ""
