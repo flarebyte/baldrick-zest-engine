@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { TestCaseExecutionContext } from './execution-context-model.js';
+import { TestCaseExecuteResult, TestCaseExecutionContext } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
 import {
   FileParser,
@@ -15,13 +15,12 @@ export const getSnapshotFilename = (
 };
 
 export const checkSnapshot = async (
-  executionContext: TestCaseExecutionContext,
+  executeResult: TestCaseExecuteResult & { status: 'success'},
   snapshotFileName: string,
   parser: FileParser,
-  actual: string | object
 ) => {
-  if (executionContext.expected === undefined) {
-    await writeSnapshotFile(snapshotFileName, actual, { parser });
+  if (executeResult.context.expected === undefined) {
+    await writeSnapshotFile(snapshotFileName, executeResult.actual, { parser });
     return;
   }
 };

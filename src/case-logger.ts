@@ -35,3 +35,15 @@ export const logTestCasePreparationIssue = (
     } with message: ${message}`
   );
 };
+
+export const logTestCasePreparationWarning = (
+  testingModel: TestingModel,
+  testCase: TestingFunctionTestCaseModel,
+  message: string
+) => {
+  console.warn(
+    `! Warning setting up for ${toFunctionInfo(testingModel.testing)}. ${
+      testCase.title
+    } with message: ${message}`
+  );
+};

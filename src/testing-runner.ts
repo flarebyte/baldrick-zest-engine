@@ -2,9 +2,10 @@ import { executeCase } from './case-executor.js';
 import {
   logTestCasePreparationIssue,
   logTestCaseExecuteFailure,
+  logTestCasePreparationWarning,
 } from './case-logger.js';
 import { TestCaseExecutionContext } from './execution-context-model.js';
-import { getSnapshotFilename } from './snapshot-creator.js';
+import { checkSnapshot, getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
 import type {
   TestingFunctionTestCaseModel,
@@ -37,11 +38,16 @@ const runTestCase =
         return;
       }
       const executed = await executeCase(testCaseExecutionContext);
-      if (executed.status=== 'failure') {
+      if (executed.status === 'failure') {
         logTestCaseExecuteFailure(executed);
         return;
+      } else {
+        await checkSnapshot(
+          executed,
+          getSnapshotFilename(testingModel, testCase),
+          testCase.snapshot
+        );
       }
-      
     }
   };
 
@@ -73,10 +79,10 @@ async function setupExecutionContext(
   );
 
   if (expectedValue.status === 'failure') {
-    logTestCasePreparationIssue(
+    logTestCasePreparationWarning(
       testingModel,
       testCase,
-      'The snapshot has been corrupted'
+      'The snapshot is absent or corrupted, we will be creating a new one'
     );
   }
 
