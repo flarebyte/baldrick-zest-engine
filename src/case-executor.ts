@@ -1,6 +1,6 @@
 import {
   TestCaseExecutionContext,
-  TestCaseResult,
+  TestCaseExecuteResult,
 } from './execution-context-model.js';
 
 type TypicalPureFunction = (
@@ -19,7 +19,7 @@ function getErrorMessage(error: unknown): string {
 }
 export const executeCase = async (
   context: TestCaseExecutionContext
-): Promise<TestCaseResult> => {
+): Promise<TestCaseExecuteResult> => {
   if (context.testing.a === 'pure-function') {
     const importing = context.testing.import;
     const functionName = context.testing.function;
@@ -39,10 +39,10 @@ export const executeCase = async (
         context.params.second,
         context.params.third
       );
-      console.log(result);
       return {
         status: 'success',
         context,
+        actual: result,
       };
     } catch (error) {
       return {

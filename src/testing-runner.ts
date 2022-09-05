@@ -1,10 +1,10 @@
-import path from 'node:path';
 import { executeCase } from './case-executor.js';
 import {
   logTestCasePreparationIssue,
-  logTestCaseResult,
+  logTestCaseExecuteFailure,
 } from './case-logger.js';
 import { TestCaseExecutionContext } from './execution-context-model.js';
+import { getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
 import type {
   TestingFunctionTestCaseModel,
@@ -37,7 +37,11 @@ const runTestCase =
         return;
       }
       const executed = await executeCase(testCaseExecutionContext);
-      logTestCaseResult(executed);
+      if (executed.status=== 'failure') {
+        logTestCaseExecuteFailure(executed);
+        return;
+      }
+      
     }
   };
 
@@ -62,7 +66,7 @@ async function setupExecutionContext(
     return false;
   }
   const expectedValue = await readDataFileSafely(
-    path.join(testingModel.snapshotDir, 'temp.yaml'),
+    getSnapshotFilename(testingModel, testCase),
     {
       parser: testCase.snapshot,
     }

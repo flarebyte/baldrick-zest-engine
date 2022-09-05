@@ -11,15 +11,14 @@ export interface TestCaseExecutionContext {
   expected?: object | string;
 }
 
-export type TestCaseResult =
+export type TestCaseExecuteResult =
   | {
       status: 'success';
       context: TestCaseExecutionContext;
+      actual: object | string;
     }
   | {
       status: 'failure';
       context: TestCaseExecutionContext;
       message: string;
-      actual?: string;
-      expected?: string;
     };

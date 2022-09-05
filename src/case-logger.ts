@@ -1,4 +1,4 @@
-import { TestCaseResult } from './execution-context-model.js';
+import { TestCaseExecuteResult } from './execution-context-model.js';
 import {
   AnyFunctionModel,
   TestingFunctionTestCaseModel,
@@ -14,22 +14,14 @@ const toFunctionInfo = (anyFunction: AnyFunctionModel): string => {
   }
 };
 
-export const logTestCaseResult = (testCaseResult: TestCaseResult) => {
-  if (testCaseResult.status === 'success') {
-    console.info(
-      `✓ Success for ${toFunctionInfo(testCaseResult.context.testing)}. ${
-        testCaseResult.context.title
-      }`
-    );
-  }
-  if (testCaseResult.status === 'failure') {
-    console.error(
-      `✗ Failure for ${toFunctionInfo(testCaseResult.context.testing)}. ${
-        testCaseResult.context.title
-      } with message: ${testCaseResult.message}`,
-      { actual: testCaseResult.actual, expected: testCaseResult.expected }
-    );
-  }
+export const logTestCaseExecuteFailure = (
+  testCaseResult: TestCaseExecuteResult & { status: 'failure' }
+) => {
+  console.error(
+    `✗ Failure for ${toFunctionInfo(testCaseResult.context.testing)}. ${
+      testCaseResult.context.title
+    } with message: ${testCaseResult.message}`
+  );
 };
 
 export const logTestCasePreparationIssue = (

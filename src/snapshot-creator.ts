@@ -14,7 +14,7 @@ export const getSnapshotFilename = (
   return path.join(testingModel.snapshotDir, 'temp.yaml');
 };
 
-const checkSnapshot = async (
+export const checkSnapshot = async (
   executionContext: TestCaseExecutionContext,
   snapshotFileName: string,
   parser: FileParser,
@@ -22,5 +22,6 @@ const checkSnapshot = async (
 ) => {
   if (executionContext.expected === undefined) {
     await writeSnapshotFile(snapshotFileName, actual, { parser });
+    return;
   }
 };
