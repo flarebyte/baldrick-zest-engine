@@ -3,6 +3,7 @@ import { TestCaseExecutionContext } from './execution-context-model.js';
 import { ReportingCase } from './reporter-model.js';
 import {
   reportCase,
+  reportSkipped,
   reportStartSuite,
   reportStopSuite,
   reportTodo,
@@ -35,9 +36,13 @@ const runTestCase =
   (testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
     if (testCase.a === 'todo') {
-      reportTodo(testCase);
+      reportTodo(testCase.title);
       return;
     } else if (testCase.a === 'snapshot') {
+      if (typeof testCase.skip === 'string') {
+        reportSkipped(testCase.title, testCase.skip);
+        return;
+      }
       const testCaseExecutionContext = await setupExecutionContext(
         testCase,
         testingModel
