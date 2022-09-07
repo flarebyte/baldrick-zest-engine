@@ -6,7 +6,7 @@ value:
     function: safeParseTestingModel
   cases:
     - a: snapshot
-      title: test a valid model expected
+      title: test a valid model
       params:
         first:
           from: file

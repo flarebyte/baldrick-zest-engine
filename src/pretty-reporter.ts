@@ -7,7 +7,7 @@ const colors = {
     return chalk.gray;
   },
   get section() {
-    return chalk.blue.bold;
+    return chalk.bold;
   },
   get title() {
     return chalk.bold;

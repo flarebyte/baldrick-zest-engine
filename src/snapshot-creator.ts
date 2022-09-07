@@ -47,7 +47,18 @@ export const checkSnapshot = async (
       executeResult.context.expected,
       executeResult.actual
     );
-    return diffString === null
+    if (diffString === null) {
+      return {
+        status: 'failure',
+        actual: executeResult.actual,
+        expected: executeResult.context.expected,
+        message: 'Comparison with a null value',
+      };
+    }
+    const hasNoDifference = diffString.includes(
+      'Compared values have no visual difference'
+    );
+    return hasNoDifference
       ? { status: 'success', actual: executeResult.actual }
       : {
           status: 'failure',
