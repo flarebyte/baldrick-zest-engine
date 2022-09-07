@@ -7,7 +7,6 @@ cases:
   valid:
     a: snapshot
     title: test a valid model
-    skip: temp skip
     params:
       first:
         from: file

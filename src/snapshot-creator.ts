@@ -7,12 +7,17 @@ import {
   TestingFunctionTestCaseModel,
   TestingModel,
 } from './testing-model.js';
+import { mkdirForFile } from './fs-utils.js';
 
 export const getSnapshotFilename = (
   testingModel: TestingModel,
-  _testCase: TestingFunctionTestCaseModel
+  testCase: TestingFunctionTestCaseModel
 ): string => {
-  return path.join(testingModel.snapshotDir, 'temp.yaml');
+  const specFileBase = path
+    .basename(testingModel.specFile)
+    .replace('.zest.yaml', '');
+  const snaphotFilename = `${specFileBase}-${testCase.name}.yaml`;
+  return path.join(testingModel.snapshotDir, snaphotFilename);
 };
 
 type SnapshotResult =
@@ -33,6 +38,7 @@ export const checkSnapshot = async (
   parser: FileParser
 ): Promise<SnapshotResult> => {
   if (executeResult.context.expected === undefined) {
+    await mkdirForFile(snapshotFileName);
     await writeSnapshotFile(snapshotFileName, executeResult.actual, { parser });
     return { status: 'success', actual: executeResult.actual };
   }
