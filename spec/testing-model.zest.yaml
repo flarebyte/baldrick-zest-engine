@@ -4,7 +4,8 @@ testing:
   import: ../src/testing-model.ts
   function: safeParseTestingModel
 cases:
-  - a: snapshot
+  valid:
+    a: snapshot
     title: test a valid model
     params:
       first:

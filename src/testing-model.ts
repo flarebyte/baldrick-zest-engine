@@ -7,6 +7,8 @@ import {
   stringPropPath,
   stringTitle,
   stringImport,
+  stringCustomKey,
+  stringRuntimeOnly,
 } from './testing-field-validation.js';
 
 const pureFunction = z.strictObject({
@@ -50,6 +52,7 @@ const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
 const snapshotType = z.enum(['Text', 'JSON', 'YAML']);
 const snapshotFunctionTestCase = z.object({
   a: z.literal('snapshot'),
+  name: stringRuntimeOnly,
   title: stringTitle,
   params: z.object({
     first: givenData,
@@ -68,6 +71,7 @@ const snapshotFunctionTestCase = z.object({
 
 const loopSnapshotFunctionTestCase = z.object({
   a: z.literal('each-snapshot'),
+  name: stringRuntimeOnly,
   title: stringTitle,
   givenEach: givenArrayFile,
   result: z
@@ -83,15 +87,14 @@ const functionTestCase = z.discriminatedUnion('a', [
   loopSnapshotFunctionTestCase,
 ]);
 
-const runtimeOnly = z.string().max(0).default('');
 
 const schema = z
   .object({
     testing: anyFunction,
-    cases: z.array(functionTestCase).min(1).max(30),
-    flags: runtimeOnly,
-    specFile: runtimeOnly,
-    snapshotDir: runtimeOnly,
+    cases: z.record(stringCustomKey, functionTestCase),
+    flags: stringRuntimeOnly,
+    specFile: stringRuntimeOnly,
+    snapshotDir: stringRuntimeOnly,
   })
   .strict();
 
