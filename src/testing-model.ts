@@ -118,6 +118,10 @@ export type TestingFunctionSnapshotTestCaseModel = z.infer<
   typeof snapshotFunctionTestCase
 >;
 
+export type TestingTodoTestCaseModel = z.infer<
+  typeof todoTestCase
+>;
+
 export type FunctionParamData = z.infer<typeof givenData>;
 
 export type FileParser = z.infer<typeof fileParser>;

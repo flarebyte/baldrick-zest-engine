@@ -13,3 +13,6 @@ cases:
         filename: spec/fixtures/example-zest.yaml
         parser: YAML
     snapshot: YAML
+  todo-next:
+    a: todo
+    title: task for testing todo concept

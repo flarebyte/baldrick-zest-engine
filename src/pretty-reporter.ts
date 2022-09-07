@@ -1,5 +1,6 @@
 import { ReportingCase } from './reporter-model.js';
 import { Chalk } from 'chalk';
+import { TestingTodoTestCaseModel } from './testing-model.js';
 const chalk = new Chalk();
 
 const colors = {
@@ -46,6 +47,10 @@ const colors = {
 
 export const prettyReportStartSuite = (title: string, secondary: string) => {
   console.group(colors.section(title) + ' ' + colors.log(secondary));
+};
+
+export const prettyReportTodo = (todoCase: TestingTodoTestCaseModel) => {
+  console.info(colors.todo('. TODO') + ' ' + colors.title(todoCase.title));
 };
 
 export const prettyReportCase = (reportingCase: ReportingCase) => {

@@ -1,7 +1,12 @@
 import { executeCase } from './case-executor.js';
 import { TestCaseExecutionContext } from './execution-context-model.js';
 import { ReportingCase } from './reporter-model.js';
-import { reportCase, reportStartSuite, reportStopSuite } from './reporter.js';
+import {
+  reportCase,
+  reportStartSuite,
+  reportStopSuite,
+  reportTodo,
+} from './reporter.js';
 import { checkSnapshot, getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
 import type {
@@ -29,7 +34,10 @@ const getParamData = async (functionParamData: FunctionParamData) => {
 const runTestCase =
   (testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
-    if (testCase.a === 'snapshot') {
+    if (testCase.a === 'todo') {
+      reportTodo(testCase);
+      return;
+    } else if (testCase.a === 'snapshot') {
       const testCaseExecutionContext = await setupExecutionContext(
         testCase,
         testingModel
@@ -88,7 +96,7 @@ export const runZestFileSuite = async (testingModel: TestingModel) => {
     `${testingModel.testing.import} | ${testingModel.specFile}`
   );
   const { cases } = testingModel;
-  
+
   // Add the name to case object
   for (const caseKey in cases) {
     const newCase = cases[caseKey];
