@@ -1,6 +1,6 @@
 export type ReportingError =
-  | {}
   | {
+      code: 'ERR_GENERAL';
       stack: string;
       message: string;
     }
@@ -19,7 +19,7 @@ export interface ReportingCase {
   file: string;
   duration: number;
   currentRetry: 0;
-  err: ReportingError;
+  err?: ReportingError;
 }
 
 export interface ReportingStats {
@@ -31,4 +31,12 @@ export interface ReportingStats {
   start: string;
   end: string;
   duration: number;
+}
+
+export interface FullReport {
+  stats: ReportingStats;
+  tests: ReportingCase[];
+  pending: ReportingCase[];
+  failures: ReportingCase[];
+  passes: ReportingCase[];
 }

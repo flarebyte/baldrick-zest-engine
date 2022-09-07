@@ -1,10 +1,7 @@
 import { executeCase } from './case-executor.js';
-import {
-  logTestCasePreparationIssue,
-  logTestCaseExecuteFailure,
-  logTestCasePreparationWarning,
-} from './case-logger.js';
 import { TestCaseExecutionContext } from './execution-context-model.js';
+import { ReportingCase } from './reporter-model.js';
+import { reportCase, reportStartSuite, reportStopSuite } from './reporter.js';
 import { checkSnapshot, getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
 import type {
@@ -13,6 +10,9 @@ import type {
   FunctionParamData,
   TestingFunctionSnapshotTestCaseModel,
 } from './testing-model.js';
+
+const stringOrObjectToString = (value: object | string): string =>
+  typeof value === 'string' ? value : JSON.stringify(value);
 
 const getParamData = async (functionParamData: FunctionParamData) => {
   if (functionParamData.from === 'string') {
@@ -37,38 +37,82 @@ const runTestCase =
       if (!testCaseExecutionContext) {
         return;
       }
+
+      const defaultSuccessReporting: ReportingCase = {
+        title: testCase.title,
+        fullTitle: testCase.title,
+        file: testingModel.specFile,
+        duration: 0,
+        currentRetry: 0,
+      };
       const executed = await executeCase(testCaseExecutionContext);
       if (executed.status === 'failure') {
-        logTestCaseExecuteFailure(executed);
+        reportCase({
+          ...defaultSuccessReporting,
+          err: {
+            code: 'ERR_GENERAL',
+            message: executed.message,
+            stack: '',
+          },
+        });
+
         return;
       } else {
-        await checkSnapshot(
+        const snapshotResult = await checkSnapshot(
           executed,
           getSnapshotFilename(testingModel, testCase),
           testCase.snapshot
         );
+        if (snapshotResult.status === 'success') {
+          reportCase(defaultSuccessReporting);
+        } else {
+          reportCase({
+            ...defaultSuccessReporting,
+            err: {
+              code: 'ERR_ASSERTION',
+              message: snapshotResult.message,
+              actual: stringOrObjectToString(snapshotResult.actual),
+              expected: stringOrObjectToString(snapshotResult.expected),
+              stack: '',
+              operator: 'strictEqual',
+            },
+          });
+        }
       }
     }
   };
 
 export const runZestFileSuite = async (testingModel: TestingModel) => {
+  reportStartSuite(testingModel.testing.function, `${testingModel.testing.import} | ${testingModel.specFile}`);
   const { cases } = testingModel;
   const testCasesAsync = cases.map(runTestCase(testingModel));
   await Promise.all(testCasesAsync);
+  reportStopSuite();
 };
+
 async function setupExecutionContext(
   testCase: TestingFunctionSnapshotTestCaseModel,
   testingModel: TestingModel
 ): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
   const { first, second, third } = params;
+  const defaultSuccessReporting: ReportingCase = {
+    title: testCase.title,
+    fullTitle: testCase.title,
+    file: testingModel.specFile,
+    duration: 0,
+    currentRetry: 0,
+  };
   const firstValue = await getParamData(first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
-    logTestCasePreparationIssue(
-      testingModel,
-      testCase,
-      'First parameter cannot be loaded'
-    );
+    reportCase({
+      ...defaultSuccessReporting,
+      err: {
+        code: 'ERR_GENERAL',
+        message: 'First parameter cannot be loaded',
+        stack: '',
+      },
+    });
     return false;
   }
   const expectedValue = await readDataFileSafely(
@@ -77,14 +121,7 @@ async function setupExecutionContext(
       parser: testCase.snapshot,
     }
   );
-
-  if (expectedValue.status === 'failure') {
-    logTestCasePreparationWarning(
-      testingModel,
-      testCase,
-      'The snapshot is absent or corrupted, we will be creating a new one'
-    );
-  }
+  const isNewSnapshot = expectedValue.status === 'failure';
 
   const expected =
     expectedValue.status === 'success' ? expectedValue.value : undefined;
@@ -97,16 +134,20 @@ async function setupExecutionContext(
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
       },
       expected,
+      isNewSnapshot,
     };
   }
 
   const secondValue = await getParamData(second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
-    logTestCasePreparationIssue(
-      testingModel,
-      testCase,
-      'Second parameter cannot be loaded'
-    );
+    reportCase({
+      ...defaultSuccessReporting,
+      err: {
+        code: 'ERR_GENERAL',
+        message: 'Second parameter cannot be loaded',
+        stack: '',
+      },
+    });
     return false;
   }
 
@@ -120,16 +161,20 @@ async function setupExecutionContext(
           typeof secondValue === 'string' ? secondValue : secondValue.value,
       },
       expected,
+      isNewSnapshot,
     };
   }
 
   const thirdValue = await getParamData(third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
-    logTestCasePreparationIssue(
-      testingModel,
-      testCase,
-      'Third parameter cannot be loaded'
-    );
+    reportCase({
+      ...defaultSuccessReporting,
+      err: {
+        code: 'ERR_GENERAL',
+        message: 'Third parameter cannot be loaded',
+        stack: '',
+      },
+    });
     return false;
   }
   return {
@@ -141,5 +186,6 @@ async function setupExecutionContext(
       third: typeof thirdValue === 'string' ? thirdValue : thirdValue.value,
     },
     expected,
+    isNewSnapshot,
   };
 }

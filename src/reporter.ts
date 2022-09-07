@@ -1,6 +1,11 @@
-import { ciReportCase } from "./ci-reporter.js"
-import { prettyReportCase } from "./pretty-reporter.js"
-import { ReportingCase } from "./reporter-model.js"
+import { ciReportCase, ciReportStartSuite } from './ci-reporter.js';
+import { isCI } from './is-ci.js';
+import { prettyReportCase, prettyReportStartSuite } from './pretty-reporter.js';
+import { ReportingCase } from './reporter-model.js';
 
-const isCi = () => !!process.env['CI']
-export const reportCase = (reportingCase: ReportingCase): string => isCi() ? ciReportCase(reportingCase): prettyReportCase(reportingCase)
+export const reportStartSuite = (title: string, secondary: string) =>
+  isCI ? ciReportStartSuite(title, secondary) : prettyReportStartSuite(title, secondary);
+export const reportStopSuite = () => console.groupEnd();
+
+export const reportCase = (reportingCase: ReportingCase) =>
+  isCI ? ciReportCase(reportingCase) : prettyReportCase(reportingCase);

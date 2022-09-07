@@ -9,6 +9,7 @@ export interface TestCaseExecutionContext {
     third?: object | string;
   };
   expected?: object | string;
+  isNewSnapshot: boolean;
 }
 
 export type TestCaseExecuteResult =

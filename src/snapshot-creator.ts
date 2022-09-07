@@ -1,5 +1,5 @@
 import path from 'node:path';
-import {diff} from 'jest-diff';
+import { diff } from 'jest-diff';
 import { TestCaseExecuteResult } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
 import {
@@ -15,33 +15,52 @@ export const getSnapshotFilename = (
   return path.join(testingModel.snapshotDir, 'temp.yaml');
 };
 
+type SnapshotResult =
+  | {
+      status: 'success';
+      actual: string | object;
+    }
+  | {
+      status: 'failure';
+      actual: string | object;
+      expected: string | object;
+      message: string;
+    };
+
 export const checkSnapshot = async (
   executeResult: TestCaseExecuteResult & { status: 'success' },
   snapshotFileName: string,
   parser: FileParser
-) => {
+): Promise<SnapshotResult> => {
   if (executeResult.context.expected === undefined) {
     await writeSnapshotFile(snapshotFileName, executeResult.actual, { parser });
-    return;
+    return { status: 'success', actual: executeResult.actual };
   }
-  if (
-    typeof executeResult.context.expected === 'string' &&
-    typeof executeResult.actual === 'string'
-  ) {
+
+  const isSameType =
+    (typeof executeResult.context.expected === 'string' &&
+      typeof executeResult.actual === 'string') ||
+    (typeof executeResult.context.expected === 'object' &&
+      typeof executeResult.actual === 'object');
+  if (isSameType) {
     const diffString = diff(
       executeResult.context.expected,
       executeResult.actual
     );
-    console.log(diffString);
+    return diffString === null
+      ? { status: 'success', actual: executeResult.actual }
+      : {
+          status: 'failure',
+          actual: executeResult.actual,
+          expected: executeResult.context.expected,
+          message: diffString,
+        };
   }
-  if (
-    typeof executeResult.context.expected === 'object' &&
-    typeof executeResult.actual === 'object'
-  ) {
-    const diffObject = diff(
-      executeResult.context.expected,
-      executeResult.actual
-    );
-    console.log('json', diffObject);
-  }
+
+  return {
+    status: 'failure',
+    actual: executeResult.actual,
+    expected: executeResult.context.expected,
+    message: 'Types for actual and expected are different',
+  };
 };
