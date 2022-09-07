@@ -8,6 +8,14 @@ export const stringTitle = z
   .min(1)
   .max(60)
   .refine(isSingleLine, { message: 'title should be a single line' });
+
+  export const stringSkipReason = z
+  .string()
+  .trim()
+  .min(1)
+  .max(60)
+  .refine(isSingleLine, { message: 'reason for skipping should be a single line' });
+
 export const stringTypescriptFilename = z
   .string()
   .trim()

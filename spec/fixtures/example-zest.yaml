@@ -4,7 +4,8 @@ testing:
   import: ../src/testing-model.ts
   function: safeParseTestingModel
 cases:
-  - a: snapshot
+  valid:
+    a: snapshot
     title: test a valid model
     params:
       first:
@@ -12,3 +13,6 @@ cases:
         filename: spec/fixtures/example-zest.yaml
         parser: YAML
     snapshot: YAML
+  todo-next:
+    a: todo
+    title: task to do next

@@ -1,15 +1,24 @@
----
-testing:
-  a: pure-function
-  import: ../src/testing-model.ts
-  function: safeParseTestingModel
-cases:
-  valid:
-    a: snapshot
-    title: test a valid model
-    params:
-      first:
-        from: file
-        filename: spec/fixtures/example-zest.yaml
-        parser: YAML
-    snapshot: YAML
+status: valid
+value:
+  testing:
+    a: pure-function
+    import: ../src/testing-model.ts
+    function: safeParseTestingModel
+  cases:
+    valid:
+      a: snapshot
+      name: ""
+      title: test a valid model
+      params:
+        first:
+          from: file
+          filename: spec/fixtures/example-zest.yaml
+          parser: YAML
+      snapshot: YAML
+    todo-next:
+      a: todo
+      name: ""
+      title: task to do next
+  flags: ""
+  specFile: ""
+  snapshotDir: ""

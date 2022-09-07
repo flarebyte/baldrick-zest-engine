@@ -9,6 +9,7 @@ import {
   stringImport,
   stringCustomKey,
   stringRuntimeOnly,
+  stringSkipReason,
 } from './testing-field-validation.js';
 
 const pureFunction = z.strictObject({
@@ -52,6 +53,7 @@ const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
 const snapshotType = z.enum(['Text', 'JSON', 'YAML']);
 const snapshotFunctionTestCase = z.object({
   a: z.literal('snapshot'),
+  skip: stringSkipReason.optional(),
   name: stringRuntimeOnly,
   title: stringTitle,
   params: z.object({
@@ -67,6 +69,12 @@ const snapshotFunctionTestCase = z.object({
     .optional(),
 
   snapshot: snapshotType,
+});
+
+const todoTestCase = z.object({
+  a: z.literal('todo'),
+  name: stringRuntimeOnly,
+  title: stringTitle,
 });
 
 const loopSnapshotFunctionTestCase = z.object({
@@ -85,8 +93,8 @@ const loopSnapshotFunctionTestCase = z.object({
 const functionTestCase = z.discriminatedUnion('a', [
   snapshotFunctionTestCase,
   loopSnapshotFunctionTestCase,
+  todoTestCase,
 ]);
-
 
 const schema = z
   .object({

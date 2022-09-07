@@ -83,9 +83,22 @@ const runTestCase =
   };
 
 export const runZestFileSuite = async (testingModel: TestingModel) => {
-  reportStartSuite(testingModel.testing.function, `${testingModel.testing.import} | ${testingModel.specFile}`);
+  reportStartSuite(
+    testingModel.testing.function,
+    `${testingModel.testing.import} | ${testingModel.specFile}`
+  );
   const { cases } = testingModel;
-  const testCasesAsync = cases.map(runTestCase(testingModel));
+  
+  // Add the name to case object
+  for (const caseKey in cases) {
+    const newCase = cases[caseKey];
+    if (newCase === undefined) {
+      continue;
+    }
+    newCase.name = caseKey;
+  }
+  const caseList = Object.values(cases);
+  const testCasesAsync = caseList.map(runTestCase(testingModel));
   await Promise.all(testCasesAsync);
   reportStopSuite();
 };
