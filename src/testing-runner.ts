@@ -1,6 +1,6 @@
 import { executeCase } from './case-executor.js';
 import { TestCaseExecutionContext } from './execution-context-model.js';
-import { ReportingCase } from './reporter-model.js';
+import { ReportingCase, ReportTracker } from './reporter-model.js';
 import {
   reportCase,
   reportSkipped,
@@ -33,7 +33,7 @@ const getParamData = async (functionParamData: FunctionParamData) => {
 };
 
 const runTestCase =
-  (testingModel: TestingModel) =>
+  (reportTracker: ReportTracker, testingModel: TestingModel) =>
   async (testCase: TestingFunctionTestCaseModel) => {
     if (testCase.a === 'todo') {
       reportTodo(testCase.title);
@@ -44,6 +44,7 @@ const runTestCase =
         return;
       }
       const testCaseExecutionContext = await setupExecutionContext(
+        reportTracker,
         testCase,
         testingModel
       );
@@ -60,7 +61,7 @@ const runTestCase =
       };
       const executed = await executeCase(testCaseExecutionContext);
       if (executed.status === 'failure') {
-        reportCase({
+        reportCase(reportTracker, {
           ...defaultSuccessReporting,
           err: {
             code: 'ERR_GENERAL',
@@ -77,9 +78,9 @@ const runTestCase =
           testCase.snapshot
         );
         if (snapshotResult.status === 'success') {
-          reportCase(defaultSuccessReporting);
+          reportCase(reportTracker, defaultSuccessReporting);
         } else {
-          reportCase({
+          reportCase(reportTracker, {
             ...defaultSuccessReporting,
             err: {
               code: 'ERR_ASSERTION',
@@ -95,7 +96,10 @@ const runTestCase =
     }
   };
 
-export const runZestFileSuite = async (testingModel: TestingModel) => {
+export const runZestFileSuite = async (
+  reportTracker: ReportTracker,
+  testingModel: TestingModel
+) => {
   reportStartSuite(
     testingModel.testing.function,
     `${testingModel.testing.import} | ${testingModel.specFile}`
@@ -111,12 +115,13 @@ export const runZestFileSuite = async (testingModel: TestingModel) => {
     newCase.name = caseKey;
   }
   const caseList = Object.values(cases);
-  const testCasesAsync = caseList.map(runTestCase(testingModel));
+  const testCasesAsync = caseList.map(runTestCase(reportTracker, testingModel));
   await Promise.all(testCasesAsync);
   reportStopSuite();
 };
 
 async function setupExecutionContext(
+  reportTracker: ReportTracker,
   testCase: TestingFunctionSnapshotTestCaseModel,
   testingModel: TestingModel
 ): Promise<TestCaseExecutionContext | false> {
@@ -131,7 +136,7 @@ async function setupExecutionContext(
   };
   const firstValue = await getParamData(first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
-    reportCase({
+    reportCase(reportTracker, {
       ...defaultSuccessReporting,
       err: {
         code: 'ERR_GENERAL',
@@ -166,7 +171,7 @@ async function setupExecutionContext(
 
   const secondValue = await getParamData(second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
-    reportCase({
+    reportCase(reportTracker, {
       ...defaultSuccessReporting,
       err: {
         code: 'ERR_GENERAL',
@@ -193,7 +198,7 @@ async function setupExecutionContext(
 
   const thirdValue = await getParamData(third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
-    reportCase({
+    reportCase(reportTracker, {
       ...defaultSuccessReporting,
       err: {
         code: 'ERR_GENERAL',

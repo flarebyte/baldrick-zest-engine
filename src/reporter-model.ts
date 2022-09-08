@@ -40,3 +40,7 @@ export interface FullReport {
   failures: ReportingCase[];
   passes: ReportingCase[];
 }
+
+export interface ReportTracker {
+  tests: ReportingCase[];
+}

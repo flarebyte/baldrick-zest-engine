@@ -1,9 +1,12 @@
+import { ReportTracker } from './reporter-model.js';
 import { getZestYaml } from './testing-io.js';
 import { runZestFileSuite } from './testing-runner.js';
 
 interface TestingRunOpts {
   snapshotDir: string;
   specDir: string;
+  reportDir: string;
+  mochaJsonReport: boolean;
   specFile: string;
   flags: string;
 }
@@ -17,6 +20,8 @@ export const run = async (opts: TestingRunOpts) => {
   if (result.status === 'invalid') {
     console.error(result);
   } else if (result.status === 'valid') {
-    await runZestFileSuite({ ...result.value, ...opts });
+    const reportTracker: ReportTracker = { tests: [] };
+    await runZestFileSuite(reportTracker, { ...result.value, ...opts });
+    console.log(reportTracker);
   }
 };

@@ -11,7 +11,7 @@ import {
   prettyReportStartSuite,
   prettyReportTodo,
 } from './pretty-reporter.js';
-import { ReportingCase } from './reporter-model.js';
+import { ReportingCase, ReportTracker } from './reporter-model.js';
 
 export const reportStartSuite = (title: string, secondary: string) =>
   isCI
@@ -19,8 +19,13 @@ export const reportStartSuite = (title: string, secondary: string) =>
     : prettyReportStartSuite(title, secondary);
 export const reportStopSuite = () => console.groupEnd();
 
-export const reportCase = (reportingCase: ReportingCase) =>
-  isCI ? ciReportCase(reportingCase) : prettyReportCase(reportingCase);
+export const reportCase = (
+  reportTracker: ReportTracker,
+  reportingCase: ReportingCase
+) => {
+  reportTracker.tests.push(reportingCase);
+  return isCI ? ciReportCase(reportingCase) : prettyReportCase(reportingCase);
+};
 
 export const reportTodo = (title: string) =>
   isCI ? ciReportTodo(title) : prettyReportTodo(title);
