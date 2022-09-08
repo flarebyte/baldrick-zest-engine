@@ -21,4 +21,5 @@ value:
       title: task to do next
   flags: ""
   specFile: ""
+  specDir: ""
   snapshotDir: ""

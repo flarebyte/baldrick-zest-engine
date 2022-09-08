@@ -14,7 +14,7 @@ export const getSnapshotFilename = (
   testCase: TestingFunctionTestCaseModel
 ): string => {
   const specFileBase = path
-    .basename(testingModel.specFile)
+    .relative(testingModel.specDir, testingModel.specFile)
     .replace('.zest.yaml', '');
   const snaphotFilename = `${specFileBase}-${testCase.name}.yaml`;
   return path.join(testingModel.snapshotDir, snaphotFilename);

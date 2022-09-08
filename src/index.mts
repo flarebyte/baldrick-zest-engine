@@ -3,6 +3,7 @@ import { runZestFileSuite } from './testing-runner.js';
 
 interface TestingRunOpts {
   snapshotDir: string;
+  specDir: string;
   specFile: string;
   flags: string;
 }
