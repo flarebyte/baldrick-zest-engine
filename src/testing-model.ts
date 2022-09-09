@@ -12,32 +12,51 @@ import {
   stringValue,
 } from './testing-field-validation.js';
 
-const pureFunction = z.strictObject({
-  style: z.literal('pure-function'),
+const pureFunctionAbc = z.strictObject({
+  style: z.literal('function a b c'),
+  import: stringImport,
+  function: stringFunctionName,
+});
+
+const pureFunctionAb = z.strictObject({
+  style: z.literal('function a b'),
+  import: stringImport,
+  function: stringFunctionName,
+});
+
+const pureFunctionA = z.strictObject({
+  style: z.literal('function a'),
   import: stringImport,
   function: stringFunctionName,
 });
 
 const highOrderFunction = z.strictObject({
-  style: z.literal('high-order-function'),
+  style: z.literal('string -> function a'),
   import: stringImport,
   function: stringFunctionName,
   value: stringValue,
 });
 
-const staticMethod = z.strictObject({
-  style: z.literal('static-method'),
+const staticMethodA = z.strictObject({
+  style: z.literal('Class.method a'),
   import: stringImport,
   class: stringClassName,
   function: stringFunctionName,
 });
 
-const anyFunction = z.discriminatedUnion('style', [
-  pureFunction,
-  staticMethod,
+const anyFunctionTransf = z.discriminatedUnion('style', [
+  pureFunctionA,
+  staticMethodA,
   highOrderFunction,
 ]);
-const transformers = z.array(anyFunction).min(1).max(7);
+
+const anyUnderTestingFunction = z.discriminatedUnion('style', [
+  pureFunctionAbc,
+  pureFunctionAb,
+  pureFunctionA,
+  staticMethodA,
+]);
+const transformers = z.array(anyFunctionTransf).min(1).max(7);
 
 const fileParser = z.enum(['Text', 'JSON', 'YAML']);
 const givenFile = z.strictObject({
@@ -93,7 +112,7 @@ const loopSnapshotFunctionTestCase = z.object({
   givenEach: givenArrayFile,
   result: z
     .object({
-      transform: anyFunction,
+      transform: anyFunctionTransf,
     })
     .optional(),
   snapshot: snapshotType,
@@ -107,7 +126,7 @@ const functionTestCase = z.discriminatedUnion('a', [
 
 const schema = z
   .object({
-    testing: anyFunction,
+    testing: anyUnderTestingFunction,
     cases: z.record(stringCustomKey, functionTestCase),
     flags: stringRuntimeOnly,
     specFile: stringRuntimeOnly,
@@ -120,7 +139,7 @@ const schema = z
 
 export type TestingModel = z.infer<typeof schema>;
 
-export type AnyFunctionModel = z.infer<typeof anyFunction>;
+export type AnyTestedFunctionModel = z.infer<typeof anyUnderTestingFunction>;
 
 export type TestingFunctionTestCaseModel = z.infer<typeof functionTestCase>;
 

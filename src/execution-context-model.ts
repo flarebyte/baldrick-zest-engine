@@ -1,7 +1,7 @@
-import { AnyFunctionModel } from './testing-model.js';
+import { AnyFunctionTransfModel } from './testing-model.js';
 
 export interface TestCaseExecutionContext {
-  testing: AnyFunctionModel;
+  testing: AnyFunctionTransfModel;
   title: string;
   params: {
     first: object | string;

@@ -20,7 +20,11 @@ function getErrorMessage(error: unknown): string {
 export const executeCase = async (
   context: TestCaseExecutionContext
 ): Promise<TestCaseExecuteResult> => {
-  if (context.testing.style === 'pure-function') {
+  if (
+    context.testing.style === 'string -> function a' ||
+    context.testing.style === 'string -> function a b' ||
+    context.testing.style === 'string -> function a b c'
+  ) {
     const importing = context.testing.import;
     const functionName = context.testing.function;
     const imported: FunctionImport = await import(importing);
