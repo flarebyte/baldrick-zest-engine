@@ -1,6 +1,6 @@
 ---
 testing:
-  a: pure-function
+  style: pure-function
   import: ../src/testing-model.ts
   function: safeParseTestingModel
 cases:
@@ -15,4 +15,4 @@ cases:
     snapshot: YAML
   todo-next:
     a: todo
-    title: task to do next
+    title: task for testing todo concept

@@ -1,3 +1,4 @@
+import { reportMochaJson } from './mocha-json-reporter.js';
 import { ReportTracker } from './reporter-model.js';
 import { getZestYaml } from './testing-io.js';
 import { runZestFileSuite } from './testing-runner.js';
@@ -11,6 +12,20 @@ interface TestingRunOpts {
   flags: string;
 }
 
+const createReportTracker = (): ReportTracker => ({
+  stats: {
+    suites: 1,
+    tests: 0,
+    passes: 0,
+    failures: 0,
+    pending: 0,
+    start: new Date().toISOString(),
+    end: '',
+    duration: Date.now(),
+  },
+  tests: [],
+});
+
 /**
  * Run the tests
  * @param opts options for the run
@@ -20,8 +35,11 @@ export const run = async (opts: TestingRunOpts) => {
   if (result.status === 'invalid') {
     console.error(result);
   } else if (result.status === 'valid') {
-    const reportTracker: ReportTracker = { tests: [] };
+    const reportTracker = createReportTracker();
+
     await runZestFileSuite(reportTracker, { ...result.value, ...opts });
-    console.log(reportTracker);
+    if (opts.mochaJsonReport) {
+      await reportMochaJson(opts.reportDir, opts.specFile, reportTracker);
+    }
   }
 };

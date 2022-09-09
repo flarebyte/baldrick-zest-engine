@@ -20,7 +20,7 @@ function getErrorMessage(error: unknown): string {
 export const executeCase = async (
   context: TestCaseExecutionContext
 ): Promise<TestCaseExecuteResult> => {
-  if (context.testing.a === 'pure-function') {
+  if (context.testing.style === 'pure-function') {
     const importing = context.testing.import;
     const functionName = context.testing.function;
     const imported: FunctionImport = await import(importing);
@@ -30,7 +30,7 @@ export const executeCase = async (
       return {
         status: 'failure',
         context,
-        message: `Function ${functionName} is not exported in ${importing}. What about one of these: ${functionKeys}`,
+        message: `Function ${functionName} is not exported in ${importing}. What about one of these: ${functionKeys} (978799)`,
       };
     }
     try {
@@ -50,13 +50,13 @@ export const executeCase = async (
         context,
         message: `Function ${functionName} in ${importing} failed with ${getErrorMessage(
           error
-        )}`,
+        )} (148281)`,
       };
     }
   }
   return {
     status: 'failure',
     context,
-    message: 'The context is not supported',
+    message: 'The context is not supported (208765)',
   };
 };

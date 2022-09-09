@@ -78,6 +78,6 @@ export const checkSnapshot = async (
     status: 'failure',
     actual: executeResult.actual,
     expected: executeResult.context.expected,
-    message: 'Types for actual and expected are different',
+    message: 'Types for actual and expected are different (650705)',
   };
 };

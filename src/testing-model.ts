@@ -4,37 +4,47 @@ import {
   stringClassName,
   stringFunctionName,
   stringFilename,
-  stringPropPath,
   stringTitle,
   stringImport,
   stringCustomKey,
   stringRuntimeOnly,
   stringSkipReason,
+  stringValue,
 } from './testing-field-validation.js';
 
 const pureFunction = z.strictObject({
-  a: z.literal('pure-function'),
+  style: z.literal('pure-function'),
   import: stringImport,
   function: stringFunctionName,
 });
 
+const highOrderFunction = z.strictObject({
+  style: z.literal('high-order-function'),
+  import: stringImport,
+  function: stringFunctionName,
+  value: stringValue,
+});
+
 const staticMethod = z.strictObject({
-  a: z.literal('static-method'),
+  style: z.literal('static-method'),
   import: stringImport,
   class: stringClassName,
   function: stringFunctionName,
 });
 
-const anyFunction = z.discriminatedUnion('a', [pureFunction, staticMethod]);
+const anyFunction = z.discriminatedUnion('style', [
+  pureFunction,
+  staticMethod,
+  highOrderFunction,
+]);
+const transformers = z.array(anyFunction).min(1).max(7);
 
 const fileParser = z.enum(['Text', 'JSON', 'YAML']);
 const givenFile = z.strictObject({
   from: z.literal('file'),
   filename: stringFilename,
   parser: fileParser.default('Text'),
-
-  value: stringPropPath.optional(),
-  transform: anyFunction.optional(),
+  transform: transformers.optional(),
 });
 
 const givenString = z.strictObject({
@@ -45,8 +55,7 @@ const givenString = z.strictObject({
 const givenArrayFile = z.strictObject({
   filename: stringFilename,
   parser: fileParser.default('Text'),
-  value: stringPropPath.optional(),
-  transform: anyFunction.optional(),
+  transform: transformers.optional(),
 });
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
@@ -64,7 +73,7 @@ const snapshotFunctionTestCase = z.object({
 
   result: z
     .object({
-      transform: anyFunction,
+      transform: transformers,
     })
     .optional(),
 
@@ -119,9 +128,7 @@ export type TestingFunctionSnapshotTestCaseModel = z.infer<
   typeof snapshotFunctionTestCase
 >;
 
-export type TestingTodoTestCaseModel = z.infer<
-  typeof todoTestCase
->;
+export type TestingTodoTestCaseModel = z.infer<typeof todoTestCase>;
 
 export type FunctionParamData = z.infer<typeof givenData>;
 

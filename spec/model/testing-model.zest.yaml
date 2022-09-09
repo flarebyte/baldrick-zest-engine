@@ -1,6 +1,6 @@
 ---
 testing:
-  a: pure-function
+  style: pure-function
   import: ../src/testing-model.ts
   function: safeParseTestingModel
 cases:

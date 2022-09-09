@@ -1,7 +1,7 @@
 status: valid
 value:
   testing:
-    a: pure-function
+    style: pure-function
     import: ../src/testing-model.ts
     function: safeParseTestingModel
   cases:
@@ -18,7 +18,7 @@ value:
     todo-next:
       a: todo
       name: ""
-      title: task to do next
+      title: task for testing todo concept
   flags: ""
   specFile: ""
   specDir: ""

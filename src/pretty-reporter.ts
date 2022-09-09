@@ -53,7 +53,9 @@ export const prettyReportTodo = (title: string) => {
 };
 
 export const prettyReportSkipped = (title: string, reason: string) => {
-  console.info(colors.skip('. SKIP') + ' ' + colors.title(title) + ' ' + colors.log(reason));
+  console.info(
+    colors.skip('. SKIP') + ' ' + colors.title(title) + ' ' + colors.log(reason)
+  );
 };
 
 export const prettyReportCase = (reportingCase: ReportingCase) => {

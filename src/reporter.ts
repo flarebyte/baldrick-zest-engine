@@ -23,7 +23,8 @@ export const reportCase = (
   reportTracker: ReportTracker,
   reportingCase: ReportingCase
 ) => {
-  reportTracker.tests.push(reportingCase);
+  const duration = Date.now() - reportTracker.stats.duration;
+  reportTracker.tests.push({ ...reportingCase, duration });
   return isCI ? ciReportCase(reportingCase) : prettyReportCase(reportingCase);
 };
 

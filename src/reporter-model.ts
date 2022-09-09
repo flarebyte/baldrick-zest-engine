@@ -41,6 +41,4 @@ export interface FullReport {
   passes: ReportingCase[];
 }
 
-export interface ReportTracker {
-  tests: ReportingCase[];
-}
+export type ReportTracker = Pick<FullReport, 'tests' | 'stats'>;

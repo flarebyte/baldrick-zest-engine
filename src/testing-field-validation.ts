@@ -9,12 +9,14 @@ export const stringTitle = z
   .max(60)
   .refine(isSingleLine, { message: 'title should be a single line' });
 
-  export const stringSkipReason = z
+export const stringSkipReason = z
   .string()
   .trim()
   .min(1)
   .max(60)
-  .refine(isSingleLine, { message: 'reason for skipping should be a single line' });
+  .refine(isSingleLine, {
+    message: 'reason for skipping should be a single line',
+  });
 
 export const stringTypescriptFilename = z
   .string()
@@ -59,3 +61,5 @@ export const stringCustomKey = z
   .regex(/[a-z][\d_a-z]+/);
 
 export const stringRuntimeOnly = z.string().max(0).default('');
+
+export const stringValue = z.string().trim().min(1).max(300);
