@@ -4,7 +4,7 @@ export const addPrefix1 = (value: string, prefix: string) =>
 export const addPrefix2 = (prefix: string, value: string) =>
   `${prefix}${value}`;
 
-export const addPrefix3 = (prefix: string) => (value: string) =>
+export const addPrefix3 = (prefix: string) => (value: string | object) =>
   `${prefix}${value}`;
 
 export const makeUpperCase = (value: string) => value.toUpperCase();
