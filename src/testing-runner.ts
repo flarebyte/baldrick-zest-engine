@@ -59,17 +59,20 @@ const runTestCase =
         duration: 0,
         currentRetry: 0,
       };
-      const executed = await executeCase(testCaseExecutionContext);
-      if (executed.status === 'failure') {
+
+      const reportErrorCase = (message: string) => {
         reportCase(reportTracker, {
           ...defaultSuccessReporting,
           err: {
             code: 'ERR_GENERAL',
-            message: executed.message,
+            message,
             stack: '',
           },
         });
-
+      };
+      const executed = await executeCase(testCaseExecutionContext);
+      if (executed.status === 'failure') {
+        reportErrorCase(executed.message);
         return;
       } else {
         const snapshotResult = await checkSnapshot(
@@ -126,35 +129,40 @@ async function setupExecutionContext(
   testingModel: TestingModel
 ): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
-  const defaultSuccessReporting: ReportingCase = {
-    title: testCase.title,
-    fullTitle: testCase.title,
-    file: testingModel.specFile,
-    duration: 0,
-    currentRetry: 0,
-  };
-  const first = params[0];
-  if (first === undefined) {
+
+  const reportErrorCase = (message: string) => {
     reportCase(reportTracker, {
-      ...defaultSuccessReporting,
+      title: testCase.title,
+      fullTitle: testCase.title,
+      file: testingModel.specFile,
+      duration: 0,
+      currentRetry: 0,
       err: {
         code: 'ERR_GENERAL',
-        message: 'First parameter is absent. It should never happen (527321)',
+        message,
         stack: '',
       },
     });
+  };
+
+  const reportImpossibleParameter = (name: 'First' | 'Second' | 'Third') => {
+    reportErrorCase(
+      `${name} parameter is absent. It should never happen (527321)`
+    );
+  };
+
+  const reportNotLoadableParameter = (name: 'First' | 'Second' | 'Third') => {
+    reportErrorCase(`${name} parameter parameter cannot be loaded (230665)`);
+  };
+
+  const first = params[0];
+  if (first === undefined) {
+    reportImpossibleParameter('First');
     return false;
   }
   const firstValue = await getParamData(first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
-    reportCase(reportTracker, {
-      ...defaultSuccessReporting,
-      err: {
-        code: 'ERR_GENERAL',
-        message: 'First parameter cannot be loaded (230665)',
-        stack: '',
-      },
-    });
+    reportNotLoadableParameter('First');
     return false;
   }
   const expectedValue = await readDataFileSafely(
@@ -168,92 +176,61 @@ async function setupExecutionContext(
   const expected =
     expectedValue.status === 'success' ? expectedValue.value : undefined;
 
+  const defaultSuccess = {
+    testing: testingModel.testing,
+    title: testCase.title,
+    expected,
+    isNewSnapshot,
+  };
   if (params.length === 1) {
     return {
-      testing: testingModel.testing,
-      title: testCase.title,
+      ...defaultSuccess,
       params: {
         count: 1,
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
       },
-      expected,
-      isNewSnapshot,
     };
   }
 
   const second = params[1];
   if (second === undefined) {
-    reportCase(reportTracker, {
-      ...defaultSuccessReporting,
-      err: {
-        code: 'ERR_GENERAL',
-        message: 'Second parameter is absent. It should never happen',
-        stack: '',
-      },
-    });
+    reportImpossibleParameter('Second');
     return false;
   }
   const secondValue = await getParamData(second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
-    reportCase(reportTracker, {
-      ...defaultSuccessReporting,
-      err: {
-        code: 'ERR_GENERAL',
-        message: 'Second parameter cannot be loaded (831326)',
-        stack: '',
-      },
-    });
+    reportNotLoadableParameter('Second');
     return false;
   }
 
   if (params.length === 2) {
     return {
-      testing: testingModel.testing,
-      title: testCase.title,
+      ...defaultSuccess,
       params: {
         count: 2,
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
         second:
           typeof secondValue === 'string' ? secondValue : secondValue.value,
       },
-      expected,
-      isNewSnapshot,
     };
   }
   const third = params[2];
   if (third === undefined) {
-    reportCase(reportTracker, {
-      ...defaultSuccessReporting,
-      err: {
-        code: 'ERR_GENERAL',
-        message: 'Third parameter is absent. It should never happen',
-        stack: '',
-      },
-    });
+    reportImpossibleParameter('Third');
     return false;
   }
   const thirdValue = await getParamData(third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
-    reportCase(reportTracker, {
-      ...defaultSuccessReporting,
-      err: {
-        code: 'ERR_GENERAL',
-        message: 'Third parameter cannot be loaded (759482)',
-        stack: '',
-      },
-    });
+    reportNotLoadableParameter('Third');
     return false;
   }
   return {
-    testing: testingModel.testing,
-    title: testCase.title,
+    ...defaultSuccess,
     params: {
       count: 3,
       first: typeof firstValue === 'string' ? firstValue : firstValue.value,
       second: typeof secondValue === 'string' ? secondValue : secondValue.value,
       third: typeof thirdValue === 'string' ? thirdValue : thirdValue.value,
     },
-    expected,
-    isNewSnapshot,
   };
 }
