@@ -126,7 +126,7 @@ async function setupExecutionContext(
   testingModel: TestingModel
 ): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
-  const { first, second, third } = params;
+  const { first } = params;
   const defaultSuccessReporting: ReportingCase = {
     title: testCase.title,
     fullTitle: testCase.title,

@@ -1,13 +1,29 @@
-import { AnyFunctionTransfModel } from './testing-model.js';
+import { AnyTestedFunctionModel } from './testing-model.js';
+
+interface OneParam {
+  count: 1;
+  first: object | string;
+}
+
+interface TwoParams {
+  count: 2;
+  first: object | string;
+  second: object | string;
+}
+
+interface ThreeParams {
+  count: 3;
+  first: object | string;
+  second: object | string;
+  third: object | string;
+}
+
+export type Params = OneParam | TwoParams | ThreeParams;
 
 export interface TestCaseExecutionContext {
-  testing: AnyFunctionTransfModel;
+  testing: AnyTestedFunctionModel;
   title: string;
-  params: {
-    first: object | string;
-    second?: object | string;
-    third?: object | string;
-  };
+  params: Params;
   expected?: object | string;
   isNewSnapshot: boolean;
 }

@@ -69,27 +69,17 @@ const givenFile = z.strictObject({
 const givenString = z.strictObject({
   from: z.literal('string'),
   value: z.string(),
-});
-
-const givenArrayFile = z.strictObject({
-  filename: stringFilename,
-  parser: fileParser.default('Text'),
   transform: transformers.optional(),
 });
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
 const snapshotType = z.enum(['Text', 'JSON', 'YAML']);
-const snapshotFunctionTestCase = z.object({
-  a: z.literal('snapshot'),
+const parameterId = z.enum(['first', 'second', 'third']);
+
+const commonFunctionTestCase = {
   skip: stringSkipReason.optional(),
   name: stringRuntimeOnly,
   title: stringTitle,
-  params: z.object({
-    first: givenData,
-    second: givenData.optional(),
-    third: givenData.optional(),
-  }),
-
   result: z
     .object({
       transform: transformers,
@@ -97,6 +87,31 @@ const snapshotFunctionTestCase = z.object({
     .optional(),
 
   snapshot: snapshotType,
+};
+
+const oneParam = z.object({
+  count: z.literal(1).default(1),
+  first: givenData,
+});
+
+const twoParams = z.object({
+  count: z.literal(2).default(2),
+  first: givenData,
+  second: givenData,
+});
+
+const threeParams = z.object({
+  count: z.literal(3).default(3),
+  first: givenData,
+  second: givenData,
+  third: givenData,
+});
+
+const snapshotFunctionTestCase = z.object({
+  a: z.literal('snapshot'),
+  ...commonFunctionTestCase,
+  params: z.union([oneParam, twoParams, threeParams]),
+  loopOnParam: parameterId.optional(),
 });
 
 const todoTestCase = z.object({
@@ -105,22 +120,8 @@ const todoTestCase = z.object({
   title: stringTitle,
 });
 
-const loopSnapshotFunctionTestCase = z.object({
-  a: z.literal('each-snapshot'),
-  name: stringRuntimeOnly,
-  title: stringTitle,
-  givenEach: givenArrayFile,
-  result: z
-    .object({
-      transform: anyFunctionTransf,
-    })
-    .optional(),
-  snapshot: snapshotType,
-});
-
 const functionTestCase = z.discriminatedUnion('a', [
   snapshotFunctionTestCase,
-  loopSnapshotFunctionTestCase,
   todoTestCase,
 ]);
 
