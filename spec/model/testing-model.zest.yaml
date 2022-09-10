@@ -8,8 +8,7 @@ cases:
     a: snapshot
     title: test a valid model
     params:
-      first:
-        from: file
+      - from: file
         filename: spec/fixtures/example-zest.yaml
         parser: YAML
     snapshot: YAML

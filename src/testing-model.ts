@@ -89,28 +89,10 @@ const commonFunctionTestCase = {
   snapshot: snapshotType,
 };
 
-const oneParam = z.object({
-  count: z.literal(1).default(1),
-  first: givenData,
-});
-
-const twoParams = z.object({
-  count: z.literal(2).default(2),
-  first: givenData,
-  second: givenData,
-});
-
-const threeParams = z.object({
-  count: z.literal(3).default(3),
-  first: givenData,
-  second: givenData,
-  third: givenData,
-});
-
 const snapshotFunctionTestCase = z.object({
   a: z.literal('snapshot'),
   ...commonFunctionTestCase,
-  params: z.union([oneParam, twoParams, threeParams]),
+  params: z.array(givenData).min(1).max(3),
   loopOnParam: parameterId.optional(),
 });
 

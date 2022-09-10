@@ -126,7 +126,6 @@ async function setupExecutionContext(
   testingModel: TestingModel
 ): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
-  const { first } = params;
   const defaultSuccessReporting: ReportingCase = {
     title: testCase.title,
     fullTitle: testCase.title,
@@ -134,6 +133,18 @@ async function setupExecutionContext(
     duration: 0,
     currentRetry: 0,
   };
+  const first = params[0];
+  if (first === undefined) {
+    reportCase(reportTracker, {
+      ...defaultSuccessReporting,
+      err: {
+        code: 'ERR_GENERAL',
+        message: 'First parameter is absent. It should never happen (527321)',
+        stack: '',
+      },
+    });
+    return false;
+  }
   const firstValue = await getParamData(first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
     reportCase(reportTracker, {
@@ -157,11 +168,12 @@ async function setupExecutionContext(
   const expected =
     expectedValue.status === 'success' ? expectedValue.value : undefined;
 
-  if (second === undefined) {
+  if (params.length === 1) {
     return {
       testing: testingModel.testing,
       title: testCase.title,
       params: {
+        count: 1,
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
       },
       expected,
@@ -169,6 +181,18 @@ async function setupExecutionContext(
     };
   }
 
+  const second = params[1];
+  if (second === undefined) {
+    reportCase(reportTracker, {
+      ...defaultSuccessReporting,
+      err: {
+        code: 'ERR_GENERAL',
+        message: 'Second parameter is absent. It should never happen',
+        stack: '',
+      },
+    });
+    return false;
+  }
   const secondValue = await getParamData(second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
     reportCase(reportTracker, {
@@ -182,11 +206,12 @@ async function setupExecutionContext(
     return false;
   }
 
-  if (third === undefined) {
+  if (params.length === 2) {
     return {
       testing: testingModel.testing,
       title: testCase.title,
       params: {
+        count: 2,
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
         second:
           typeof secondValue === 'string' ? secondValue : secondValue.value,
@@ -195,7 +220,18 @@ async function setupExecutionContext(
       isNewSnapshot,
     };
   }
-
+  const third = params[2];
+  if (third === undefined) {
+    reportCase(reportTracker, {
+      ...defaultSuccessReporting,
+      err: {
+        code: 'ERR_GENERAL',
+        message: 'Third parameter is absent. It should never happen',
+        stack: '',
+      },
+    });
+    return false;
+  }
   const thirdValue = await getParamData(third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
     reportCase(reportTracker, {
@@ -212,6 +248,7 @@ async function setupExecutionContext(
     testing: testingModel.testing,
     title: testCase.title,
     params: {
+      count: 3,
       first: typeof firstValue === 'string' ? firstValue : firstValue.value,
       second: typeof secondValue === 'string' ? secondValue : secondValue.value,
       third: typeof thirdValue === 'string' ? thirdValue : thirdValue.value,
