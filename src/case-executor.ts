@@ -30,153 +30,65 @@ export const executeCase = async (
       context.testing.function
     );
     if (thisFunction.status !== 'success') {
-      return {
-        status: 'failure',
-        context,
-        message:
-          thisFunction.status === 'import failed'
-            ? `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`
-            : `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
-      };
+      return failImporting(thisFunction);
     }
 
     try {
       if (context.params.count === 1) {
         const result = thisFunction.component(context.params.first);
-        return {
-          status: 'success',
-          context,
-          actual: result,
-        };
+        return successWithResult(result);
       } else {
-        return {
-          status: 'failure',
-          context,
-          message: `Function ${context.testing.function} in ${context.testing.import} have the wrong number of parameter ${context.params.count} (814233)`,
-        };
+        return failedWithWrongParameterNumber();
       }
     } catch (error) {
-      return {
-        status: 'failure',
-        context,
-        message: `Function ${context.testing.function} in ${
-          context.testing.import
-        } failed with ${getErrorMessage(error)} (148281)`,
-      };
+      return failWithThrownError(error);
     }
   }
   if (context.testing.style === 'function a b') {
-    const thisFunction = await getImportedFunction(context);
-    if (thisFunction.style === 'not supported') {
-      return {
-        status: 'failure',
-        context,
-        message: `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`,
-      };
+    const thisFunction = await friendlyImport<PureFunctionTwoParams>(
+      context.testing.import,
+      context.testing.function
+    );
+    if (thisFunction.status !== 'success') {
+      return failImporting(thisFunction);
     }
 
-    if (thisFunction.style === 'no function') {
-      return {
-        status: 'failure',
-        context,
-        message: `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
-      };
-    }
     try {
-      let result: object | string;
-      if (thisFunction.style === 'function a' && context.params.count === 1) {
-        result = thisFunction.func(context.params.first);
-      } else if (
-        thisFunction.style === 'function a b' &&
-        context.params.count === 2
-      ) {
-        result = thisFunction.func(context.params.first, context.params.second);
-      } else if (
-        thisFunction.style === 'function a b c' &&
-        context.params.count === 3
-      ) {
-        result = thisFunction.func(
+      if (context.params.count === 2) {
+        const result = thisFunction.component(
           context.params.first,
-          context.params.second,
-          context.params.third
+          context.params.second
         );
+        return successWithResult(result);
       } else {
-        return {
-          status: 'failure',
-          context,
-          message: `Function ${context.testing.function} in ${context.testing.import} (814233)`,
-        };
+        return failedWithWrongParameterNumber();
       }
-      return {
-        status: 'success',
-        context,
-        actual: result,
-      };
     } catch (error) {
-      return {
-        status: 'failure',
-        context,
-        message: `Function ${context.testing.function} in ${
-          context.testing.import
-        } failed with ${getErrorMessage(error)} (148281)`,
-      };
+      return failWithThrownError(error);
     }
   }
   if (context.testing.style === 'function a b c') {
-    const thisFunction = await getImportedFunction(context);
-    if (thisFunction.style === 'not supported') {
-      return {
-        status: 'failure',
-        context,
-        message: `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`,
-      };
+    const thisFunction = await friendlyImport<PureFunctionThreeParams>(
+      context.testing.import,
+      context.testing.function
+    );
+    if (thisFunction.status !== 'success') {
+      return failImporting(thisFunction);
     }
 
-    if (thisFunction.style === 'no function') {
-      return {
-        status: 'failure',
-        context,
-        message: `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
-      };
-    }
     try {
-      let result: object | string;
-      if (thisFunction.style === 'function a' && context.params.count === 1) {
-        result = thisFunction.func(context.params.first);
-      } else if (
-        thisFunction.style === 'function a b' &&
-        context.params.count === 2
-      ) {
-        result = thisFunction.func(context.params.first, context.params.second);
-      } else if (
-        thisFunction.style === 'function a b c' &&
-        context.params.count === 3
-      ) {
-        result = thisFunction.func(
+      if (context.params.count === 3) {
+        const result = thisFunction.component(
           context.params.first,
           context.params.second,
           context.params.third
         );
+        return successWithResult(result);
       } else {
-        return {
-          status: 'failure',
-          context,
-          message: `Function ${context.testing.function} in ${context.testing.import} (814233)`,
-        };
+        return failedWithWrongParameterNumber();
       }
-      return {
-        status: 'success',
-        context,
-        actual: result,
-      };
     } catch (error) {
-      return {
-        status: 'failure',
-        context,
-        message: `Function ${context.testing.function} in ${
-          context.testing.import
-        } failed with ${getErrorMessage(error)} (148281)`,
-      };
+      return failWithThrownError(error);
     }
   }
   return {
@@ -184,4 +96,51 @@ export const executeCase = async (
     context,
     message: `The context is not supported: ${context.testing.style} (208765)`,
   };
+
+  function successWithResult(
+    result: string | object
+  ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
+    return {
+      status: 'success',
+      context,
+      actual: result,
+    };
+  }
+
+  function failWithThrownError(
+    error: unknown
+  ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
+    return {
+      status: 'failure',
+      context,
+      message: `Function ${context.testing.function} in ${
+        context.testing.import
+      } failed with ${getErrorMessage(error)} (148281)`,
+    };
+  }
+
+  function failedWithWrongParameterNumber():
+    | TestCaseExecuteResult
+    | PromiseLike<TestCaseExecuteResult> {
+    return {
+      status: 'failure',
+      context,
+      message: `Function ${context.testing.function} in ${context.testing.import} have the wrong number of parameter ${context.params.count} (814233)`,
+    };
+  }
+
+  function failImporting(
+    thisFunction:
+      | { status: 'no component'; available: string[] }
+      | { status: 'import failed' }
+  ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
+    return {
+      status: 'failure',
+      context,
+      message:
+        thisFunction.status === 'import failed'
+          ? `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`
+          : `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
+    };
+  }
 };
