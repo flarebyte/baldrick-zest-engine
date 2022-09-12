@@ -21,6 +21,7 @@ function getErrorMessage(error: unknown): string {
   if (error instanceof Error) return error.message;
   return String(error);
 }
+
 export const executeCase = async (
   context: TestCaseExecutionContext
 ): Promise<TestCaseExecuteResult> => {
@@ -32,14 +33,13 @@ export const executeCase = async (
     if (thisFunction.status !== 'success') {
       return failImporting(thisFunction);
     }
+    if (context.params.count !== 1) {
+      return failedWithWrongParameterNumber();
+    }
 
     try {
-      if (context.params.count === 1) {
-        const result = thisFunction.component(context.params.first);
-        return successWithResult(result);
-      } else {
-        return failedWithWrongParameterNumber();
-      }
+      const result = thisFunction.component(context.params.first);
+      return successWithResult(result);
     } catch (error) {
       return failWithThrownError(error);
     }
