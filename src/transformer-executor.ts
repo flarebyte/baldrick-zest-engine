@@ -8,9 +8,7 @@ type TransformerFunction = (value: object | string) => object | string;
 //   value: object | string
 // ) => object | string;
 
-export const createTransformerFunction = async (
-  transformer: AnyTransformerModel
-) => {
+const createTransformerFunction = async (transformer: AnyTransformerModel) => {
   if (transformer.style === 'function a') {
     return await friendlyImport<TransformerFunction>(
       transformer.import,
@@ -23,3 +21,7 @@ export const createTransformerFunction = async (
     );
   }
 };
+
+export const createTransformerFunctions = async (
+  transformers: AnyTransformerModel[]
+) => Promise.all(transformers.map(createTransformerFunction));
