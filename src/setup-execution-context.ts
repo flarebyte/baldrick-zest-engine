@@ -1,15 +1,19 @@
 import { TestCaseExecutionContext } from './execution-context-model.js';
+import { getParamData } from './get-param-data.js';
 import { ReportTracker } from './reporter-model.js';
 import { reportCase } from './reporter.js';
 import { getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
-import { TestingModel, TestingFunctionSnapshotTestCaseModel } from './testing-model.js';
-import { getParamData } from './testing-runner.js';
+import {
+  TestingModel,
+  TestingFunctionSnapshotTestCaseModel,
+} from './testing-model.js';
 
 export async function setupExecutionContext(
   reportTracker: ReportTracker,
   testCase: TestingFunctionSnapshotTestCaseModel,
-  testingModel: TestingModel): Promise<TestCaseExecutionContext | false> {
+  testingModel: TestingModel
+): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
 
   const reportErrorCase = (message: string) => {
@@ -55,7 +59,8 @@ export async function setupExecutionContext(
   );
   const isNewSnapshot = expectedValue.status === 'failure';
 
-  const expected = expectedValue.status === 'success' ? expectedValue.value : undefined;
+  const expected =
+    expectedValue.status === 'success' ? expectedValue.value : undefined;
 
   const defaultSuccess = {
     testing: testingModel.testing,
@@ -90,7 +95,8 @@ export async function setupExecutionContext(
       params: {
         count: 2,
         first: typeof firstValue === 'string' ? firstValue : firstValue.value,
-        second: typeof secondValue === 'string' ? secondValue : secondValue.value,
+        second:
+          typeof secondValue === 'string' ? secondValue : secondValue.value,
       },
     };
   }

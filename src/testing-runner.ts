@@ -9,27 +9,13 @@ import {
 } from './reporter.js';
 import { setupExecutionContext } from './setup-execution-context.js';
 import { checkSnapshot, getSnapshotFilename } from './snapshot-creator.js';
-import { readDataFileSafely } from './testing-io.js';
 import type {
   TestingFunctionTestCaseModel,
   TestingModel,
-  FunctionParamData,
 } from './testing-model.js';
 
 const stringOrObjectToString = (value: object | string): string =>
   typeof value === 'string' ? value : JSON.stringify(value);
-
-export const getParamData = async (functionParamData: FunctionParamData) => {
-  if (functionParamData.from === 'string') {
-    return functionParamData.value;
-  }
-  const parser = functionParamData.parser;
-
-  const value = await readDataFileSafely(functionParamData.filename, {
-    parser,
-  });
-  return value;
-};
 
 const runTestCase =
   (reportTracker: ReportTracker, testingModel: TestingModel) =>
