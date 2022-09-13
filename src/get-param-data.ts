@@ -14,6 +14,7 @@ type ParamDataResult =
 export const getParamData = async (
   functionParamData: FunctionParamData
 ): Promise<ParamDataResult> => {
+  
   if (functionParamData.from === 'string') {
     return { status: 'success', value: functionParamData.value };
   }

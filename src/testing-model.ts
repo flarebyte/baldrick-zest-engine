@@ -54,7 +54,7 @@ const anyUnderTestingFunction = z.discriminatedUnion('style', [
   pureFunctionA,
   staticMethodA,
 ]);
-const transformers = z.array(anyFunctionTransf).min(1).max(7);
+const transformers = z.array(anyFunctionTransf).min(1).max(5);
 
 const fileParser = z.enum(['Text', 'JSON', 'YAML']);
 const givenFile = z.strictObject({

@@ -3,6 +3,59 @@ import { AnyTransformerModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
 
+const identityTransformer: TransformerFunction = (value: object | string) =>
+  value;
+
+const getByIndex = (transformers: TransformerFunction[], index: number) =>
+  transformers[index] || identityTransformer;
+const reduceTransformer = (
+  transformers: TransformerFunction[]
+): TransformerFunction => {
+  const length = transformers.length;
+  switch (length) {
+    case 1:
+      return getByIndex(transformers, 0);
+    case 2:
+      return (value: object | string) =>
+        getByIndex(transformers, 1)(getByIndex(transformers, 0)(value));
+    case 3:
+      return (value: object | string) =>
+        getByIndex(
+          transformers,
+          2
+        )(getByIndex(transformers, 1)(getByIndex(transformers, 0)(value)));
+    case 4:
+      return (value: object | string) =>
+        getByIndex(
+          transformers,
+          3
+        )(
+          getByIndex(
+            transformers,
+            2
+          )(getByIndex(transformers, 1)(getByIndex(transformers, 0)(value)))
+        );
+    case 5:
+      return (value: object | string) =>
+        getByIndex(
+          transformers,
+          4
+        )(
+          getByIndex(
+            transformers,
+            3
+          )(
+            getByIndex(
+              transformers,
+              2
+            )(getByIndex(transformers, 1)(getByIndex(transformers, 0)(value)))
+          )
+        );
+    default:
+      throw new Error(`Unexpected number of transformers ${length}`);
+  }
+};
+
 // type TransformerFunctionWithPrefix = (
 //   config: string,
 //   value: object | string
@@ -22,6 +75,34 @@ const createTransformerFunction = async (transformer: AnyTransformerModel) => {
   }
 };
 
+type TransformerResult =
+  | {
+      status: 'success';
+      func: TransformerFunction;
+    }
+  | {
+      status: 'failure';
+      message: string;
+    };
+
 export const createTransformerFunctions = async (
   transformers: AnyTransformerModel[]
-) => Promise.all(transformers.map(createTransformerFunction));
+): Promise<TransformerResult> => {
+  const importResultList = await Promise.all(
+    transformers.map(createTransformerFunction)
+  );
+  const hasFailure = importResultList.some(
+    (importing) => importing.status !== 'success'
+  );
+  if (hasFailure) {
+    return {
+      status: 'failure',
+      message: 'Some transformers could not be loaded',
+    };
+  }
+  const transformerList = importResultList.map((importing) =>
+    importing.status === 'success' ? importing.component : identityTransformer
+  );
+  const combinedTransformer = reduceTransformer(transformerList);
+  return { status: 'success', func: combinedTransformer };
+};
