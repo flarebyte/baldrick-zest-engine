@@ -73,7 +73,7 @@ export async function setupExecutionContext(
       ...defaultSuccess,
       params: {
         count: 1,
-        first: typeof firstValue === 'string' ? firstValue : firstValue.value,
+        first: firstValue.value,
       },
     };
   }
@@ -94,9 +94,8 @@ export async function setupExecutionContext(
       ...defaultSuccess,
       params: {
         count: 2,
-        first: typeof firstValue === 'string' ? firstValue : firstValue.value,
-        second:
-          typeof secondValue === 'string' ? secondValue : secondValue.value,
+        first: firstValue.value,
+        second: secondValue.value,
       },
     };
   }
@@ -114,9 +113,9 @@ export async function setupExecutionContext(
     ...defaultSuccess,
     params: {
       count: 3,
-      first: typeof firstValue === 'string' ? firstValue : firstValue.value,
-      second: typeof secondValue === 'string' ? secondValue : secondValue.value,
-      third: typeof thirdValue === 'string' ? thirdValue : thirdValue.value,
+      first: firstValue.value,
+      second: secondValue.value,
+      third: thirdValue.value,
     },
   };
 }

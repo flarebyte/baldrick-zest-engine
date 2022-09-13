@@ -1,15 +1,30 @@
 import { readDataFileSafely } from './testing-io.js';
 import { FunctionParamData } from './testing-model.js';
 
+type ParamDataResult =
+  | {
+      status: 'success';
+      value: object | string;
+    }
+  | {
+      status: 'failure';
+      message: string;
+    };
 
-export const getParamData = async (functionParamData: FunctionParamData) => {
+export const getParamData = async (
+  functionParamData: FunctionParamData
+): Promise<ParamDataResult> => {
   if (functionParamData.from === 'string') {
-    return functionParamData.value;
+    return { status: 'success', value: functionParamData.value };
   }
   const parser = functionParamData.parser;
 
-  const value = await readDataFileSafely(functionParamData.filename, {
+  const loadedValue = await readDataFileSafely(functionParamData.filename, {
     parser,
   });
-  return value;
+  if (loadedValue.status === 'success') {
+    return { status: 'success', value: loadedValue.value };
+  } else {
+    return { status: 'failure', message: loadedValue.message };
+  }
 };
