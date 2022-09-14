@@ -16,7 +16,7 @@ export async function friendlyImport<A>(
   functionName: string
 ): Promise<ImportFunctionResult<A>> {
   try {
-    const imported: { [k: string]: A } = await import(sourceDir);
+    const imported: { [k: string]: A } = await import(sourceDir); // does this need some caching ?
     const component = imported[functionName];
     if (component === undefined) {
       return {

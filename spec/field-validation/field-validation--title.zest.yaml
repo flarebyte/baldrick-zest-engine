@@ -1,0 +1,13 @@
+---
+testing:
+  style: function a
+  import: ../src/testing-field-validation.ts
+  function: stringTitle
+cases:
+  valid:
+    a: snapshot
+    title: a valid title
+    params:
+      - from: string
+        value: some valid title
+    snapshot: YAML

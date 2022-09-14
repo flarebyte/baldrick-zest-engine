@@ -1,10 +1,19 @@
 import { run } from '../src/index.mjs';
 
-await run({
+const config = {
   snapshotDir: 'spec/snapshots',
   specDir: 'spec',
   reportDir: 'report',
   mochaJsonReport: true,
-  specFile: 'spec/model/testing-model.zest.yaml',
   flags: '',
+};
+
+await run({
+  ...config,
+  specFile: 'spec/model/testing-model.zest.yaml',
+});
+
+await run({
+  ...config,
+  specFile: 'spec/field-validation/field-validation--title.zest.yaml',
 });
