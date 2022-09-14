@@ -3,8 +3,9 @@ import { AnyTransformerModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
 
-const identityTransformer: TransformerFunction = (value: object | string) =>
-  value;
+export const identityTransformer: TransformerFunction = (
+  value: object | string
+) => value;
 
 const getByIndex = (transformers: TransformerFunction[], index: number) =>
   transformers[index] || identityTransformer;
@@ -12,7 +13,11 @@ const reduceTransformer = (
   transformers: TransformerFunction[]
 ): TransformerFunction => {
   const length = transformers.length;
+  // Let's keep things basic for now, but we may prefer a loop on
+  // the array eventually
   switch (length) {
+    case 0:
+      return identityTransformer;
     case 1:
       return getByIndex(transformers, 0);
     case 2:
