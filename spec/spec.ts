@@ -15,5 +15,5 @@ await run({
 
 await run({
   ...config,
-  specFile: 'spec/field-validation/field-validation--title.zest.yaml',
+  specFile: 'spec/field-validation/string-title.zest.yaml',
 });
