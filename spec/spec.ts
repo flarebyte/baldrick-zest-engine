@@ -5,7 +5,7 @@ const config = {
   specDir: 'spec',
   reportDir: 'report',
   mochaJsonReport: true,
-  flags: '',
+  flags: 'fix',
 };
 
 await run({

@@ -1,13 +1,20 @@
 ---
 testing:
-  style: function a
+  style: function a b
   import: ../src/testing-field-validation.ts
-  function: stringTitle
+  function: safeParseField
 cases:
   valid:
     a: snapshot
     title: a valid title
     params:
       - from: string
-        value: some valid title
+        value: title
+      - from: string
+        value: this title will be first be converted to uppercase
+        transform:
+          - style: function a
+            import: ../spec/example-transformer.ts
+            function: makeUpperCase
+
     snapshot: YAML

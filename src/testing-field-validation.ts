@@ -63,3 +63,18 @@ export const stringCustomKey = z
 export const stringRuntimeOnly = z.string().max(0).default('');
 
 export const stringValue = z.string().trim().min(1).max(300);
+
+// Let's make testing easier
+
+export const safeParseField = (
+  name: 'title' | 'filename' | string,
+  content: unknown
+) => {
+  if (name === 'title') {
+    return stringTitle.safeParse(content);
+  }
+  if (name === 'filename') {
+    return stringFilename.safeParse(content);
+  }
+  return `${name} is not supported`;
+};
