@@ -2,6 +2,7 @@ import { friendlyImport } from './friendly-importer.js';
 import { AnyTransformerModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
+type HigherTransformerFunction = (config: string) => TransformerFunction;
 
 export const identityTransformer: TransformerFunction = (
   value: object | string
@@ -9,6 +10,7 @@ export const identityTransformer: TransformerFunction = (
 
 const getByIndex = (transformers: TransformerFunction[], index: number) =>
   transformers[index] || identityTransformer;
+
 const reduceTransformer = (
   transformers: TransformerFunction[]
 ): TransformerFunction => {
@@ -61,17 +63,24 @@ const reduceTransformer = (
   }
 };
 
-// type TransformerFunctionWithPrefix = (
-//   config: string,
-//   value: object | string
-// ) => object | string;
-
 const createTransformerFunction = async (transformer: AnyTransformerModel) => {
   if (transformer.style === 'function a') {
     return await friendlyImport<TransformerFunction>(
       transformer.import,
       transformer.function
     );
+  } else if (transformer.style === 'string -> function a') {
+    const imported = await friendlyImport<HigherTransformerFunction>(
+      transformer.import,
+      transformer.function
+    );
+    if (imported.status !== 'success') {
+      return imported;
+    }
+    return {
+      status: 'success',
+      component: imported.component(transformer.value),
+    };
   } else {
     return await friendlyImport<TransformerFunction>(
       transformer.import,

@@ -9,6 +9,7 @@ import {
   stringCustomKey,
   stringRuntimeOnly,
   stringSkipReason,
+  stringValue,
 } from './testing-field-validation.js';
 
 const pureFunctionAbc = z.strictObject({
@@ -29,12 +30,12 @@ const pureFunctionA = z.strictObject({
   function: stringFunctionName,
 });
 
-// const highOrderFunction = z.strictObject({
-//   style: z.literal('string -> function a'),
-//   import: stringImport,
-//   function: stringFunctionName,
-//   value: stringValue,
-// });
+const highOrderFunction = z.strictObject({
+  style: z.literal('string -> function a'),
+  import: stringImport,
+  function: stringFunctionName,
+  value: stringValue,
+});
 
 const staticMethodA = z.strictObject({
   style: z.literal('Class.method a'),
@@ -45,7 +46,8 @@ const staticMethodA = z.strictObject({
 
 const anyFunctionTransf = z.discriminatedUnion('style', [
   pureFunctionA,
-  staticMethodA
+  staticMethodA,
+  highOrderFunction,
 ]);
 
 const anyUnderTestingFunction = z.discriminatedUnion('style', [
@@ -84,7 +86,7 @@ const commonFunctionTestCase = {
     })
     .optional(),
 
-  snapshot: snapshotType,
+  snapshot: snapshotType.default('YAML'),
 };
 
 const snapshotFunctionTestCase = z.object({
@@ -134,7 +136,7 @@ export type FunctionParamData = z.infer<typeof givenData>;
 
 export type FileParser = z.infer<typeof fileParser>;
 
-export type AnyTransformerModel = z.infer<typeof anyFunctionTransf>
+export type AnyTransformerModel = z.infer<typeof anyFunctionTransf>;
 
 export type TestingModelValidation =
   | {

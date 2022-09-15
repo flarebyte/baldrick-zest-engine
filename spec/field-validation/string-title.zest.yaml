@@ -16,5 +16,20 @@ cases:
           - style: function a
             import: ../spec/example-transformer.ts
             function: makeUpperCase
+  with-prefix:
+    a: snapshot
+    title: should have a prefix and uppercase
+    params:
+      - from: string
+        value: title
+      - from: string
+        value: should have a prefix and uppercase
+        transform:
+          - style: function a
+            import: ../spec/example-transformer.ts
+            function: makeUpperCase
+          - style: string -> function a
+            import: ../spec/example-transformer.ts
+            function: addPrefix3
+            value: lowercase prefix
 
-    snapshot: YAML

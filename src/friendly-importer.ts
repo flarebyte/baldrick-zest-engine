@@ -13,11 +13,11 @@ type ImportFunctionResult<A> =
 
 export async function friendlyImport<A>(
   sourceDir: string,
-  functionName: string
+  name: string
 ): Promise<ImportFunctionResult<A>> {
   try {
     const imported: { [k: string]: A } = await import(sourceDir); // does this need some caching ?
-    const component = imported[functionName];
+    const component = imported[name];
     if (component === undefined) {
       return {
         status: 'no component',
