@@ -16,7 +16,7 @@ export const getSnapshotFilename = (
   const specFileBase = path
     .relative(testingModel.specDir, testingModel.specFile)
     .replace('.zest.yaml', '');
-  const snaphotFilename = `${specFileBase}-${testCase.name}.yaml`;
+  const snaphotFilename = `${specFileBase}--${testCase.name}.yaml`;
   return path.join(testingModel.snapshotDir, snaphotFilename);
 };
 

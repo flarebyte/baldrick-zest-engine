@@ -111,7 +111,7 @@ export const createTransformerFunctions = async (
   if (hasFailure) {
     return {
       status: 'failure',
-      message: 'Some transformers could not be loaded',
+      message: 'Some transformers could not be loaded', // TODO refine message
     };
   }
   const transformerList = importResultList.map((importing) =>

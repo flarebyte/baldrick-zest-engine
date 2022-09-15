@@ -32,4 +32,17 @@ cases:
             import: ../spec/example-transformer.ts
             function: addPrefix3
             value: lowercase prefix
+  with-result-transformer:
+    a: snapshot
+    title: should apply transformer on result
+    params:
+      - from: string
+        value: title
+      - from: string
+        value: should apply uppercase on result
+    result:
+        transform:
+          - style: function a
+            import: ../spec/example-transformer.ts
+            function: makeUpperCase
 
