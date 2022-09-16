@@ -39,7 +39,8 @@ export const executeCase = async (
 
     try {
       const result = thisFunction.component(context.params.first);
-      return successWithResult(result);
+      const transformed = context.transform(result);
+      return successWithResult(transformed);
     } catch (error) {
       return failWithThrownError(error);
     }
@@ -59,7 +60,8 @@ export const executeCase = async (
           context.params.first,
           context.params.second
         );
-        return successWithResult(result);
+        const transformed = context.transform(result);
+        return successWithResult(transformed);
       } else {
         return failedWithWrongParameterNumber();
       }
@@ -83,7 +85,8 @@ export const executeCase = async (
           context.params.second,
           context.params.third
         );
-        return successWithResult(result);
+        const transformed = context.transform(result);
+        return successWithResult(transformed);
       } else {
         return failedWithWrongParameterNumber();
       }

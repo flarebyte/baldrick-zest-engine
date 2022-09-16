@@ -1,5 +1,7 @@
 import { AnyTestedFunctionModel } from './testing-model.js';
 
+type TransformerFunction = (value: object | string) => object | string;
+
 interface OneParam {
   count: 1;
   first: object | string;
@@ -26,6 +28,7 @@ export interface TestCaseExecutionContext {
   params: Params;
   expected?: object | string;
   isNewSnapshot: boolean;
+  transform: TransformerFunction;
 }
 
 export type TestCaseExecuteResult =

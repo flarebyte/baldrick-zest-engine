@@ -8,6 +8,7 @@ import {
   TestingModel,
   TestingFunctionSnapshotTestCaseModel,
 } from './testing-model.js';
+import { createTransformerFunctions } from './transformer-executor.js';
 
 export async function setupExecutionContext(
   reportTracker: ReportTracker,
@@ -41,6 +42,19 @@ export async function setupExecutionContext(
     reportErrorCase(`${name} parameter parameter cannot be loaded (230665)`);
   };
 
+  const transformerHolder = await createTransformerFunctions(
+    testCase.result?.transform === undefined ? [] : testCase.result?.transform
+  );
+
+  if (transformerHolder.status === 'failure') {
+    reportErrorCase(
+      `${transformerHolder.message} for transform in result (896979)`
+    );
+    return false;
+  }
+
+  const transform = transformerHolder.func;
+
   const first = params[0];
   if (first === undefined) {
     reportImpossibleParameter('First');
@@ -67,6 +81,7 @@ export async function setupExecutionContext(
     title: testCase.title,
     expected,
     isNewSnapshot,
+    transform,
   };
   if (params.length === 1) {
     return {

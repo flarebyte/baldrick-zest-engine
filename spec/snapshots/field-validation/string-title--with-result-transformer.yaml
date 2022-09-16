@@ -1,2 +1,4 @@
-success: true
-data: should apply uppercase on result
+kind: object
+keys:
+  - success
+  - data

@@ -1,3 +1,5 @@
+import { string } from 'zod';
+
 export const addPrefix1 = (value: string, prefix: string) =>
   `${prefix}${value}`;
 
@@ -7,7 +9,30 @@ export const addPrefix2 = (prefix: string, value: string) =>
 export const addPrefix3 = (prefix: string) => (value: string | object) =>
   `${prefix}${value}`;
 
-export const makeUpperCase = (value: string) => value.toUpperCase();
+export const makeUpperCase = (value: string | object) => {
+  if (typeof value === 'string') {
+    return value.toUpperCase();
+  } else {
+    return {
+      error: 'Transformer: only string can be converted to uppercase',
+      value,
+    };
+  }
+};
+
+export const simpleAbstract = (value: string | object) => {
+  if (typeof value === 'string') {
+    return {
+      kind: 'string',
+      size: value.length,
+    };
+  } else {
+    return {
+      kind: 'object',
+      keys: Object.keys(value),
+    };
+  }
+};
 
 export class PrefixA {
   static addPrefix4(prefix: string, value: string): string {

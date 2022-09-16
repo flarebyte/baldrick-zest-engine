@@ -39,10 +39,10 @@ cases:
       - from: string
         value: title
       - from: string
-        value: should apply uppercase on result
+        value: should apply simple abstraction on result
     result:
         transform:
           - style: function a
             import: ../spec/example-transformer.ts
-            function: makeUpperCase
+            function: simpleAbstract
 
