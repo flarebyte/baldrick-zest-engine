@@ -1,4 +1,4 @@
-import { abstractObject, mutatorRules } from 'object-crumble';
+import { abstractObject, mutateObject, mutatorRules } from 'object-crumble';
 export const addPrefix1 = (value: string, prefix: string) =>
   `${prefix}${value}`;
 
@@ -35,6 +35,15 @@ export const simpleAbstract = (value: string | object) => {
 
 export const crumbleAbstractor = (value: object): object[] =>
   abstractObject([])(value);
+
+export const crumbleMutateLarge =
+  (path: string) =>
+  (value: object): object =>
+    mutateObject(mutatorRules)({
+      path,
+      kind: 'string',
+      mutationName: 'string => large',
+    })(value);
 
 export class PrefixA {
   static addPrefix4(prefix: string, value: string): string {

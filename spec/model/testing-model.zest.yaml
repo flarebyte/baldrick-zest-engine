@@ -24,7 +24,19 @@ cases:
         - style: function a
           import: ../spec/example-transformer.ts
           function: crumbleAbstractor
-
+    snapshot: YAML
+  too-large:
+    a: snapshot
+    title: test a model with a field too large
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        transform:
+          - style: string -> function a
+            import: ../spec/example-transformer.ts
+            function: crumbleMutateLarge
+            value: value.cases.valid.title
+        parser: YAML
     snapshot: YAML
   todo-next:
     a: todo
