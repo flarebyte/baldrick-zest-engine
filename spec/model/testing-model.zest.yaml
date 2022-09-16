@@ -12,6 +12,20 @@ cases:
         filename: spec/fixtures/example-zest.yaml
         parser: YAML
     snapshot: YAML
+  abstract-with-crumble:
+    a: snapshot
+    title: abstract with object crumble
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        parser: YAML
+    result:
+      transform:
+        - style: function a
+          import: ../spec/example-transformer.ts
+          function: crumbleAbstractor
+
+    snapshot: YAML
   todo-next:
     a: todo
     title: task for testing todo concept

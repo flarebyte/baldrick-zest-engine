@@ -1,5 +1,4 @@
-import { string } from 'zod';
-
+import { abstractObject, mutatorRules } from 'object-crumble';
 export const addPrefix1 = (value: string, prefix: string) =>
   `${prefix}${value}`;
 
@@ -33,6 +32,9 @@ export const simpleAbstract = (value: string | object) => {
     };
   }
 };
+
+export const crumbleAbstractor = (value: object): object[] =>
+  abstractObject([])(value);
 
 export class PrefixA {
   static addPrefix4(prefix: string, value: string): string {
