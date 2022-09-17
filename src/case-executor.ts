@@ -48,12 +48,10 @@ export const executeCase = async (
     }
 
     try {
-      let result: object | string = '';
-      if (context.tumble === undefined) {
-        result = thisFunction.component(context.params.first);
-      } else {
-        result = runWithTumble(thisFunction, context.tumble, context.params);
-      }
+      const result =
+        context.tumble === undefined
+          ? thisFunction.component(context.params.first)
+          : runWithTumble(thisFunction, context.tumble, context.params);
       const transformed = context.transform(result);
       return successWithResult(transformed);
     } catch (error) {
