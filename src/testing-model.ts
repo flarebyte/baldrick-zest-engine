@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { array, z } from 'zod';
 import { formatMessage, ValidationError } from './format-message.js';
 import {
   stringClassName,
@@ -51,10 +51,11 @@ const anyFunctionTransf = z.discriminatedUnion('style', [
 ]);
 
 const highTumbleFunction = z.strictObject({
-  style: z.literal('config + csv -> function'),
+  style: z.literal('config + table -> function'),
   import: stringImport,
   function: stringFunctionName,
   config: z.record(stringCustomKey, stringValue),
+  table: array(z.record(stringCustomKey, stringValue)).min(1).max(300),
 });
 
 const anyUnderTestingFunction = z.discriminatedUnion('style', [

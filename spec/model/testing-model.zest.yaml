@@ -48,12 +48,16 @@ cases:
         filename: spec/fixtures/example-zest.yaml
         parser: YAML
     tumble:
-      style: config + csv -> function
+      style: config + table -> function
       import: ../spec/example-transformer.ts
       function: crumbleMutate
       config:
-        path: cases.valid.title
-        mutation: string => large
+        comment: some comment
+      table:
+        - path: cases.valid.title
+          mutation: string => large
+        - path: cases.valid.title
+          mutation: string => large
   todo-next:
     a: todo
     title: task for testing todo concept
