@@ -40,6 +40,20 @@ cases:
               mutation: string => large
         parser: YAML
     snapshot: YAML
+  mutate-with-crumble:
+    a: snapshot
+    title: Mutate model with object crumble
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        parser: YAML
+    tumble:
+      style: config + csv -> function
+      import: ../spec/example-transformer.ts
+      function: crumbleMutate
+      config:
+        path: cases.valid.title
+        mutation: string => large
   todo-next:
     a: todo
     title: task for testing todo concept

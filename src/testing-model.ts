@@ -50,6 +50,13 @@ const anyFunctionTransf = z.discriminatedUnion('style', [
   highOrderFunction,
 ]);
 
+const highTumbleFunction = z.strictObject({
+  style: z.literal('config + csv -> function'),
+  import: stringImport,
+  function: stringFunctionName,
+  config: z.record(stringCustomKey, stringValue),
+});
+
 const anyUnderTestingFunction = z.discriminatedUnion('style', [
   pureFunctionAbc,
   pureFunctionAb,
@@ -86,6 +93,7 @@ const commonFunctionTestCase = {
     .optional(),
 
   snapshot: snapshotType.default('YAML'),
+  tumble: highTumbleFunction.optional(),
 };
 
 const snapshotFunctionTestCase = z.object({
