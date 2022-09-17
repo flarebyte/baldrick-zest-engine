@@ -1,6 +1,7 @@
 import {
   TestCaseExecutionContext,
   TestCaseExecuteResult,
+  WrappedFunction,
 } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
 
@@ -22,6 +23,13 @@ function getErrorMessage(error: unknown): string {
   return String(error);
 }
 
+const expectAsObject = (value: string | object): object => {
+  if (typeof value !== 'object') {
+    throw new Error('Tumble operations are only applicable to objects');
+  }
+  return value;
+};
+
 export const executeCase = async (
   context: TestCaseExecutionContext
 ): Promise<TestCaseExecuteResult> => {
@@ -38,7 +46,20 @@ export const executeCase = async (
     }
 
     try {
-      const result = thisFunction.component(context.params.first);
+      let result: object | string = '';
+      if (context.tumble === undefined) {
+        result = thisFunction.component(context.params.first);
+      } else {
+        const wrapped: WrappedFunction = (values: object[]) => {
+          if (values[0] === undefined) {
+            throw new Error('At least one parameter was expected (812188)');
+          }
+          return expectAsObject(thisFunction.component(values[0]));
+        };
+        result = context.tumble(wrapped, [
+          expectAsObject(context.params.first),
+        ]);
+      }
       const transformed = context.transform(result);
       return successWithResult(transformed);
     } catch (error) {

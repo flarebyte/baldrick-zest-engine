@@ -1,7 +1,7 @@
 import { AnyTestedFunctionModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
-type WrappedFunction = (values: object[]) => object;
+export type WrappedFunction = (values: object[]) => object;
 
 export type TumbleWrapper = (func: WrappedFunction, values: object[]) => object;
 
