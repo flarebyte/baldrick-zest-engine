@@ -1,4 +1,7 @@
-import { TestCaseExecutionContext } from './execution-context-model.js';
+import {
+  TestCaseExecutionContext,
+  TumbleWrapper,
+} from './execution-context-model.js';
 import { getParamData } from './get-param-data.js';
 import { ReportTracker } from './reporter-model.js';
 import { reportCase } from './reporter.js';
@@ -9,6 +12,7 @@ import {
   TestingFunctionSnapshotTestCaseModel,
 } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
+import { createTumbleFunction } from './tumble-executor.js';
 
 export async function setupExecutionContext(
   reportTracker: ReportTracker,
@@ -63,6 +67,17 @@ export async function setupExecutionContext(
 
   const transform = transformerHolder.func;
 
+  let tumble: TumbleWrapper | undefined = undefined;
+  if (testCase.tumble !== undefined) {
+    const tumbleHolder = await createTumbleFunction(testCase.tumble);
+    if (tumbleHolder.status === 'failure') {
+      reportErrorCase(`${tumbleHolder.message} for tumble in result (743857)`);
+      return false;
+    } else {
+      tumble = tumbleHolder.component;
+    }
+  }
+
   const first = params[0];
   if (first === undefined) {
     reportImpossibleParameter('First');
@@ -90,6 +105,7 @@ export async function setupExecutionContext(
     expected,
     isNewSnapshot,
     transform,
+    tumble,
   };
   if (params.length === 1) {
     return {

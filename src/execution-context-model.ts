@@ -1,6 +1,9 @@
 import { AnyTestedFunctionModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
+type WrappedFunction = (values: object[]) => object;
+
+export type TumbleWrapper = (func: WrappedFunction, values: object[]) => object;
 
 interface OneParam {
   count: 1;
@@ -29,6 +32,7 @@ export interface TestCaseExecutionContext {
   expected?: object | string;
   isNewSnapshot: boolean;
   transform: TransformerFunction;
+  tumble?: TumbleWrapper,
 }
 
 export type TestCaseExecuteResult =

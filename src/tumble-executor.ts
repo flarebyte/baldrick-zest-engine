@@ -1,11 +1,8 @@
+import { TumbleWrapper } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
 import { AnyTumbleFunctionModel } from './testing-model.js';
 
 type TumbleTable = Record<string, string>[];
-
-type WrappedFunction = (values: object[]) => object;
-
-type TumbleWrapper = (func: WrappedFunction, values: object[]) => object;
 
 type TumbleFunction = (
   config: Record<string, string>,
