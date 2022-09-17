@@ -2,6 +2,8 @@ import {
   TestCaseExecutionContext,
   TestCaseExecuteResult,
   WrappedFunction,
+  TumbleWrapper,
+  Params,
 } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
 
@@ -50,15 +52,7 @@ export const executeCase = async (
       if (context.tumble === undefined) {
         result = thisFunction.component(context.params.first);
       } else {
-        const wrapped: WrappedFunction = (values: object[]) => {
-          if (values[0] === undefined) {
-            throw new Error('At least one parameter was expected (812188)');
-          }
-          return expectAsObject(thisFunction.component(values[0]));
-        };
-        result = context.tumble(wrapped, [
-          expectAsObject(context.params.first),
-        ]);
+        result = runWithTumble(thisFunction, context.tumble, context.params);
       }
       const transformed = context.transform(result);
       return successWithResult(transformed);
@@ -168,3 +162,17 @@ export const executeCase = async (
     };
   }
 };
+function runWithTumble(
+  thisFunction: { status: 'success'; component: PureFunctionOneParam },
+  tumble: TumbleWrapper,
+  params: Params
+) {
+  const wrapped: WrappedFunction = (values: object[]) => {
+    if (values[0] === undefined) {
+      throw new Error('At least one parameter was expected (812188)');
+    }
+    return expectAsObject(thisFunction.component(values[0]));
+  };
+  const result = tumble(wrapped, [expectAsObject(params.first)]);
+  return result;
+}
