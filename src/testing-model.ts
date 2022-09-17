@@ -145,6 +145,8 @@ export type FileParser = z.infer<typeof fileParser>;
 
 export type AnyTransformerModel = z.infer<typeof anyFunctionTransf>;
 
+export type AnyTumbleFunctionModel = z.infer<typeof highTumbleFunction>;
+
 export type TestingModelValidation =
   | {
       status: 'valid';

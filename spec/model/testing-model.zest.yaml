@@ -50,9 +50,9 @@ cases:
     tumble:
       style: config + table -> function
       import: ../spec/example-transformer.ts
-      function: crumbleMutate
+      function: crumbleTumble
       config:
-        comment: some comment
+        signature: A
       table:
         - path: cases.valid.title
           mutation: string => large
