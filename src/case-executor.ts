@@ -51,7 +51,7 @@ export const executeCase = async (
       const result =
         context.tumble === undefined
           ? thisFunction.component(context.params.first)
-          : runWithTumble(thisFunction, context.tumble, context.params);
+          : runWithTumbleOneParam(thisFunction, context.tumble, context.params);
       const transformed = context.transform(result);
       return successWithResult(transformed);
     } catch (error) {
@@ -69,10 +69,17 @@ export const executeCase = async (
 
     try {
       if (context.params.count === 2) {
-        const result = thisFunction.component(
-          context.params.first,
-          context.params.second
-        );
+        const result =
+          context.tumble === undefined
+            ? thisFunction.component(
+                context.params.first,
+                context.params.second
+              )
+            : runWithTumbleTwoParams(
+                thisFunction,
+                context.tumble,
+                context.params
+              );
         const transformed = context.transform(result);
         return successWithResult(transformed);
       } else {
@@ -93,11 +100,19 @@ export const executeCase = async (
 
     try {
       if (context.params.count === 3) {
-        const result = thisFunction.component(
-          context.params.first,
-          context.params.second,
-          context.params.third
-        );
+        const result =
+          context.tumble === undefined
+            ? thisFunction.component(
+                context.params.first,
+                context.params.second,
+                context.params.third
+              )
+            : runWithTumbleThreeParams(
+                thisFunction,
+                context.tumble,
+                context.params
+              );
+
         const transformed = context.transform(result);
         return successWithResult(transformed);
       } else {
@@ -160,10 +175,10 @@ export const executeCase = async (
     };
   }
 };
-function runWithTumble(
+function runWithTumbleOneParam(
   thisFunction: { status: 'success'; component: PureFunctionOneParam },
   tumble: TumbleWrapper,
-  params: Params
+  params: Params & { count: 1 }
 ) {
   const wrapped: WrappedFunction = (values: object[]) => {
     if (values[0] === undefined) {
@@ -172,5 +187,48 @@ function runWithTumble(
     return expectAsObject(thisFunction.component(values[0]));
   };
   const result = tumble(wrapped, [expectAsObject(params.first)]);
+  return result;
+}
+
+function runWithTumbleTwoParams(
+  thisFunction: { status: 'success'; component: PureFunctionTwoParams },
+  tumble: TumbleWrapper,
+  params: Params & { count: 2 }
+) {
+  const wrapped: WrappedFunction = (values: object[]) => {
+    if (values[0] === undefined || values[1] === undefined) {
+      throw new Error('At least two parameters were expected (988559)');
+    }
+    return expectAsObject(thisFunction.component(values[0], values[1]));
+  };
+  const result = tumble(wrapped, [
+    expectAsObject(params.first),
+    expectAsObject(params.second),
+  ]);
+  return result;
+}
+
+function runWithTumbleThreeParams(
+  thisFunction: { status: 'success'; component: PureFunctionThreeParams },
+  tumble: TumbleWrapper,
+  params: Params & { count: 3 }
+) {
+  const wrapped: WrappedFunction = (values: object[]) => {
+    if (
+      values[0] === undefined ||
+      values[1] === undefined ||
+      values[2] === undefined
+    ) {
+      throw new Error('At least three parameters were expected (578992)');
+    }
+    return expectAsObject(
+      thisFunction.component(values[0], values[1], values[2])
+    );
+  };
+  const result = tumble(wrapped, [
+    expectAsObject(params.first),
+    expectAsObject(params.second),
+    expectAsObject(params.third),
+  ]);
   return result;
 }
