@@ -2,6 +2,11 @@ import { readDataFileSafely } from './testing-io.js';
 import { FunctionParamData } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
 
+function getErrorStack(error: unknown): string | undefined {
+  if (error instanceof Error) return error.stack;
+  return undefined;
+}
+
 type ParamDataResult =
   | {
       status: 'success';
@@ -10,6 +15,7 @@ type ParamDataResult =
   | {
       status: 'failure';
       message: string;
+      stack?: string;
     };
 
 export const getParamData = async (
@@ -33,6 +39,7 @@ export const getParamData = async (
       return {
         status: 'failure',
         message: 'Transformation of string data failed',
+        stack: getErrorStack(error),
       };
     }
   }
@@ -49,9 +56,10 @@ export const getParamData = async (
       return {
         status: 'failure',
         message: 'Transformation of data file failed',
+        stack: getErrorStack(error),
       };
     }
   } else {
-    return { status: 'failure', message: loadedValue.message };
+    return { status: 'failure', message: loadedValue.message};
   }
 };

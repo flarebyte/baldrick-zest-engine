@@ -58,24 +58,35 @@ export const prettyReportSkipped = (title: string, reason: string) => {
   );
 };
 
+const addSnapshot = (snapshotFile?: string) =>
+  snapshotFile === undefined ? '' : '   ' + colors.log('📷 ' + snapshotFile);
+
 export const prettyReportCase = (reportingCase: ReportingCase) => {
   if (reportingCase.err === undefined) {
     console.error(
-      colors.pass('✓ PASS') + ' ' + colors.title(reportingCase.title)
+      colors.pass('✓ PASS') +
+        ' ' +
+        colors.title(reportingCase.title) +
+        addSnapshot(reportingCase.snapshotFile)
     );
     return;
   }
   if (reportingCase.err.code === 'ERR_GENERAL') {
     console.error(
-      colors.error('✗ FAIL') + ' ' + colors.title(reportingCase.title)
+      colors.error('✗ FAIL') + ' ' + colors.title(reportingCase.title)+
+      addSnapshot(reportingCase.snapshotFile)
     );
     console.info(reportingCase.err.message);
+    if (reportingCase.err.stack !== undefined) {
+      console.info(colors.errorStack(reportingCase.err.stack));
+    }
     console.info(colors.log('See ') + colors.errorSource(reportingCase.file));
     return;
   }
   if (reportingCase.err.code === 'ERR_ASSERTION') {
     console.error(
-      colors.error('✗ FAIL') + ' ' + colors.title(reportingCase.title)
+      colors.error('✗ FAIL') + ' ' + colors.title(reportingCase.title)+
+      addSnapshot(reportingCase.snapshotFile)
     );
     console.info(reportingCase.err.message);
     console.info(colors.log('See ') + colors.errorSource(reportingCase.file));

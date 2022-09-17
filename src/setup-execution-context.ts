@@ -17,17 +17,18 @@ export async function setupExecutionContext(
 ): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
 
-  const reportErrorCase = (message: string) => {
+  const reportErrorCase = (message: string, stack?: string) => {
     reportCase(reportTracker, {
       title: testCase.title,
       fullTitle: testCase.title,
       file: testingModel.specFile,
+      sourceFile: testingModel.testing.import,
+      snapshotFile: getSnapshotFilename(testingModel, testCase),
       duration: 0,
-      currentRetry: 0,
       err: {
         code: 'ERR_GENERAL',
         message,
-        stack: '',
+        stack,
       },
     });
   };
@@ -38,8 +39,15 @@ export async function setupExecutionContext(
     );
   };
 
-  const reportNotLoadableParameter = (name: 'First' | 'Second' | 'Third') => {
-    reportErrorCase(`${name} parameter parameter cannot be loaded (230665)`);
+  const reportNotLoadableParameter = (
+    name: 'First' | 'Second' | 'Third',
+    message: string,
+    stack?: string
+  ) => {
+    reportErrorCase(
+      `${name} parameter cannot be loaded (230665): ${message}`,
+      stack
+    );
   };
 
   const transformerHolder = await createTransformerFunctions(
@@ -62,7 +70,7 @@ export async function setupExecutionContext(
   }
   const firstValue = await getParamData(first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
-    reportNotLoadableParameter('First');
+    reportNotLoadableParameter('First', firstValue.message, firstValue.stack);
     return false;
   }
   const expectedValue = await readDataFileSafely(
@@ -100,7 +108,11 @@ export async function setupExecutionContext(
   }
   const secondValue = await getParamData(second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
-    reportNotLoadableParameter('Second');
+    reportNotLoadableParameter(
+      'Second',
+      secondValue.message,
+      secondValue.stack
+    );
     return false;
   }
 
@@ -121,7 +133,7 @@ export async function setupExecutionContext(
   }
   const thirdValue = await getParamData(third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
-    reportNotLoadableParameter('Third');
+    reportNotLoadableParameter('Third', thirdValue.message, thirdValue.stack);
     return false;
   }
   return {

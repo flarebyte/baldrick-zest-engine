@@ -1,12 +1,14 @@
+// See https://github.com/dorny/test-reporter/blob/main/src/parsers/mocha-json/mocha-json-types.ts
+
 export type ReportingError =
   | {
       code: 'ERR_GENERAL';
-      stack: string;
+      stack?: string;
       message: string;
     }
   | {
       code: 'ERR_ASSERTION';
-      stack: string;
+      stack?: string;
       message: string;
       actual: string;
       expected: string;
@@ -17,8 +19,9 @@ export interface ReportingCase {
   title: string;
   fullTitle: string;
   file: string;
+  sourceFile: string;
+  snapshotFile?: string;
   duration: number;
-  currentRetry: 0;
   err?: ReportingError;
 }
 

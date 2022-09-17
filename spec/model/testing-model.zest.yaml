@@ -32,10 +32,12 @@ cases:
       - from: file
         filename: spec/fixtures/example-zest.yaml
         transform:
-          - style: string -> function a
+          - style: config -> function a
             import: ../spec/example-transformer.ts
-            function: crumbleMutateLarge
-            value: value.cases.valid.title
+            function: crumbleMutate
+            config:
+              path: cases.valid.title
+              mutation: string => large
         parser: YAML
     snapshot: YAML
   todo-next:

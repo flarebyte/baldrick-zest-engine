@@ -31,10 +31,10 @@ const pureFunctionA = z.strictObject({
 });
 
 const highOrderFunction = z.strictObject({
-  style: z.literal('string -> function a'),
+  style: z.literal('config -> function a'),
   import: stringImport,
   function: stringFunctionName,
-  value: stringValue,
+  config: z.record(stringCustomKey, stringValue),
 });
 
 const staticMethodA = z.strictObject({
@@ -74,7 +74,6 @@ const givenString = z.strictObject({
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
 const snapshotType = z.enum(['Text', 'JSON', 'YAML']);
-const parameterId = z.enum(['first', 'second', 'third']);
 
 const commonFunctionTestCase = {
   skip: stringSkipReason.optional(),
@@ -93,7 +92,6 @@ const snapshotFunctionTestCase = z.object({
   a: z.literal('snapshot'),
   ...commonFunctionTestCase,
   params: z.array(givenData).min(1).max(3),
-  loopOnParam: parameterId.optional(),
 });
 
 const todoTestCase = z.object({

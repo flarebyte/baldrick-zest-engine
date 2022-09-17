@@ -2,7 +2,9 @@ import { friendlyImport } from './friendly-importer.js';
 import { AnyTransformerModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
-type HigherTransformerFunction = (config: string) => TransformerFunction;
+type HigherTransformerFunction = (
+  config: Record<string, string>
+) => TransformerFunction;
 
 export const identityTransformer: TransformerFunction = (
   value: object | string
@@ -69,7 +71,7 @@ const createTransformerFunction = async (transformer: AnyTransformerModel) => {
       transformer.import,
       transformer.function
     );
-  } else if (transformer.style === 'string -> function a') {
+  } else if (transformer.style === 'config -> function a') {
     const imported = await friendlyImport<HigherTransformerFunction>(
       transformer.import,
       transformer.function
@@ -79,7 +81,7 @@ const createTransformerFunction = async (transformer: AnyTransformerModel) => {
     }
     return {
       status: 'success',
-      component: imported.component(transformer.value),
+      component: imported.component(transformer.config),
     };
   } else {
     return await friendlyImport<TransformerFunction>(

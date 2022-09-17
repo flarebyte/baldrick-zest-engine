@@ -41,8 +41,9 @@ const runTestCase =
         title: testCase.title,
         fullTitle: testCase.title,
         file: testingModel.specFile,
-        duration: 0,
-        currentRetry: 0,
+        sourceFile: testingModel.testing.import,
+        snapshotFile: getSnapshotFilename(testingModel, testCase),
+        duration: 0
       };
 
       const reportErrorCase = (message: string) => {
@@ -89,7 +90,7 @@ export const runZestFileSuite = async (
   testingModel: TestingModel
 ) => {
   reportStartSuite(
-    testingModel.testing.function,
+    `Function ${testingModel.testing.function}`,
     `${testingModel.testing.import} | ${testingModel.specFile}`
   );
   const { cases } = testingModel;

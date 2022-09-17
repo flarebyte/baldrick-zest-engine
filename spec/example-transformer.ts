@@ -5,8 +5,9 @@ export const addPrefix1 = (value: string, prefix: string) =>
 export const addPrefix2 = (prefix: string, value: string) =>
   `${prefix}${value}`;
 
-export const addPrefix3 = (prefix: string) => (value: string | object) =>
-  `${prefix}${value}`;
+export const addPrefix3 =
+  (config: Record<string, string>) => (value: string | object) =>
+    `${config['prefix']}${value}`;
 
 export const makeUpperCase = (value: string | object) => {
   if (typeof value === 'string') {
@@ -36,13 +37,13 @@ export const simpleAbstract = (value: string | object) => {
 export const crumbleAbstractor = (value: object): object[] =>
   abstractObject([])(value);
 
-export const crumbleMutateLarge =
-  (path: string) =>
+export const crumbleMutate =
+  (config: Record<string, string>) =>
   (value: object): object =>
     mutateObject(mutatorRules)({
-      path,
+      path: `${config['path']}`,
       kind: 'string',
-      mutationName: 'string => large',
+      mutationName: `${config['mutation']}`,
     })(value);
 
 export class PrefixA {
