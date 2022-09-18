@@ -27,7 +27,7 @@ function getErrorMessage(error: unknown): string {
 
 const expectAsObject = (value: string | object): object => {
   if (typeof value !== 'object') {
-    throw new Error('Tumble operations are only applicable to objects');
+    throw new TypeError('Tumble operations are only applicable to objects');
   }
   return value;
 };

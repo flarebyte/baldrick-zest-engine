@@ -60,6 +60,6 @@ export const getParamData = async (
       };
     }
   } else {
-    return { status: 'failure', message: loadedValue.message};
+    return { status: 'failure', message: loadedValue.message };
   }
 };

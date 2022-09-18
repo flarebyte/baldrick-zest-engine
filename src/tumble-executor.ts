@@ -30,7 +30,7 @@ export const createTumbleFunction = async (
     if (imported.status !== 'success') {
       return {
         status: 'failure',
-        message: `Could not import tumble function ${model.function}`
+        message: `Could not import tumble function ${model.function}`,
       };
     }
     return {

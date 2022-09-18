@@ -32,7 +32,7 @@ export interface TestCaseExecutionContext {
   expected?: object | string;
   isNewSnapshot: boolean;
   transform: TransformerFunction;
-  tumble?: TumbleWrapper,
+  tumble?: TumbleWrapper;
 }
 
 export type TestCaseExecuteResult =

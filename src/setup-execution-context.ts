@@ -67,7 +67,7 @@ export async function setupExecutionContext(
 
   const transform = transformerHolder.func;
 
-  let tumble: TumbleWrapper | undefined = undefined;
+  let tumble: TumbleWrapper | undefined;
   if (testCase.tumble !== undefined) {
     const tumbleHolder = await createTumbleFunction(testCase.tumble);
     if (tumbleHolder.status === 'failure') {

@@ -18,18 +18,16 @@ export async function friendlyImport<A>(
   try {
     const imported: { [k: string]: A } = await import(sourceDir); // does this need some caching ?
     const component = imported[name];
-    if (component === undefined) {
-      return {
-        status: 'no component',
-        available: Object.keys(imported),
-      };
-    } else {
-      return {
-        status: 'success',
-        component,
-      };
-    }
-  } catch (error) {
+    return component === undefined
+      ? {
+          status: 'no component',
+          available: Object.keys(imported),
+        }
+      : {
+          status: 'success',
+          component,
+        };
+  } catch {
     return {
       status: 'import failed',
     };

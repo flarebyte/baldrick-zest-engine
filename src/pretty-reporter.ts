@@ -73,8 +73,10 @@ export const prettyReportCase = (reportingCase: ReportingCase) => {
   }
   if (reportingCase.err.code === 'ERR_GENERAL') {
     console.error(
-      colors.error('✗ FAIL') + ' ' + colors.title(reportingCase.title)+
-      addSnapshot(reportingCase.snapshotFile)
+      colors.error('✗ FAIL') +
+        ' ' +
+        colors.title(reportingCase.title) +
+        addSnapshot(reportingCase.snapshotFile)
     );
     console.info(reportingCase.err.message);
     if (reportingCase.err.stack !== undefined) {
@@ -85,8 +87,10 @@ export const prettyReportCase = (reportingCase: ReportingCase) => {
   }
   if (reportingCase.err.code === 'ERR_ASSERTION') {
     console.error(
-      colors.error('✗ FAIL') + ' ' + colors.title(reportingCase.title)+
-      addSnapshot(reportingCase.snapshotFile)
+      colors.error('✗ FAIL') +
+        ' ' +
+        colors.title(reportingCase.title) +
+        addSnapshot(reportingCase.snapshotFile)
     );
     console.info(reportingCase.err.message);
     console.info(colors.log('See ') + colors.errorSource(reportingCase.file));

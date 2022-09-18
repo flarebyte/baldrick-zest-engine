@@ -43,7 +43,7 @@ const runTestCase =
         file: testingModel.specFile,
         sourceFile: testingModel.testing.import,
         snapshotFile: getSnapshotFilename(testingModel, testCase),
-        duration: 0
+        duration: 0,
       };
 
       const reportErrorCase = (message: string) => {
@@ -108,5 +108,3 @@ export const runZestFileSuite = async (
   await Promise.all(testCasesAsync);
   reportStopSuite();
 };
-
-
