@@ -1,6 +1,7 @@
 import { readDataFileSafely } from './testing-io.js';
 import { FunctionParamData } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
+import { ExternalInjection } from './run-opts-model.js';
 
 function getErrorStack(error: unknown): string | undefined {
   if (error instanceof Error) return error.stack;
@@ -19,6 +20,7 @@ type ParamDataResult =
     };
 
 export const getParamData = async (
+  injection: ExternalInjection,
   functionParamData: FunctionParamData
 ): Promise<ParamDataResult> => {
   const transformerHolder = await createTransformerFunctions(
@@ -45,9 +47,13 @@ export const getParamData = async (
   }
   const parser = functionParamData.parser;
 
-  const loadedValue = await readDataFileSafely(functionParamData.filename, {
-    parser,
-  });
+  const loadedValue = await readDataFileSafely(
+    injection,
+    functionParamData.filename,
+    {
+      parser,
+    }
+  );
   if (loadedValue.status === 'success') {
     try {
       const value = transformer(loadedValue.value);

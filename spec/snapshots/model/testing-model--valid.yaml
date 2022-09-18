@@ -18,7 +18,3 @@ value:
       a: todo
       name: ""
       title: task for testing todo concept
-  flags: ""
-  specFile: ""
-  specDir: ""
-  snapshotDir: ""

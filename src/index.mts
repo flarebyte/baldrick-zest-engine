@@ -2,30 +2,7 @@ import { reportMochaJson } from './mocha-json-reporter.js';
 import { ReportTracker } from './reporter-model.js';
 import { getZestYaml } from './testing-io.js';
 import { runZestFileSuite } from './testing-runner.js';
-
-interface TestingExternal {
-  fs: {
-    mkdirRecursive: (path: string) => Promise<string | undefined>;
-    readStringFile: (filename: string) => Promise<string>;
-    writeStringFile: (filename: string, content: string) => Promise<void>;
-  };
-  path: {
-    dirname: (path: string) => string;
-    relative: (from: string, to: string) => string;
-    join: (...paths: string[]) => string;
-    basename: (path: string, ext?: string) => string;
-  };
-}
-
-interface TestingRunOpts {
-  snapshotDir: string;
-  specDir: string;
-  reportDir: string;
-  mochaJsonReport: boolean;
-  specFile: string;
-  flags: string;
-  inject: TestingExternal;
-}
+import type { TestingRunOpts } from './run-opts-model.js';
 
 const createReportTracker = (): ReportTracker => ({
   stats: {
@@ -46,13 +23,17 @@ const createReportTracker = (): ReportTracker => ({
  * @param opts options for the run
  */
 export const run = async (opts: TestingRunOpts) => {
-  const result = await getZestYaml(opts.specFile);
+  const result = await getZestYaml(opts.inject, opts.specFile);
   if (result.status === 'invalid') {
     console.error(result);
   } else if (result.status === 'valid') {
     const reportTracker = createReportTracker();
 
-    await runZestFileSuite(reportTracker, { ...result.value, ...opts });
+    await runZestFileSuite({
+      reportTracker,
+      runOpts: opts,
+      testingModel: result.value,
+    });
     if (opts.mochaJsonReport) {
       await reportMochaJson(opts.reportDir, opts.specFile, reportTracker);
     }

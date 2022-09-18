@@ -1,5 +1,5 @@
 import { executeCase } from './case-executor.js';
-import { ReportingCase, ReportTracker } from './reporter-model.js';
+import { ReportingCase } from './reporter-model.js';
 import {
   reportCase,
   reportSkipped,
@@ -7,18 +7,18 @@ import {
   reportStopSuite,
   reportTodo,
 } from './reporter.js';
+import { ZestFileSuiteOpts } from './run-opts-model.js';
 import { setupExecutionContext } from './setup-execution-context.js';
 import { checkSnapshot, getSnapshotFilename } from './snapshot-creator.js';
 import type {
   TestingFunctionTestCaseModel,
-  TestingModel,
 } from './testing-model.js';
 
 const stringOrObjectToString = (value: object | string): string =>
   typeof value === 'string' ? value : JSON.stringify(value);
 
 const runTestCase =
-  (reportTracker: ReportTracker, testingModel: TestingModel) =>
+  (opts: ZestFileSuiteOpts) =>
   async (testCase: TestingFunctionTestCaseModel) => {
     if (testCase.a === 'todo') {
       reportTodo(testCase.title);
@@ -29,9 +29,8 @@ const runTestCase =
         return;
       }
       const testCaseExecutionContext = await setupExecutionContext(
-        reportTracker,
-        testCase,
-        testingModel
+        opts,
+        testCase
       );
       if (!testCaseExecutionContext) {
         return;
@@ -40,14 +39,14 @@ const runTestCase =
       const defaultSuccessReporting: ReportingCase = {
         title: testCase.title,
         fullTitle: testCase.title,
-        file: testingModel.specFile,
-        sourceFile: testingModel.testing.import,
-        snapshotFile: getSnapshotFilename(testingModel, testCase),
+        file: opts.runOpts.specFile,
+        sourceFile: opts.testingModel.testing.import,
+        snapshotFile: getSnapshotFilename(opts, testCase),
         duration: 0,
       };
 
       const reportErrorCase = (message: string) => {
-        reportCase(reportTracker, {
+        reportCase(opts.reportTracker, {
           ...defaultSuccessReporting,
           err: {
             code: 'ERR_GENERAL',
@@ -61,15 +60,15 @@ const runTestCase =
         reportErrorCase(executed.message);
         return;
       } else {
-        const snapshotResult = await checkSnapshot(
+        const snapshotResult = await checkSnapshot(opts.runOpts.inject,
           executed,
-          getSnapshotFilename(testingModel, testCase),
+          getSnapshotFilename(opts, testCase),
           testCase.snapshot
         );
         if (snapshotResult.status === 'success') {
-          reportCase(reportTracker, defaultSuccessReporting);
+          reportCase(opts.reportTracker, defaultSuccessReporting);
         } else {
-          reportCase(reportTracker, {
+          reportCase(opts.reportTracker, {
             ...defaultSuccessReporting,
             err: {
               code: 'ERR_ASSERTION',
@@ -85,15 +84,12 @@ const runTestCase =
     }
   };
 
-export const runZestFileSuite = async (
-  reportTracker: ReportTracker,
-  testingModel: TestingModel
-) => {
+export const runZestFileSuite = async (opts: ZestFileSuiteOpts) => {
   reportStartSuite(
-    `Function ${testingModel.testing.function}`,
-    `${testingModel.testing.import} | ${testingModel.specFile}`
+    `Function ${opts.testingModel.testing.function}`,
+    `${opts.testingModel.testing.import} | ${opts.runOpts.specFile}`
   );
-  const { cases } = testingModel;
+  const { cases } = opts.testingModel;
 
   // Add the name to case object
   for (const caseKey in cases) {
@@ -104,7 +100,7 @@ export const runZestFileSuite = async (
     newCase.name = caseKey;
   }
   const caseList = Object.values(cases);
-  const testCasesAsync = caseList.map(runTestCase(reportTracker, testingModel));
+  const testCasesAsync = caseList.map(runTestCase(opts));
   await Promise.all(testCasesAsync);
   reportStopSuite();
 };

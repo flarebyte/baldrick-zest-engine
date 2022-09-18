@@ -118,10 +118,6 @@ const schema = z
   .object({
     testing: anyUnderTestingFunction,
     cases: z.record(stringCustomKey, functionTestCase),
-    flags: stringRuntimeOnly,
-    specFile: stringRuntimeOnly,
-    specDir: stringRuntimeOnly,
-    snapshotDir: stringRuntimeOnly,
   })
   .strict();
 

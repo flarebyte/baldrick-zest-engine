@@ -5,20 +5,20 @@ import { writeSnapshotFile } from './testing-io.js';
 import {
   FileParser,
   TestingFunctionTestCaseModel,
-  TestingModel,
 } from './testing-model.js';
 import { mkdirForFile } from './fs-utils.js';
+import { ExternalInjection, ZestFileSuiteOpts } from './run-opts-model.js';
 
 export const getSnapshotFilename = (
-  testingModel: TestingModel,
+  opts: ZestFileSuiteOpts,
   testCase: TestingFunctionTestCaseModel
 ): string => {
   const specFileBase = relative(
-    testingModel.specDir,
-    testingModel.specFile
+    opts.runOpts.specDir,
+    opts.runOpts.specFile
   ).replace('.zest.yaml', '');
   const snaphotFilename = `${specFileBase}--${testCase.name}.yaml`;
-  return join(testingModel.snapshotDir, snaphotFilename);
+  return join(opts.runOpts.snapshotDir, snaphotFilename);
 };
 
 type SnapshotResult =
@@ -34,13 +34,16 @@ type SnapshotResult =
     };
 
 export const checkSnapshot = async (
+  injection: ExternalInjection,
   executeResult: TestCaseExecuteResult & { status: 'success' },
   snapshotFileName: string,
   parser: FileParser
 ): Promise<SnapshotResult> => {
   if (executeResult.context.expected === undefined) {
     await mkdirForFile(snapshotFileName);
-    await writeSnapshotFile(snapshotFileName, executeResult.actual, { parser });
+    await writeSnapshotFile(injection, snapshotFileName, executeResult.actual, {
+      parser,
+    });
     return { status: 'success', actual: executeResult.actual };
   }
 

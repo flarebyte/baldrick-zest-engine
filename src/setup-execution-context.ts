@@ -3,31 +3,27 @@ import {
   TumbleWrapper,
 } from './execution-context-model.js';
 import { getParamData } from './get-param-data.js';
-import { ReportTracker } from './reporter-model.js';
 import { reportCase } from './reporter.js';
+import { ZestFileSuiteOpts } from './run-opts-model.js';
 import { getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
-import {
-  TestingModel,
-  TestingFunctionSnapshotTestCaseModel,
-} from './testing-model.js';
+import { TestingFunctionSnapshotTestCaseModel } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
 import { createTumbleFunction } from './tumble-executor.js';
 
 export async function setupExecutionContext(
-  reportTracker: ReportTracker,
-  testCase: TestingFunctionSnapshotTestCaseModel,
-  testingModel: TestingModel
+  opts: ZestFileSuiteOpts,
+  testCase: TestingFunctionSnapshotTestCaseModel
 ): Promise<TestCaseExecutionContext | false> {
   const { params } = testCase;
 
   const reportErrorCase = (message: string, stack?: string) => {
-    reportCase(reportTracker, {
+    reportCase(opts.reportTracker, {
       title: testCase.title,
       fullTitle: testCase.title,
-      file: testingModel.specFile,
-      sourceFile: testingModel.testing.import,
-      snapshotFile: getSnapshotFilename(testingModel, testCase),
+      file: opts.runOpts.specFile,
+      sourceFile: opts.testingModel.testing.import,
+      snapshotFile: getSnapshotFilename(opts, testCase),
       duration: 0,
       err: {
         code: 'ERR_GENERAL',
@@ -83,13 +79,14 @@ export async function setupExecutionContext(
     reportImpossibleParameter('First');
     return false;
   }
-  const firstValue = await getParamData(first);
+  const firstValue = await getParamData(opts.runOpts.inject, first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
     reportNotLoadableParameter('First', firstValue.message, firstValue.stack);
     return false;
   }
   const expectedValue = await readDataFileSafely(
-    getSnapshotFilename(testingModel, testCase),
+    opts.runOpts.inject,
+    getSnapshotFilename(opts, testCase),
     {
       parser: testCase.snapshot,
     }
@@ -100,7 +97,7 @@ export async function setupExecutionContext(
     expectedValue.status === 'success' ? expectedValue.value : undefined;
 
   const defaultSuccess = {
-    testing: testingModel.testing,
+    testing: opts.testingModel.testing,
     title: testCase.title,
     expected,
     isNewSnapshot,
@@ -122,7 +119,7 @@ export async function setupExecutionContext(
     reportImpossibleParameter('Second');
     return false;
   }
-  const secondValue = await getParamData(second);
+  const secondValue = await getParamData(opts.runOpts.inject, second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
     reportNotLoadableParameter(
       'Second',
@@ -147,7 +144,7 @@ export async function setupExecutionContext(
     reportImpossibleParameter('Third');
     return false;
   }
-  const thirdValue = await getParamData(third);
+  const thirdValue = await getParamData(opts.runOpts.inject, third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
     reportNotLoadableParameter('Third', thirdValue.message, thirdValue.stack);
     return false;

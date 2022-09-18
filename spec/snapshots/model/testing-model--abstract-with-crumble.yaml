@@ -1,13 +1,5 @@
 - path: status
   kind: string
-- path: value.flags
-  kind: string
-- path: value.specFile
-  kind: string
-- path: value.specDir
-  kind: string
-- path: value.snapshotDir
-  kind: string
 - path: value.testing.style
   kind: string
 - path: value.testing.import

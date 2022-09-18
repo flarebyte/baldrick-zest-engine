@@ -1,26 +1,29 @@
 import YAML from 'yaml';
-import { readFile, writeFile } from 'node:fs/promises';
+// import { readFile, writeFile } from 'node:fs/promises';
 import {
   FileParser,
   safeParseTestingModel,
   TestingModelValidation,
 } from './testing-model.js';
+import { ExternalInjection } from './run-opts-model.js';
 
 export const getZestYaml = async (
+  injection: ExternalInjection,
   filename: string
 ): Promise<TestingModelValidation> => {
-  const content = await readFile(filename, { encoding: 'utf8' });
+  const content = await injection.fs.readStringFile(filename);
   const contentObject = YAML.parse(content);
   return safeParseTestingModel(contentObject);
 };
 
 const readDataFile = async (
+  injection: ExternalInjection,
   filename: string,
   opts: {
     parser: FileParser;
   }
 ): Promise<object | string> => {
-  const content = await readFile(filename, { encoding: 'utf8' });
+  const content = await injection.fs.readStringFile(filename);
 
   if (opts.parser === 'YAML') {
     const contentObject: object = YAML.parse(content);
@@ -50,13 +53,14 @@ type DataFileResult =
     };
 
 export const readDataFileSafely = async (
+  injection: ExternalInjection,
   filename: string,
   opts: {
     parser: FileParser;
   }
 ): Promise<DataFileResult> => {
   try {
-    const value = await readDataFile(filename, opts);
+    const value = await readDataFile(injection, filename, opts);
     return {
       status: 'success',
       filename,
@@ -77,6 +81,7 @@ export const readDataFileSafely = async (
 };
 
 export const writeSnapshotFile = async (
+  injection: ExternalInjection,
   filename: string,
   content: object | string,
   opts: {
@@ -85,14 +90,12 @@ export const writeSnapshotFile = async (
 ): Promise<void> => {
   if (opts.parser === 'JSON' && typeof content !== 'string') {
     const jsonContent = JSON.stringify(content, null, 2);
-    await writeFile(filename, jsonContent, {
-      encoding: 'utf8',
-    });
+    await injection.fs.writeStringFile(filename, jsonContent);
     return;
   }
   if (opts.parser === 'YAML' && typeof content !== 'string') {
     const yamlContent = YAML.stringify(content);
-    await writeFile(filename, yamlContent);
+    await injection.fs.writeStringFile(filename, yamlContent);
     return;
   }
   if (opts.parser !== 'Text') {
@@ -100,5 +103,5 @@ export const writeSnapshotFile = async (
     return;
   }
 
-  await writeFile(filename, `${content}`, { encoding: 'utf8' });
+  await injection.fs.writeStringFile(filename, `${content}`);
 };
