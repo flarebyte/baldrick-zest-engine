@@ -1,4 +1,4 @@
-import path from 'node:path';
+import { relative, join } from 'node:path';
 import { diff } from 'jest-diff';
 import { TestCaseExecuteResult } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
@@ -13,11 +13,12 @@ export const getSnapshotFilename = (
   testingModel: TestingModel,
   testCase: TestingFunctionTestCaseModel
 ): string => {
-  const specFileBase = path
-    .relative(testingModel.specDir, testingModel.specFile)
-    .replace('.zest.yaml', '');
+  const specFileBase = relative(
+    testingModel.specDir,
+    testingModel.specFile
+  ).replace('.zest.yaml', '');
   const snaphotFilename = `${specFileBase}--${testCase.name}.yaml`;
-  return path.join(testingModel.snapshotDir, snaphotFilename);
+  return join(testingModel.snapshotDir, snaphotFilename);
 };
 
 type SnapshotResult =

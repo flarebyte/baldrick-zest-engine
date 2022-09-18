@@ -3,6 +3,20 @@ import { ReportTracker } from './reporter-model.js';
 import { getZestYaml } from './testing-io.js';
 import { runZestFileSuite } from './testing-runner.js';
 
+interface TestingSideEffect {
+  fs: {
+    mkdirRecursive: (path: string) => Promise<string | undefined>;
+    readStringFile: (filename: string) => Promise<string>;
+    writeStringFile: (filename: string, content: string) => Promise<void>;
+  };
+  path: {
+    dirname: (path: string) => string;
+    relative: (from: string, to: string) => string;
+    join: (...paths: string[]) => string;
+    basename: (path: string, ext?: string) => string;
+  };
+}
+
 interface TestingRunOpts {
   snapshotDir: string;
   specDir: string;
@@ -10,6 +24,7 @@ interface TestingRunOpts {
   mochaJsonReport: boolean;
   specFile: string;
   flags: string;
+  sideEffect: TestingSideEffect;
 }
 
 const createReportTracker = (): ReportTracker => ({
