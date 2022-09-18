@@ -3,7 +3,7 @@ import { ReportTracker } from './reporter-model.js';
 import { getZestYaml } from './testing-io.js';
 import { runZestFileSuite } from './testing-runner.js';
 
-interface TestingSideEffect {
+interface TestingExternal {
   fs: {
     mkdirRecursive: (path: string) => Promise<string | undefined>;
     readStringFile: (filename: string) => Promise<string>;
@@ -24,7 +24,7 @@ interface TestingRunOpts {
   mochaJsonReport: boolean;
   specFile: string;
   flags: string;
-  sideEffect: TestingSideEffect;
+  inject: TestingExternal;
 }
 
 const createReportTracker = (): ReportTracker => ({

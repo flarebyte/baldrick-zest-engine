@@ -8,7 +8,7 @@ const config = {
   reportDir: 'report',
   mochaJsonReport: true,
   flags: 'fix',
-  sideEffect: {
+  inject: {
     fs: {
       mkdirRecursive: async (path: string) =>
         await mkdir(path, { recursive: true }),
