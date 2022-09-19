@@ -28,14 +28,14 @@ export const run = async (opts: TestingRunOpts) => {
     console.error(result);
   } else if (result.status === 'valid') {
     const reportTracker = createReportTracker();
-
-    await runZestFileSuite({
+    const suiteOps = {
       reportTracker,
       runOpts: opts,
       testingModel: result.value,
-    });
+    }
+    await runZestFileSuite(suiteOps);
     if (opts.mochaJsonReport) {
-      await reportMochaJson(opts.reportDir, opts.specFile, reportTracker);
+      await reportMochaJson(suiteOps);
     }
   }
 };
