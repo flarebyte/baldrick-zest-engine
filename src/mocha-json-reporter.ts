@@ -1,6 +1,5 @@
-import { basename, join } from 'node:path';
+import { basename, join, dirname } from 'node:path';
 import { FullReport } from './reporter-model.js';
-import { mkdirForFile } from './fs-utils.js';
 import { ZestFileSuiteOpts } from './run-opts-model.js';
 
 const getMochaReportFilename = (
@@ -45,6 +44,6 @@ export const reportMochaJson = async (opts: ZestFileSuiteOpts) => {
   );
   const fullReport = expandReportTracker(opts);
   const content = JSON.stringify(fullReport, null, 2);
-  await mkdirForFile(reportFilename);
+  await opts.runOpts.inject.fs.mkdirRecursive(dirname(reportFilename));
   await opts.runOpts.inject.fs.writeStringFile(reportFilename, content);
 };
