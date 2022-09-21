@@ -10,7 +10,7 @@ definitions](https://img.shields.io/npm/types/baldrick-zest-engine)
 ![node-current](https://img.shields.io/node/v/baldrick-zest-engine)
 ![NPM](https://img.shields.io/npm/l/baldrick-zest-engine)
 
-> Run tests declaratively
+> Run tests declaratively with a few cunning plans
 
 ## Documentation and links
 
