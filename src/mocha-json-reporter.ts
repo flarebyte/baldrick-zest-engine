@@ -32,6 +32,7 @@ export const reportMochaJson = async (opts: ZestFileSuiteOpts) => {
     opts.runOpts.specFile
   );
   const fullReport = expandReportTracker(opts);
-  const content = JSON.stringify(fullReport, null, 2);
-  await opts.runOpts.inject.fs.writeStringFile(reportFilename, content);
+  await opts.runOpts.inject.io.writeContent(reportFilename, fullReport, {
+    parser: 'JSON',
+  });
 };

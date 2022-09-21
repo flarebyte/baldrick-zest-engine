@@ -2,9 +2,16 @@ import { ReportTracker } from './reporter-model.js';
 import { TestingModel } from './testing-model.js';
 
 export interface ExternalInjection {
-  fs: {
-    readStringFile: (filename: string) => Promise<string>;
-    writeStringFile: (filename: string, content: string) => Promise<void>;
+  io: {
+    readContent: (
+      path: string,
+      opts: { parser: string }
+    ) => Promise<string | object>;
+    writeContent: (
+      path: string,
+      content: string | object,
+      opts: { parser: string }
+    ) => Promise<void>;
   };
   filename: {
     getMochaFilename: (specFile: string) => string;
