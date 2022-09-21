@@ -5,7 +5,6 @@ import {
 import { getParamData } from './get-param-data.js';
 import { reportCase } from './reporter.js';
 import { ZestFileSuiteOpts } from './run-opts-model.js';
-import { getSnapshotFilename } from './snapshot-creator.js';
 import { readDataFileSafely } from './testing-io.js';
 import { TestingFunctionSnapshotTestCaseModel } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
@@ -23,7 +22,10 @@ export async function setupExecutionContext(
       fullTitle: testCase.title,
       file: opts.runOpts.specFile,
       sourceFile: opts.testingModel.testing.import,
-      snapshotFile: getSnapshotFilename(opts, testCase),
+      snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
+        opts.runOpts.specFile,
+        testCase.name
+      ),
       duration: 0,
       err: {
         code: 'ERR_GENERAL',
@@ -86,7 +88,10 @@ export async function setupExecutionContext(
   }
   const expectedValue = await readDataFileSafely(
     opts.runOpts.inject,
-    getSnapshotFilename(opts, testCase),
+    opts.runOpts.inject.filename.getSnapshotFilename(
+      opts.runOpts.specFile,
+      testCase.name
+    ),
     {
       parser: testCase.snapshot,
     }

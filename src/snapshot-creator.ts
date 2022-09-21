@@ -1,24 +1,8 @@
-import { relative, join, dirname } from 'node:path';
 import { diff } from 'jest-diff';
 import { TestCaseExecuteResult } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
-import {
-  FileParser,
-  TestingFunctionTestCaseModel,
-} from './testing-model.js';
-import { ExternalInjection, ZestFileSuiteOpts } from './run-opts-model.js';
-
-export const getSnapshotFilename = (
-  opts: ZestFileSuiteOpts,
-  testCase: TestingFunctionTestCaseModel
-): string => {
-  const specFileBase = relative(
-    opts.runOpts.specDir,
-    opts.runOpts.specFile
-  ).replace('.zest.yaml', '');
-  const snaphotFilename = `${specFileBase}--${testCase.name}.yaml`;
-  return join(opts.runOpts.snapshotDir, snaphotFilename);
-};
+import { FileParser } from './testing-model.js';
+import { ExternalInjection } from './run-opts-model.js';
 
 type SnapshotResult =
   | {
@@ -39,7 +23,6 @@ export const checkSnapshot = async (
   parser: FileParser
 ): Promise<SnapshotResult> => {
   if (executeResult.context.expected === undefined) {
-    await injection.fs.mkdirRecursive(dirname(snapshotFileName));
     await writeSnapshotFile(injection, snapshotFileName, executeResult.actual, {
       parser,
     });

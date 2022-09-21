@@ -9,10 +9,8 @@ import {
 } from './reporter.js';
 import { ZestFileSuiteOpts } from './run-opts-model.js';
 import { setupExecutionContext } from './setup-execution-context.js';
-import { checkSnapshot, getSnapshotFilename } from './snapshot-creator.js';
-import type {
-  TestingFunctionTestCaseModel,
-} from './testing-model.js';
+import { checkSnapshot } from './snapshot-creator.js';
+import type { TestingFunctionTestCaseModel } from './testing-model.js';
 
 const stringOrObjectToString = (value: object | string): string =>
   typeof value === 'string' ? value : JSON.stringify(value);
@@ -41,7 +39,10 @@ const runTestCase =
         fullTitle: testCase.title,
         file: opts.runOpts.specFile,
         sourceFile: opts.testingModel.testing.import,
-        snapshotFile: getSnapshotFilename(opts, testCase),
+        snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
+          opts.runOpts.specFile,
+          testCase.name
+        ),
         duration: 0,
       };
 
@@ -60,9 +61,13 @@ const runTestCase =
         reportErrorCase(executed.message);
         return;
       } else {
-        const snapshotResult = await checkSnapshot(opts.runOpts.inject,
+        const snapshotResult = await checkSnapshot(
+          opts.runOpts.inject,
           executed,
-          getSnapshotFilename(opts, testCase),
+          opts.runOpts.inject.filename.getSnapshotFilename(
+            opts.runOpts.specFile,
+            testCase.name
+          ),
           testCase.snapshot
         );
         if (snapshotResult.status === 'success') {

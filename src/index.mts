@@ -32,7 +32,7 @@ export const run = async (opts: TestingRunOpts) => {
       reportTracker,
       runOpts: opts,
       testingModel: result.value,
-    }
+    };
     await runZestFileSuite(suiteOps);
     if (opts.mochaJsonReport) {
       await reportMochaJson(suiteOps);
