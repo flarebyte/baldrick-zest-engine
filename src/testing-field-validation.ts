@@ -60,6 +60,12 @@ export const stringCustomKey = z
   .max(30)
   .regex(/[a-z][\d_a-z]+/);
 
+export const stringParserKey = z
+  .string()
+  .min(1)
+  .max(30)
+  .regex(/[a-z]\w+/i);
+
 export const stringRuntimeOnly = z.string().max(0).default('');
 
 export const stringValue = z.string().trim().min(1).max(300);

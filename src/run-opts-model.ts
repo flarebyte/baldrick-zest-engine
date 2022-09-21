@@ -3,6 +3,7 @@ import { TestingModel } from './testing-model.js';
 
 export interface ExternalInjection {
   io: {
+    parsers: string[];
     readContent: (
       path: string,
       opts: { parser: string }

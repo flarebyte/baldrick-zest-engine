@@ -1,7 +1,6 @@
 import { diff } from 'jest-diff';
 import { TestCaseExecuteResult } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
-import { FileParser } from './testing-model.js';
 import { ExternalInjection } from './run-opts-model.js';
 
 type SnapshotResult =
@@ -20,7 +19,7 @@ export const checkSnapshot = async (
   injection: ExternalInjection,
   executeResult: TestCaseExecuteResult & { status: 'success' },
   snapshotFileName: string,
-  parser: FileParser
+  parser: string
 ): Promise<SnapshotResult> => {
   if (executeResult.context.expected === undefined) {
     await writeSnapshotFile(injection, snapshotFileName, executeResult.actual, {

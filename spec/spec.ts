@@ -87,6 +87,7 @@ const config = {
   flags: 'fix',
   inject: {
     io: {
+      parsers: ['YAML', 'JSON', 'Text'],
       readContent,
       writeContent,
     },

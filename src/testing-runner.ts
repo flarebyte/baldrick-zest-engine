@@ -56,6 +56,13 @@ const runTestCase =
           },
         });
       };
+
+      if (!opts.runOpts.inject.io.parsers.includes(testCase.snapshot)) {
+        reportErrorCase(
+          `Snapshot parser "${testCase.snapshot}" is not supported`
+        );
+        return;
+      }
       const executed = await executeCase(testCaseExecutionContext);
       if (executed.status === 'failure') {
         reportErrorCase(executed.message);

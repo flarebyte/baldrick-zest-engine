@@ -10,6 +10,7 @@ import {
   stringRuntimeOnly,
   stringSkipReason,
   stringValue,
+  stringParserKey,
 } from './testing-field-validation.js';
 
 const pureFunctionAbc = z.strictObject({
@@ -66,11 +67,10 @@ const anyUnderTestingFunction = z.discriminatedUnion('style', [
 ]);
 const transformers = z.array(anyFunctionTransf).min(1).max(5);
 
-const fileParser = z.enum(['Text', 'JSON', 'YAML']);
 const givenFile = z.strictObject({
   from: z.literal('file'),
   filename: stringFilename,
-  parser: fileParser.default('Text'),
+  parser: stringParserKey.default('Text'),
   transform: transformers.optional(),
 });
 
@@ -81,7 +81,6 @@ const givenString = z.strictObject({
 });
 
 const givenData = z.discriminatedUnion('from', [givenFile, givenString]);
-const snapshotType = z.enum(['Text', 'JSON', 'YAML']);
 
 const commonFunctionTestCase = {
   skip: stringSkipReason.optional(),
@@ -93,7 +92,7 @@ const commonFunctionTestCase = {
     })
     .optional(),
 
-  snapshot: snapshotType.default('YAML'),
+  snapshot: stringParserKey.default('YAML'),
   tumble: highTumbleFunction.optional(),
 };
 
@@ -136,8 +135,6 @@ export type TestingFunctionSnapshotTestCaseModel = z.infer<
 export type TestingTodoTestCaseModel = z.infer<typeof todoTestCase>;
 
 export type FunctionParamData = z.infer<typeof givenData>;
-
-export type FileParser = z.infer<typeof fileParser>;
 
 export type AnyTransformerModel = z.infer<typeof anyFunctionTransf>;
 

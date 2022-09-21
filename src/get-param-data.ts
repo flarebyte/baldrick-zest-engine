@@ -46,6 +46,12 @@ export const getParamData = async (
     }
   }
   const parser = functionParamData.parser;
+  if (!injection.io.parsers.includes(parser)) {
+    return {
+      status: 'failure',
+      message: `Parser "${parser}" is not supported`,
+    };
+  }
 
   const loadedValue = await readDataFileSafely(
     injection,

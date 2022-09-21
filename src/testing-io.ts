@@ -1,5 +1,4 @@
 import {
-  FileParser,
   safeParseTestingModel,
   TestingModelValidation,
 } from './testing-model.js';
@@ -17,7 +16,7 @@ const readDataFile = async (
   injection: ExternalInjection,
   filename: string,
   opts: {
-    parser: FileParser;
+    parser: string;
   }
 ): Promise<object | string> =>
   await injection.io.readContent(filename, { parser: opts.parser });
@@ -31,7 +30,7 @@ type DataFileResult =
   | {
       filename: string;
       opts: {
-        parser: FileParser;
+        parser: string;
       };
       status: 'failure';
       message: string;
@@ -41,7 +40,7 @@ export const readDataFileSafely = async (
   injection: ExternalInjection,
   filename: string,
   opts: {
-    parser: FileParser;
+    parser: string;
   }
 ): Promise<DataFileResult> => {
   try {
@@ -70,7 +69,7 @@ export const writeSnapshotFile = async (
   filename: string,
   content: object | string,
   opts: {
-    parser: FileParser;
+    parser: string;
   }
 ): Promise<void> =>
   await injection.io.writeContent(filename, content, { parser: opts.parser });
