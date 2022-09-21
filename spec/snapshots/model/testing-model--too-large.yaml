@@ -1,0 +1,4 @@
+status: invalid
+errors:
+  - path: cases.valid.title
+    message: The string for the field is too big; I would expect the maximum to be 60

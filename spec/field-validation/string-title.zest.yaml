@@ -1,0 +1,49 @@
+---
+testing:
+  style: function a b
+  import: ../src/testing-field-validation.ts
+  function: safeParseField
+cases:
+  valid:
+    a: snapshot
+    title: a valid title
+    params:
+      - from: string
+        value: title
+      - from: string
+        value: this title will be first be converted to uppercase
+        transform:
+          - style: function a
+            import: ../spec/example-transformer.ts
+            function: makeUpperCase
+  with-prefix:
+    a: snapshot
+    title: should have a prefix and uppercase
+    params:
+      - from: string
+        value: title
+      - from: string
+        value: should have a prefix and uppercase
+        transform:
+          - style: function a
+            import: ../spec/example-transformer.ts
+            function: makeUpperCase
+          - style: config -> function a
+            import: ../spec/example-transformer.ts
+            function: addPrefix3
+            config:
+              prefix: lowercase prefix
+  with-result-transformer:
+    a: snapshot
+    title: should apply transformer on result
+    params:
+      - from: string
+        value: title
+      - from: string
+        value: should apply simple abstraction on result
+    result:
+        transform:
+          - style: function a
+            import: ../spec/example-transformer.ts
+            function: simpleAbstract
+

@@ -1,0 +1,63 @@
+---
+testing:
+  style: function a
+  import: ../src/testing-model.ts
+  function: safeParseTestingModel
+cases:
+  valid:
+    a: snapshot
+    title: test a valid model
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        parser: YAML
+    snapshot: YAML
+  abstract-with-crumble:
+    a: snapshot
+    title: abstract with object crumble
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        parser: YAML
+    result:
+      transform:
+        - style: function a
+          import: ../spec/example-transformer.ts
+          function: crumbleAbstractor
+    snapshot: YAML
+  too-large:
+    a: snapshot
+    title: test a model with a field too large
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        transform:
+          - style: config -> function a
+            import: ../spec/example-transformer.ts
+            function: crumbleMutate
+            config:
+              path: cases.valid.title
+              mutation: string => large
+        parser: YAML
+    snapshot: YAML
+  mutate-with-crumble:
+    a: snapshot
+    title: Mutate model with object crumble
+    params:
+      - from: file
+        filename: spec/fixtures/example-zest.yaml
+        parser: YAML
+    tumble:
+      style: config + table -> function
+      import: ../spec/example-transformer.ts
+      function: crumbleTumble
+      config:
+        signature: A
+      table:
+        - path: cases.valid.title
+          mutation: string => large
+        - path: cases.valid.title
+          mutation: string => large
+  todo-next:
+    a: todo
+    title: task for testing todo concept

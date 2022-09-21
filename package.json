@@ -7,9 +7,10 @@
     "tdd",
     "assert",
     "expect",
-    "snapshot"
+    "snapshot",
+    "ESM"
   ],
-  "version": "0.1.0",
+  "version": "0.5.0",
   "author": {
     "name": "Olivier Huin",
     "url": "https://github.com/olih"
@@ -46,8 +47,8 @@
     "doc": "npx typedoc --json report/doc.json --pretty src/index.ts && npx baldrick-doc-ts typedoc --json-source report/doc.json && baldrick-doc-ts parse -f internal ngram && yarn md:fix",
     "github": "gh repo edit --delete-branch-on-merge --enable-squash-merge",
     "lint:ci": "baldrick lint ci",
-    "lint": "baldrick lint check -s src test",
-    "lint:fix": "baldrick lint fix -s src test",
+    "lint": "baldrick lint check -s src",
+    "lint:fix": "baldrick lint fix -s src",
     "md": "baldrick markdown check && baldrick markdown check -s .github/",
     "md:fix": "baldrick markdown fix && baldrick markdown fix -s .github/",
     "prebuild": "yarn reset",
@@ -61,11 +62,20 @@
     "release:ci": "baldrick release ci",
     "h": "cat commands.txt",
     "norm": "npx baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix",
-    "norm:g": "baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix"
+    "norm:g": "baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix",
+    "spec": "node --loader ts-node/esm spec/spec.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "chalk": "^5.0.1",
+    "jest-diff": "^29.0.2",
+    "yaml": "^2.1.1",
+    "zod": "^3.18.0"
+  },
   "devDependencies": {
     "baldrick-dev-ts": "^0.17.0",
+    "baldrick-tsconfig-es2021": "^0.5.0",
+    "object-crumble": "^0.6.6",
+    "ts-node": "^10.9.1",
     "typescript": "^4.8.2"
   },
   "peerDependencies": {}

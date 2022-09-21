@@ -1,0 +1,20 @@
+status: valid
+value:
+  testing:
+    style: function a
+    import: ../src/testing-model.ts
+    function: safeParseTestingModel
+  cases:
+    valid:
+      a: snapshot
+      name: ""
+      title: test a valid model
+      snapshot: YAML
+      params:
+        - from: file
+          filename: spec/fixtures/example-zest.yaml
+          parser: YAML
+    todo-next:
+      a: todo
+      name: ""
+      title: task for testing todo concept
