@@ -52,7 +52,7 @@ export async function setupExecutionContext(
     );
   };
 
-  const transformerHolder = await createTransformerFunctions(
+  const transformerHolder = await createTransformerFunctions(opts.runOpts.inject,
     testCase.result?.transform === undefined ? [] : testCase.result?.transform
   );
 
@@ -67,7 +67,7 @@ export async function setupExecutionContext(
 
   let tumble: TumbleWrapper | undefined;
   if (testCase.tumble !== undefined) {
-    const tumbleHolder = await createTumbleFunction(testCase.tumble);
+    const tumbleHolder = await createTumbleFunction(opts.runOpts.inject, testCase.tumble);
     if (tumbleHolder.status === 'failure') {
       reportErrorCase(`${tumbleHolder.message} for tumble in result (743857)`);
       return false;

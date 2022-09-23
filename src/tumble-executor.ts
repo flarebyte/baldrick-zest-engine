@@ -1,5 +1,6 @@
 import { TumbleWrapper } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
+import { ExternalInjection } from './run-opts-model.js';
 import { AnyTumbleFunctionModel } from './testing-model.js';
 
 type TumbleTable = Record<string, string>[];
@@ -20,10 +21,12 @@ type TumbleExecutorLoadingResult =
     };
 
 export const createTumbleFunction = async (
+  injection: ExternalInjection,
   model: AnyTumbleFunctionModel
 ): Promise<TumbleExecutorLoadingResult> => {
   if (model.style === 'config + table -> function') {
     const imported = await friendlyImport<TumbleFunction>(
+      injection,
       model.import,
       model.function
     );

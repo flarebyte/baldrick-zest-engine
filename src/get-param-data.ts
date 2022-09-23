@@ -23,7 +23,7 @@ export const getParamData = async (
   injection: ExternalInjection,
   functionParamData: FunctionParamData
 ): Promise<ParamDataResult> => {
-  const transformerHolder = await createTransformerFunctions(
+  const transformerHolder = await createTransformerFunctions(injection,
     functionParamData.transform === undefined ? [] : functionParamData.transform
   );
 

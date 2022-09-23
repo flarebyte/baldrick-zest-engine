@@ -13,6 +13,7 @@ export interface ExternalInjection {
       content: string | object,
       opts: { parser: string }
     ) => Promise<void>;
+    doImport: <A>(path: string) => Promise<A>;
   };
   filename: {
     getMochaFilename: (specFile: string) => string;

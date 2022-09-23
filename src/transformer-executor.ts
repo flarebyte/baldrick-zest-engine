@@ -1,4 +1,5 @@
 import { friendlyImport } from './friendly-importer.js';
+import { ExternalInjection } from './run-opts-model.js';
 import { AnyTransformerModel } from './testing-model.js';
 
 type TransformerFunction = (value: object | string) => object | string;
@@ -65,31 +66,36 @@ const reduceTransformer = (
   }
 };
 
-const createTransformerFunction = async (transformer: AnyTransformerModel) => {
-  if (transformer.style === 'function a') {
-    return await friendlyImport<TransformerFunction>(
-      transformer.import,
-      transformer.function
-    );
-  } else if (transformer.style === 'config -> function a') {
-    const imported = await friendlyImport<HigherTransformerFunction>(
-      transformer.import,
-      transformer.function
-    );
-    if (imported.status !== 'success') {
-      return imported;
+const createTransformerFunction =
+  (injection: ExternalInjection) =>
+  async (transformer: AnyTransformerModel) => {
+    if (transformer.style === 'function a') {
+      return await friendlyImport<TransformerFunction>(
+        injection,
+        transformer.import,
+        transformer.function
+      );
+    } else if (transformer.style === 'config -> function a') {
+      const imported = await friendlyImport<HigherTransformerFunction>(
+        injection,
+        transformer.import,
+        transformer.function
+      );
+      if (imported.status !== 'success') {
+        return imported;
+      }
+      return {
+        status: 'success',
+        component: imported.component(transformer.config),
+      };
+    } else {
+      return await friendlyImport<TransformerFunction>(
+        injection,
+        transformer.import,
+        transformer.function
+      );
     }
-    return {
-      status: 'success',
-      component: imported.component(transformer.config),
-    };
-  } else {
-    return await friendlyImport<TransformerFunction>(
-      transformer.import,
-      transformer.function
-    );
-  }
-};
+  };
 
 type TransformerResult =
   | {
@@ -102,10 +108,11 @@ type TransformerResult =
     };
 
 export const createTransformerFunctions = async (
+  injection: ExternalInjection,
   transformers: AnyTransformerModel[]
 ): Promise<TransformerResult> => {
   const importResultList = await Promise.all(
-    transformers.map(createTransformerFunction)
+    transformers.map(createTransformerFunction(injection))
   );
   const hasFailure = importResultList.some(
     (importing) => importing.status !== 'success'
