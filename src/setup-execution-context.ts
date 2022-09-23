@@ -24,7 +24,8 @@ export async function setupExecutionContext(
       sourceFile: opts.testingModel.testing.import,
       snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
         opts.runOpts.specFile,
-        testCase.name
+        testCase.name,
+        { parser: testCase.snapshot}
       ),
       duration: 0,
       err: {
@@ -90,7 +91,8 @@ export async function setupExecutionContext(
     opts.runOpts.inject,
     opts.runOpts.inject.filename.getSnapshotFilename(
       opts.runOpts.specFile,
-      testCase.name
+      testCase.name,
+      { parser: testCase.snapshot}
     ),
     {
       parser: testCase.snapshot,

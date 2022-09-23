@@ -1,4 +1,7 @@
 import { abstractObject, mutateObject, mutatorRules } from 'object-crumble';
+import { ZodSchema } from 'zod';
+import { zodToJsonSchema } from 'zod-to-json-schema';
+
 export const addPrefix1 = (value: string, prefix: string) =>
   `${prefix}${value}`;
 
@@ -106,3 +109,7 @@ export class ValueHolderC {
     return this.value.toUpperCase();
   }
 }
+
+export const toJSONSchema = (schema: ZodSchema<any>): object => {
+  return zodToJsonSchema(schema, 'baldrick-zest-schema');
+};

@@ -17,13 +17,16 @@ const getMochaFilename = (specFile: string): string => {
 
 const getSnapshotFilename = (
   specFile: string,
-  testCaseName: string
+  testCaseName: string,
+  opts: {
+    parser: string;
+  }
 ): string => {
   const specFileBase = relative(baseConfig.specDir, specFile).replace(
     '.zest.yaml',
     ''
   );
-  const snaphotFilename = `${specFileBase}--${testCaseName}.yaml`;
+  const snaphotFilename = `${specFileBase}--${testCaseName}.${opts.parser.toLowerCase()}`;
   return join(baseConfig.snapshotDir, snaphotFilename);
 };
 
@@ -112,4 +115,9 @@ await run({
 await run({
   ...config,
   specFile: 'spec/field-validation/string-title.zest.yaml',
+});
+
+await run({
+  ...config,
+  specFile: 'spec/model/testing-model--get-schema.zest.yaml',
 });

@@ -5202,6 +5202,11 @@ yocto-queue@^0.1.0:
   resolved "https://registry.yarnpkg.com/yocto-queue/-/yocto-queue-0.1.0.tgz#0294eb3dee05028d31ee1a5fa2c556a6aaf10a1b"
   integrity sha512-rVksvsnNCdJ/ohGc6xgPwyN8eheCxsiLM8mxuE/t/mOVqJewPuO1miLpTHQiRgTKCLexL4MeAFVagts7HmNZ2Q==
 
+zod-to-json-schema@^3.18.0:
+  version "3.18.0"
+  resolved "https://registry.yarnpkg.com/zod-to-json-schema/-/zod-to-json-schema-3.18.0.tgz#058602457c402899c692e6a0cebe8aac798e5a3f"
+  integrity sha512-oMYtAEVdRofYsxTFjcTDXYLNcfrpiOtF8Evh4zqMr2tIfouIWhKEZSq6M0bJwFYLzmkGsdN9xR7koPKvUWmoew==
+
 zod@^3.18.0:
   version "3.19.1"
   resolved "https://registry.yarnpkg.com/zod/-/zod-3.19.1.tgz#112f074a97b50bfc4772d4ad1576814bd8ac4473"

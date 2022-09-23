@@ -41,7 +41,8 @@ const runTestCase =
         sourceFile: opts.testingModel.testing.import,
         snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
           opts.runOpts.specFile,
-          testCase.name
+          testCase.name,
+          { parser: testCase.snapshot}
         ),
         duration: 0,
       };
@@ -73,7 +74,8 @@ const runTestCase =
           executed,
           opts.runOpts.inject.filename.getSnapshotFilename(
             opts.runOpts.specFile,
-            testCase.name
+            testCase.name,
+            { parser: testCase.snapshot}
           ),
           testCase.snapshot
         );

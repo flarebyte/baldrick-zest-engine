@@ -17,7 +17,7 @@ export interface ExternalInjection {
   };
   filename: {
     getMochaFilename: (specFile: string) => string;
-    getSnapshotFilename: (specFile: string, testCaseName: string) => string;
+    getSnapshotFilename: (specFile: string, testCaseName: string,  opts: { parser: string }) => string;
   };
 }
 export interface TestingRunOpts {

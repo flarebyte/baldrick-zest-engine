@@ -1,0 +1,19 @@
+---
+testing:
+  style: function a
+  import: ../src/testing-model.ts
+  function: getSchema
+cases:
+  schema:
+    a: snapshot
+    title: Produce a JSON schema
+    params:
+      - from: string
+        value: default
+    result:
+      transform:
+        - style: function a
+          import: ../spec/example-transformer.ts
+          function: toJSONSchema
+    snapshot: JSON
+

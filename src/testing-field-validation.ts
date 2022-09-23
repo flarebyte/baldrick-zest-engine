@@ -16,55 +16,48 @@ export const stringSkipReason = z
   .max(60)
   .refine(isSingleLine, {
     message: 'reason for skipping should be a single line',
-  });
+  })
+  .describe('Reason why the tests are been skipped');
 
-export const stringTypescriptFilename = z
+export const stringImport = z
   .string()
   .trim()
   .min(1)
   .max(300)
-  .endsWith('ts');
+  .describe('A javascript import statement');
 
-export const stringImport = z.string().trim().min(1).max(300);
-
-export const stringFilename = z.string().trim().min(1).max(300);
-
-export const stringDirectory = z
+export const stringFilename = z
   .string()
   .trim()
   .min(1)
   .max(300)
-  .endsWith('.json');
+  .describe('A relative path to a filename');
 
 export const stringFunctionName = z
   .string()
   .min(1)
   .max(50)
-  .regex(/[a-z][\d_a-z]+/);
+  .regex(/[a-z][\d_a-zA-Z]+/)
+  .describe('A function name');
 
 export const stringClassName = z
   .string()
   .min(1)
   .max(50)
-  .regex(/[A-Z][\d_a-z]+/);
-
-export const stringPropPath = z
-  .string()
-  .min(1)
-  .max(300)
-  .regex(/(([\d._a-z]+)|(\[\d+]))+/);
+  .regex(/[A-Z][\d_a-z]+/).describe('A class name');
 
 export const stringCustomKey = z
   .string()
   .min(1)
   .max(30)
-  .regex(/[a-z][\d_a-z]+/);
+  .regex(/[A-Za-z][a-zA-Z\d_]+/);
 
 export const stringParserKey = z
   .string()
   .min(1)
   .max(30)
-  .regex(/[a-z]\w+/i);
+  .regex(/\w+/)
+  .describe('The parsing format such as JSON or YAML');
 
 export const stringRuntimeOnly = z.string().max(0).default('');
 
