@@ -6,6 +6,7 @@ import {
   Params,
 } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
+import { ExternalInjection } from './run-opts-model.js';
 
 type PureFunctionOneParam = (first: object | string) => object | string;
 
@@ -25,6 +26,12 @@ function getErrorMessage(error: unknown): string {
   return String(error);
 }
 
+function getErrorStack(error: unknown): string | undefined {
+  if (error instanceof Error) return error.stack;
+  return undefined;
+}
+
+
 const expectAsObject = (value: string | object): object => {
   if (typeof value !== 'object') {
     throw new TypeError('Tumble operations are only applicable to objects');
@@ -33,10 +40,11 @@ const expectAsObject = (value: string | object): object => {
 };
 
 export const executeCase = async (
+  injection: ExternalInjection,
   context: TestCaseExecutionContext
 ): Promise<TestCaseExecuteResult> => {
   if (context.testing.style === 'function a') {
-    const thisFunction = await friendlyImport<PureFunctionOneParam>(
+    const thisFunction = await friendlyImport<PureFunctionOneParam>(injection,
       context.testing.import,
       context.testing.function
     );
@@ -59,7 +67,7 @@ export const executeCase = async (
     }
   }
   if (context.testing.style === 'function a b') {
-    const thisFunction = await friendlyImport<PureFunctionTwoParams>(
+    const thisFunction = await friendlyImport<PureFunctionTwoParams>(injection,
       context.testing.import,
       context.testing.function
     );
@@ -90,7 +98,7 @@ export const executeCase = async (
     }
   }
   if (context.testing.style === 'function a b c') {
-    const thisFunction = await friendlyImport<PureFunctionThreeParams>(
+    const thisFunction = await friendlyImport<PureFunctionThreeParams>(injection,
       context.testing.import,
       context.testing.function
     );
@@ -147,6 +155,7 @@ export const executeCase = async (
       message: `Function ${context.testing.function} in ${
         context.testing.import
       } failed with ${getErrorMessage(error)} (148281)`,
+      stack: getErrorStack(error)
     };
   }
 
@@ -163,7 +172,7 @@ export const executeCase = async (
   function failImporting(
     thisFunction:
       | { status: 'no component'; available: string[] }
-      | { status: 'import failed' }
+      | { status: 'import failed', stack?: string }
   ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
     return {
       status: 'failure',
@@ -172,6 +181,7 @@ export const executeCase = async (
         thisFunction.status === 'import failed'
           ? `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`
           : `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
+      stack: thisFunction.status === 'import failed' ? thisFunction.stack : undefined
     };
   }
 };

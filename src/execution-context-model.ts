@@ -45,4 +45,5 @@ export type TestCaseExecuteResult =
       status: 'failure';
       context: TestCaseExecutionContext;
       message: string;
+      stack?: string;
     };

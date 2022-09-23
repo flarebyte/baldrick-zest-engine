@@ -81,6 +81,11 @@ const writeContent = async (
   await writeFile(path, stringContent);
 };
 
+async function doImport<A>(path: string) {
+  const func: A = await import(path);
+  return func;
+}
+
 const config = {
   ...baseConfig,
   mochaJsonReport: true,
@@ -90,6 +95,7 @@ const config = {
       parsers: ['YAML', 'JSON', 'Text'],
       readContent,
       writeContent,
+      doImport,
     },
     filename: {
       getMochaFilename,

@@ -63,7 +63,7 @@ const runTestCase =
         );
         return;
       }
-      const executed = await executeCase(testCaseExecutionContext);
+      const executed = await executeCase(opts.runOpts.inject,testCaseExecutionContext);
       if (executed.status === 'failure') {
         reportErrorCase(executed.message);
         return;
