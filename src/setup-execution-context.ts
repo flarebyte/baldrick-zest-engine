@@ -84,7 +84,7 @@ export async function setupExecutionContext(
   }
   const firstValue = await getParamData(opts.runOpts.inject, first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
-    reportNotLoadableParameter('First', firstValue.message, firstValue.stack);
+    reportNotLoadableParameter('First', firstValue.error.message, firstValue.error.stack);
     return false;
   }
   const expectedValue = await readDataFileSafely(
@@ -130,8 +130,8 @@ export async function setupExecutionContext(
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
     reportNotLoadableParameter(
       'Second',
-      secondValue.message,
-      secondValue.stack
+      secondValue.error.message,
+      secondValue.error.stack
     );
     return false;
   }
@@ -153,7 +153,7 @@ export async function setupExecutionContext(
   }
   const thirdValue = await getParamData(opts.runOpts.inject, third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
-    reportNotLoadableParameter('Third', thirdValue.message, thirdValue.stack);
+    reportNotLoadableParameter('Third', thirdValue.error.message, thirdValue.error.stack);
     return false;
   }
   return {

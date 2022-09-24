@@ -2,33 +2,29 @@ import { readDataFileSafely } from './testing-io.js';
 import { FunctionParamData } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
 import { ExternalInjection } from './run-opts-model.js';
+import { Result } from './zest-railway.js';
 
 function getErrorStack(error: unknown): string | undefined {
   if (error instanceof Error) return error.stack;
   return undefined;
 }
 
-type ParamDataResult =
-  | {
-      status: 'success';
-      value: object | string;
-    }
-  | {
-      status: 'failure';
-      message: string;
-      stack?: string;
-    };
+type ParamDataResult = Result<
+  object | string,
+  { message: string; stack?: string }
+>;
 
 export const getParamData = async (
   injection: ExternalInjection,
   functionParamData: FunctionParamData
 ): Promise<ParamDataResult> => {
-  const transformerHolder = await createTransformerFunctions(injection,
+  const transformerHolder = await createTransformerFunctions(
+    injection,
     functionParamData.transform === undefined ? [] : functionParamData.transform
   );
 
   if (transformerHolder.status === 'failure') {
-    return { status: 'failure', message: transformerHolder.message };
+    return { status: 'failure', error: { message: transformerHolder.message } };
   }
 
   const transformer = transformerHolder.func;
@@ -40,8 +36,10 @@ export const getParamData = async (
     } catch (error) {
       return {
         status: 'failure',
-        message: 'Transformation of string data failed',
-        stack: getErrorStack(error),
+        error: {
+          message: 'Transformation of string data failed',
+          stack: getErrorStack(error),
+        },
       };
     }
   }
@@ -49,7 +47,9 @@ export const getParamData = async (
   if (!injection.io.parsers.includes(parser)) {
     return {
       status: 'failure',
-      message: `Parser "${parser}" is not supported`,
+      error: {
+        message: `Parser "${parser}" is not supported`,
+      },
     };
   }
 
@@ -67,11 +67,13 @@ export const getParamData = async (
     } catch (error) {
       return {
         status: 'failure',
-        message: 'Transformation of data file failed',
-        stack: getErrorStack(error),
+        error: {
+          message: 'Transformation of data file failed',
+          stack: getErrorStack(error),
+        },
       };
     }
   } else {
-    return { status: 'failure', message: loadedValue.message };
+    return { status: 'failure', error: { message: loadedValue.message } };
   }
 };
