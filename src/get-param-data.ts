@@ -65,6 +65,6 @@ export const getParamData = async (
       });
     }
   } else {
-    return zestFail({ message: loadedValue.message });
+    return zestFail({ message: loadedValue.error.message });
   }
 };

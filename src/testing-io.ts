@@ -3,6 +3,7 @@ import {
   TestingModelValidation,
 } from './testing-model.js';
 import { ExternalInjection } from './run-opts-model.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
 export const getZestYaml = async (
   injection: ExternalInjection,
@@ -21,20 +22,16 @@ const readDataFile = async (
 ): Promise<object | string> =>
   await injection.io.readContent(filename, { parser: opts.parser });
 
-type DataFileResult =
-  | {
-      filename: string;
-      status: 'success';
-      value: object | string;
-    }
-  | {
-      filename: string;
-      opts: {
-        parser: string;
-      };
-      status: 'failure';
-      message: string;
+type DataFileResult = Result<
+  object | string,
+  {
+    filename: string;
+    opts: {
+      parser: string;
     };
+    message: string;
+  }
+>;
 
 export const readDataFileSafely = async (
   injection: ExternalInjection,
@@ -45,19 +42,14 @@ export const readDataFileSafely = async (
 ): Promise<DataFileResult> => {
   try {
     const value = await readDataFile(injection, filename, opts);
-    return {
-      status: 'success',
-      filename,
-      value,
-    };
+    return zestOk(value);
   } catch (error) {
     if (error instanceof Error) {
-      return {
-        status: 'failure',
+      return zestFail({
         filename,
         opts,
         message: error.message,
-      };
+      });
     } else {
       throw error;
     }
