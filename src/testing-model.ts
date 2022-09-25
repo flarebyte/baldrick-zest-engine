@@ -12,6 +12,7 @@ import {
   stringValue,
   stringParserKey,
 } from './testing-field-validation.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
 const pureFunctionAbc = z
   .strictObject({
@@ -180,31 +181,20 @@ export type AnyTransformerModel = z.infer<typeof anyFunctionTransf>;
 
 export type AnyTumbleFunctionModel = z.infer<typeof highTumbleFunction>;
 
-export type TestingModelValidation =
-  | {
-      status: 'valid';
-      value: TestingModel;
-    }
-  | {
-      status: 'invalid';
-      errors: ValidationError[];
-    };
+export type TestingModelValidation = Result<TestingModel, ValidationError[]>;
 
 export const safeParseTestingModel = (
   content: unknown
 ): TestingModelValidation => {
   const result = schema.safeParse(content);
   if (result.success) {
-    return { status: 'valid', value: result.data };
+    return zestOk(result.data);
   }
   const {
     error: { issues },
   } = result;
   const errors = issues.map(formatMessage);
-  return {
-    status: 'invalid',
-    errors,
-  };
+  return zestFail(errors);
 };
 
 export const getSchema = (_name: 'default') => {
