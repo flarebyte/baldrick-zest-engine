@@ -28,7 +28,7 @@ export const createTumbleFunction = async (
         message: `Could not import tumble function ${model.function}`,
       });
     }
-    return zestOk(imported.component(model.config, model.table));
+    return zestOk(imported.value(model.config, model.table));
   }
   return zestFail({
     message: `Unsupported style ${model.style} for tumble function ${model.function}`,

@@ -85,10 +85,7 @@ const createTransformerFunction =
       if (imported.status !== 'success') {
         return imported;
       }
-      return {
-        status: 'success',
-        component: imported.component(transformer.config),
-      };
+      return zestOk(imported.value(transformer.config));
     } else {
       return await friendlyImport<TransformerFunction>(
         injection,
@@ -116,7 +113,7 @@ export const createTransformerFunctions = async (
     });
   }
   const transformerList = importResultList.map((importing) =>
-    importing.status === 'success' ? importing.component : identityTransformer
+    importing.status === 'success' ? importing.value : identityTransformer
   );
   const combinedTransformer = reduceTransformer(transformerList);
   return zestOk(combinedTransformer);

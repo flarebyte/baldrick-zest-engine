@@ -1,23 +1,18 @@
-import { ExternalInjection } from "./run-opts-model.js";
+import { ExternalInjection } from './run-opts-model.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
 function getErrorStack(error: unknown): string | undefined {
   if (error instanceof Error) return error.stack;
   return undefined;
 }
 
-type ImportFunctionResult<A> =
-  | {
-      status: 'success';
-      component: A;
-    }
-  | {
-      status: 'no component';
-      available: string[];
-    }
-  | {
-      status: 'import failed';
-      stack?: string;
-    };
+type ImportFunctionResult<A> = Result<
+  A,
+  {
+    message: string;
+    stack?: string;
+  }
+>;
 
 export async function friendlyImport<A>(
   injection: ExternalInjection,
@@ -28,18 +23,16 @@ export async function friendlyImport<A>(
     const imported: { [k: string]: A } = await injection.io.doImport(sourceDir); // does this need some caching ?
     const component = imported[name];
     return component === undefined
-      ? {
-          status: 'no component',
-          available: Object.keys(imported),
-        }
-      : {
-          status: 'success',
-          component,
-        };
-  } catch(error) {
-    return {
-      status: 'import failed',
-      stack: getErrorStack(error)
-    };
+      ? zestFail({
+          message: `No function with the name ${name} has been found. What about one of these:  ${Object.keys(
+            imported
+          )}`,
+        })
+      : zestOk(component);
+  } catch (error) {
+    return zestFail({
+      message: 'The import could not be performed',
+      stack: getErrorStack(error),
+    });
   }
 }

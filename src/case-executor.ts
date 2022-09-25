@@ -59,7 +59,7 @@ export const executeCase = async (
     try {
       const result =
         context.tumble === undefined
-          ? thisFunction.component(context.params.first)
+          ? thisFunction.value(context.params.first)
           : runWithTumbleOneParam(thisFunction, context.tumble, context.params);
       const transformed = context.transform(result);
       return successWithResult(transformed);
@@ -81,7 +81,7 @@ export const executeCase = async (
       if (context.params.count === 2) {
         const result =
           context.tumble === undefined
-            ? thisFunction.component(
+            ? thisFunction.value(
                 context.params.first,
                 context.params.second
               )
@@ -113,7 +113,7 @@ export const executeCase = async (
       if (context.params.count === 3) {
         const result =
           context.tumble === undefined
-            ? thisFunction.component(
+            ? thisFunction.value(
                 context.params.first,
                 context.params.second,
                 context.params.third
@@ -168,26 +168,19 @@ export const executeCase = async (
     });
   }
 
-  function failImporting(
-    thisFunction:
-      | { status: 'no component'; available: string[] }
-      | { status: 'import failed'; stack?: string }
-  ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
+  function failImporting(thisFunction: {
+    status: 'failure';
+    error: { message: string; stack?: string };
+  }): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
     return zestFail({
       context,
-      message:
-        thisFunction.status === 'import failed'
-          ? `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`
-          : `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
-      stack:
-        thisFunction.status === 'import failed'
-          ? thisFunction.stack
-          : undefined,
+      message: `Trying importing function ${context.testing.function} from ${context.testing.import}: ${thisFunction.error.message}.(616289)`,
+      stack: thisFunction.error.stack,
     });
   }
 };
 function runWithTumbleOneParam(
-  thisFunction: { status: 'success'; component: PureFunctionOneParam },
+  thisFunction: { status: 'success'; value: PureFunctionOneParam },
   tumble: TumbleWrapper,
   params: Params & { count: 1 }
 ) {
@@ -195,14 +188,14 @@ function runWithTumbleOneParam(
     if (values[0] === undefined) {
       throw new Error('At least one parameter was expected (812188)');
     }
-    return expectAsObject(thisFunction.component(values[0]));
+    return expectAsObject(thisFunction.value(values[0]));
   };
   const result = tumble(wrapped, [expectAsObject(params.first)]);
   return result;
 }
 
 function runWithTumbleTwoParams(
-  thisFunction: { status: 'success'; component: PureFunctionTwoParams },
+  thisFunction: { status: 'success'; value: PureFunctionTwoParams },
   tumble: TumbleWrapper,
   params: Params & { count: 2 }
 ) {
@@ -210,7 +203,7 @@ function runWithTumbleTwoParams(
     if (values[0] === undefined || values[1] === undefined) {
       throw new Error('At least two parameters were expected (988559)');
     }
-    return expectAsObject(thisFunction.component(values[0], values[1]));
+    return expectAsObject(thisFunction.value(values[0], values[1]));
   };
   const result = tumble(wrapped, [
     expectAsObject(params.first),
@@ -220,7 +213,7 @@ function runWithTumbleTwoParams(
 }
 
 function runWithTumbleThreeParams(
-  thisFunction: { status: 'success'; component: PureFunctionThreeParams },
+  thisFunction: { status: 'success'; value: PureFunctionThreeParams },
   tumble: TumbleWrapper,
   params: Params & { count: 3 }
 ) {
@@ -233,7 +226,7 @@ function runWithTumbleThreeParams(
       throw new Error('At least three parameters were expected (578992)');
     }
     return expectAsObject(
-      thisFunction.component(values[0], values[1], values[2])
+      thisFunction.value(values[0], values[1], values[2])
     );
   };
   const result = tumble(wrapped, [
