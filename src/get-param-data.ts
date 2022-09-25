@@ -24,10 +24,10 @@ export const getParamData = async (
   );
 
   if (transformerHolder.status === 'failure') {
-    return zestFail({ message: transformerHolder.message });
+    return zestFail({ message: transformerHolder.error.message });
   }
 
-  const transformer = transformerHolder.func;
+  const transformer = transformerHolder.value;
 
   if (functionParamData.from === 'string') {
     try {

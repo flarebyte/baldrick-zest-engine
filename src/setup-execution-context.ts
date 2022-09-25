@@ -59,12 +59,12 @@ export async function setupExecutionContext(
 
   if (transformerHolder.status === 'failure') {
     reportErrorCase(
-      `${transformerHolder.message} for transform in result (896979)`
+      `${transformerHolder.error.message} for transform in result (896979)`
     );
     return false;
   }
 
-  const transform = transformerHolder.func;
+  const transform = transformerHolder.value;
 
   let tumble: TumbleWrapper | undefined;
   if (testCase.tumble !== undefined) {

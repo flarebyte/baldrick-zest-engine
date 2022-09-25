@@ -1,6 +1,7 @@
 import { friendlyImport } from './friendly-importer.js';
 import { ExternalInjection } from './run-opts-model.js';
 import { AnyTransformerModel } from './testing-model.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
 type TransformerFunction = (value: object | string) => object | string;
 type HigherTransformerFunction = (
@@ -97,15 +98,7 @@ const createTransformerFunction =
     }
   };
 
-type TransformerResult =
-  | {
-      status: 'success';
-      func: TransformerFunction;
-    }
-  | {
-      status: 'failure';
-      message: string;
-    };
+type TransformerResult = Result<TransformerFunction, { message: string }>;
 
 export const createTransformerFunctions = async (
   injection: ExternalInjection,
@@ -118,14 +111,13 @@ export const createTransformerFunctions = async (
     (importing) => importing.status !== 'success'
   );
   if (hasFailure) {
-    return {
-      status: 'failure',
+    return zestFail({
       message: 'Some transformers could not be loaded', // TODO refine message
-    };
+    });
   }
   const transformerList = importResultList.map((importing) =>
     importing.status === 'success' ? importing.component : identityTransformer
   );
   const combinedTransformer = reduceTransformer(transformerList);
-  return { status: 'success', func: combinedTransformer };
+  return zestOk(combinedTransformer);
 };
