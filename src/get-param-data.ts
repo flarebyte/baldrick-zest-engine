@@ -2,7 +2,7 @@ import { readDataFileSafely } from './testing-io.js';
 import { FunctionParamData } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
 import { ExternalInjection } from './run-opts-model.js';
-import { Result } from './zest-railway.js';
+import { Result, zestFail, zestUnit } from './zest-railway.js';
 
 function getErrorStack(error: unknown): string | undefined {
   if (error instanceof Error) return error.stack;
@@ -24,7 +24,7 @@ export const getParamData = async (
   );
 
   if (transformerHolder.status === 'failure') {
-    return { status: 'failure', error: { message: transformerHolder.message } };
+    return zestFail({ message: transformerHolder.message });
   }
 
   const transformer = transformerHolder.func;
@@ -34,23 +34,17 @@ export const getParamData = async (
       const value = transformer(functionParamData.value);
       return { status: 'success', value };
     } catch (error) {
-      return {
-        status: 'failure',
-        error: {
-          message: 'Transformation of string data failed',
-          stack: getErrorStack(error),
-        },
-      };
+      return zestFail({
+        message: 'Transformation of string data failed',
+        stack: getErrorStack(error),
+      });
     }
   }
   const parser = functionParamData.parser;
   if (!injection.io.parsers.includes(parser)) {
-    return {
-      status: 'failure',
-      error: {
-        message: `Parser "${parser}" is not supported`,
-      },
-    };
+    return zestFail({
+      message: `Parser "${parser}" is not supported`,
+    });
   }
 
   const loadedValue = await readDataFileSafely(
@@ -63,17 +57,14 @@ export const getParamData = async (
   if (loadedValue.status === 'success') {
     try {
       const value = transformer(loadedValue.value);
-      return { status: 'success', value };
+      return zestUnit( value );
     } catch (error) {
-      return {
-        status: 'failure',
-        error: {
-          message: 'Transformation of data file failed',
-          stack: getErrorStack(error),
-        },
-      };
+      return zestFail({
+        message: 'Transformation of data file failed',
+        stack: getErrorStack(error),
+      });
     }
   } else {
-    return { status: 'failure', error: { message: loadedValue.message } };
+    return zestFail({ message: loadedValue.message });
   }
 };
