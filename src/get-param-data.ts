@@ -2,7 +2,7 @@ import { readDataFileSafely } from './testing-io.js';
 import { FunctionParamData } from './testing-model.js';
 import { createTransformerFunctions } from './transformer-executor.js';
 import { ExternalInjection } from './run-opts-model.js';
-import { Result, zestFail, zestUnit } from './zest-railway.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
 function getErrorStack(error: unknown): string | undefined {
   if (error instanceof Error) return error.stack;
@@ -57,7 +57,7 @@ export const getParamData = async (
   if (loadedValue.status === 'success') {
     try {
       const value = transformer(loadedValue.value);
-      return zestUnit( value );
+      return zestOk( value );
     } catch (error) {
       return zestFail({
         message: 'Transformation of data file failed',
