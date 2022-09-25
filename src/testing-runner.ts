@@ -86,9 +86,9 @@ const runTestCase =
             ...defaultSuccessReporting,
             err: {
               code: 'ERR_ASSERTION',
-              message: snapshotResult.message,
-              actual: stringOrObjectToString(snapshotResult.actual),
-              expected: stringOrObjectToString(snapshotResult.expected),
+              message: snapshotResult.error.message,
+              actual: stringOrObjectToString(snapshotResult.error.actual),
+              expected: stringOrObjectToString(snapshotResult.error.expected),
               stack: '',
               operator: 'strictEqual',
             },

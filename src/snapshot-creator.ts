@@ -2,18 +2,16 @@ import { diff } from 'jest-diff';
 import { TestCaseExecuteResult } from './execution-context-model.js';
 import { writeSnapshotFile } from './testing-io.js';
 import { ExternalInjection } from './run-opts-model.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
-type SnapshotResult =
-  | {
-      status: 'success';
-      actual: string | object;
-    }
-  | {
-      status: 'failure';
-      actual: string | object;
-      expected: string | object;
-      message: string;
-    };
+type SnapshotResult = Result<
+  string | object,
+  {
+    actual: string | object;
+    expected: string | object;
+    message: string;
+  }
+>;
 
 export const checkSnapshot = async (
   injection: ExternalInjection,
@@ -30,7 +28,7 @@ export const checkSnapshot = async (
         parser,
       }
     );
-    return { status: 'success', actual: executeResult.value.actual };
+    return zestOk(executeResult.value.actual);
   }
 
   const isSameType =
@@ -44,30 +42,27 @@ export const checkSnapshot = async (
       executeResult.value.actual
     );
     if (diffString === null) {
-      return {
-        status: 'failure',
+      return zestFail({
         actual: executeResult.value.actual,
         expected: executeResult.value.context.expected,
         message: 'Comparison with a null value',
-      };
+      });
     }
     const hasNoDifference = diffString.includes(
       'Compared values have no visual difference'
     );
     return hasNoDifference
-      ? { status: 'success', actual: executeResult.value.actual }
-      : {
-          status: 'failure',
+      ? zestOk(executeResult.value.actual)
+      : zestFail({
           actual: executeResult.value.actual,
           expected: executeResult.value.context.expected,
           message: diffString,
-        };
+        });
   }
 
-  return {
-    status: 'failure',
+  return zestFail({
     actual: executeResult.value.actual,
     expected: executeResult.value.context.expected,
     message: 'Types for actual and expected are different (650705)',
-  };
+  });
 };
