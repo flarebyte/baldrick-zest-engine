@@ -2,6 +2,7 @@ import { TumbleWrapper } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
 import { ExternalInjection } from './run-opts-model.js';
 import { AnyTumbleFunctionModel } from './testing-model.js';
+import { Result, zestFail, zestOk } from './zest-railway.js';
 
 type TumbleTable = Record<string, string>[];
 
@@ -10,15 +11,7 @@ type TumbleFunction = (
   table: TumbleTable
 ) => TumbleWrapper;
 
-type TumbleExecutorLoadingResult =
-  | {
-      status: 'success';
-      component: TumbleWrapper;
-    }
-  | {
-      status: 'failure';
-      message: string;
-    };
+type TumbleExecutorLoadingResult = Result<TumbleWrapper, { message: string }>;
 
 export const createTumbleFunction = async (
   injection: ExternalInjection,
@@ -31,18 +24,13 @@ export const createTumbleFunction = async (
       model.function
     );
     if (imported.status !== 'success') {
-      return {
-        status: 'failure',
+      return zestFail({
         message: `Could not import tumble function ${model.function}`,
-      };
+      });
     }
-    return {
-      status: 'success',
-      component: imported.component(model.config, model.table),
-    };
+    return zestOk(imported.component(model.config, model.table));
   }
-  return {
-    status: 'failure',
+  return zestFail({
     message: `Unsupported style ${model.style} for tumble function ${model.function}`,
-  };
+  });
 };

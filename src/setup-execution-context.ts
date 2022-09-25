@@ -70,10 +70,10 @@ export async function setupExecutionContext(
   if (testCase.tumble !== undefined) {
     const tumbleHolder = await createTumbleFunction(opts.runOpts.inject, testCase.tumble);
     if (tumbleHolder.status === 'failure') {
-      reportErrorCase(`${tumbleHolder.message} for tumble in result (743857)`);
+      reportErrorCase(`${tumbleHolder.error.message} for tumble in result (743857)`);
       return false;
     } else {
-      tumble = tumbleHolder.component;
+      tumble = tumbleHolder.value;
     }
   }
 
