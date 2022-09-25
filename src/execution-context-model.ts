@@ -1,4 +1,5 @@
 import { AnyTestedFunctionModel } from './testing-model.js';
+import { Result } from './zest-railway.js';
 
 type TransformerFunction = (value: object | string) => object | string;
 export type WrappedFunction = (values: object[]) => object;
@@ -35,15 +36,11 @@ export interface TestCaseExecutionContext {
   tumble?: TumbleWrapper;
 }
 
-export type TestCaseExecuteResult =
-  | {
-      status: 'success';
-      context: TestCaseExecutionContext;
-      actual: object | string;
-    }
-  | {
-      status: 'failure';
-      context: TestCaseExecutionContext;
-      message: string;
-      stack?: string;
-    };
+export type TestCaseExecuteResult = Result<
+  { context: TestCaseExecutionContext; actual: object | string },
+  {
+    context: TestCaseExecutionContext;
+    message: string;
+    stack?: string;
+  }
+>;

@@ -66,7 +66,7 @@ const runTestCase =
       }
       const executed = await executeCase(opts.runOpts.inject,testCaseExecutionContext);
       if (executed.status === 'failure') {
-        reportErrorCase(executed.message);
+        reportErrorCase(executed.error.message);
         return;
       } else {
         const snapshotResult = await checkSnapshot(

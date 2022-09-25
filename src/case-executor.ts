@@ -7,6 +7,7 @@ import {
 } from './execution-context-model.js';
 import { friendlyImport } from './friendly-importer.js';
 import { ExternalInjection } from './run-opts-model.js';
+import { zestFail, zestOk } from './zest-railway.js';
 
 type PureFunctionOneParam = (first: object | string) => object | string;
 
@@ -31,7 +32,6 @@ function getErrorStack(error: unknown): string | undefined {
   return undefined;
 }
 
-
 const expectAsObject = (value: string | object): object => {
   if (typeof value !== 'object') {
     throw new TypeError('Tumble operations are only applicable to objects');
@@ -44,7 +44,8 @@ export const executeCase = async (
   context: TestCaseExecutionContext
 ): Promise<TestCaseExecuteResult> => {
   if (context.testing.style === 'function a') {
-    const thisFunction = await friendlyImport<PureFunctionOneParam>(injection,
+    const thisFunction = await friendlyImport<PureFunctionOneParam>(
+      injection,
       context.testing.import,
       context.testing.function
     );
@@ -67,7 +68,8 @@ export const executeCase = async (
     }
   }
   if (context.testing.style === 'function a b') {
-    const thisFunction = await friendlyImport<PureFunctionTwoParams>(injection,
+    const thisFunction = await friendlyImport<PureFunctionTwoParams>(
+      injection,
       context.testing.import,
       context.testing.function
     );
@@ -98,7 +100,8 @@ export const executeCase = async (
     }
   }
   if (context.testing.style === 'function a b c') {
-    const thisFunction = await friendlyImport<PureFunctionThreeParams>(injection,
+    const thisFunction = await friendlyImport<PureFunctionThreeParams>(
+      injection,
       context.testing.import,
       context.testing.function
     );
@@ -130,59 +133,57 @@ export const executeCase = async (
       return failWithThrownError(error);
     }
   }
-  return {
-    status: 'failure',
+  return zestFail({
     context,
     message: `The context is not supported: ${context.testing.style} (208765)`,
-  };
+  });
 
   function successWithResult(
     result: string | object
   ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
-    return {
-      status: 'success',
+    return zestOk({
       context,
       actual: result,
-    };
+    });
   }
 
   function failWithThrownError(
     error: unknown
   ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
-    return {
-      status: 'failure',
+    return zestFail({
       context,
       message: `Function ${context.testing.function} in ${
         context.testing.import
       } failed with ${getErrorMessage(error)} (148281)`,
-      stack: getErrorStack(error)
-    };
+      stack: getErrorStack(error),
+    });
   }
 
   function failedWithWrongParameterNumber():
     | TestCaseExecuteResult
     | PromiseLike<TestCaseExecuteResult> {
-    return {
-      status: 'failure',
+    return zestFail({
       context,
       message: `Function ${context.testing.function} in ${context.testing.import} have the wrong number of parameter ${context.params.count} (814233)`,
-    };
+    });
   }
 
   function failImporting(
     thisFunction:
       | { status: 'no component'; available: string[] }
-      | { status: 'import failed', stack?: string }
+      | { status: 'import failed'; stack?: string }
   ): TestCaseExecuteResult | PromiseLike<TestCaseExecuteResult> {
-    return {
-      status: 'failure',
+    return zestFail({
       context,
       message:
         thisFunction.status === 'import failed'
           ? `No function including ${context.testing.function} is exported in ${context.testing.import}.(616289)`
           : `Function ${context.testing.function} is not exported in ${context.testing.import}. What about one of these: ${thisFunction.available} (978799)`,
-      stack: thisFunction.status === 'import failed' ? thisFunction.stack : undefined
-    };
+      stack:
+        thisFunction.status === 'import failed'
+          ? thisFunction.stack
+          : undefined,
+    });
   }
 };
 function runWithTumbleOneParam(
