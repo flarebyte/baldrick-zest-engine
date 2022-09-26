@@ -41,7 +41,8 @@ const runTestCase =
         sourceFile: opts.testingModel.testing.import,
         snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
           opts.runOpts.specFile,
-          testCase.name
+          testCase.name,
+          { parser: testCase.snapshot}
         ),
         duration: 0,
       };
@@ -65,7 +66,7 @@ const runTestCase =
       }
       const executed = await executeCase(opts.runOpts.inject,testCaseExecutionContext);
       if (executed.status === 'failure') {
-        reportErrorCase(executed.message);
+        reportErrorCase(executed.error.message);
         return;
       } else {
         const snapshotResult = await checkSnapshot(
@@ -73,7 +74,8 @@ const runTestCase =
           executed,
           opts.runOpts.inject.filename.getSnapshotFilename(
             opts.runOpts.specFile,
-            testCase.name
+            testCase.name,
+            { parser: testCase.snapshot}
           ),
           testCase.snapshot
         );
@@ -84,9 +86,9 @@ const runTestCase =
             ...defaultSuccessReporting,
             err: {
               code: 'ERR_ASSERTION',
-              message: snapshotResult.message,
-              actual: stringOrObjectToString(snapshotResult.actual),
-              expected: stringOrObjectToString(snapshotResult.expected),
+              message: snapshotResult.error.message,
+              actual: stringOrObjectToString(snapshotResult.error.actual),
+              expected: stringOrObjectToString(snapshotResult.error.expected),
               stack: '',
               operator: 'strictEqual',
             },

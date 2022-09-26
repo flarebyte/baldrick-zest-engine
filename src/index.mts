@@ -24,9 +24,9 @@ const createReportTracker = (): ReportTracker => ({
  */
 export const run = async (opts: TestingRunOpts) => {
   const result = await getZestYaml(opts.inject, opts.specFile);
-  if (result.status === 'invalid') {
+  if (result.status === 'failure') {
     console.error(result);
-  } else if (result.status === 'valid') {
+  } else if (result.status === 'success') {
     const reportTracker = createReportTracker();
     const suiteOps = {
       reportTracker,

@@ -2,11 +2,11 @@
   result:
     - path: status
       kind: string
-    - path: errors
+    - path: error
       kind: array/object
 - title: cases.valid.title and string => large
   result:
     - path: status
       kind: string
-    - path: errors
+    - path: error
       kind: array/object

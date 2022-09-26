@@ -1,0 +1,5 @@
+{
+  "yaml.schemas": {
+    "spec/snapshots/model/testing-model--get-schema--schema.json": "**/*.zest.yaml"
+  }
+}
