@@ -32,7 +32,7 @@ export const getParamData = async (
   if (functionParamData.from === 'string') {
     try {
       const value = transformer(functionParamData.value);
-      return { status: 'success', value };
+      return zestOk( value );
     } catch (error) {
       return zestFail({
         message: 'Transformation of string data failed',
