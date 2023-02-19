@@ -1,20 +1,14 @@
 {
   "name": "baldrick-zest-engine",
-  "description": "Run tests declaratively",
-  "keywords": [
-    "unit-testing",
-    "testing",
-    "tdd",
-    "assert",
-    "expect",
-    "snapshot",
-    "ESM"
-  ],
+  "description": "Run tests declaratively with a few cunning plans",
   "version": "0.7.0",
   "author": {
     "name": "Olivier Huin",
     "url": "https://github.com/olih"
   },
+  "keywords": [
+    "Unit tests"
+  ],
   "license": "MIT",
   "homepage": "https://github.com/flarebyte/baldrick-zest-engine",
   "repository": {
@@ -22,11 +16,14 @@
     "url": "https://github.com/flarebyte/baldrick-zest-engine.git"
   },
   "bugs": "https://github.com/flarebyte/baldrick-zest-engine/issues",
+  "bin": {
+    "baldrick-zest-engine": "dist/src/cli.mjs"
+  },
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/src/index.mjs",
-      "default": "./dist/src/index.mjs",
+      "import": "./dist/src/cli.mjs",
+      "default": "./dist/src/cli.mjs",
       "types": "./dist/src"
     },
     "./package.json": {
@@ -38,46 +35,27 @@
     "dist/src",
     "src"
   ],
-  "bin": {},
   "engines": {
-    "node": ">=14"
+    "node": ">=18"
   },
   "scripts": {
     "build": "tsc --outDir dist",
-    "doc": "npx typedoc --json report/doc.json --pretty src/index.ts && npx baldrick-doc-ts typedoc --json-source report/doc.json && baldrick-doc-ts parse -f internal ngram && yarn md:fix",
-    "github": "gh repo edit --delete-branch-on-merge --enable-squash-merge",
-    "lint:ci": "baldrick lint ci",
-    "lint": "baldrick lint check -s src",
-    "lint:fix": "baldrick lint fix -s src",
-    "md": "baldrick markdown check && baldrick markdown check -s .github/",
-    "md:fix": "baldrick markdown fix && baldrick markdown fix -s .github/",
-    "prebuild": "yarn reset",
-    "ready": "yarn lint && yarn test:cov && yarn md && yarn outdated && yarn audit && yarn release:check",
-    "reset": "rm -rf dist; rm -rf report",
-    "test:ci": "baldrick test ci",
-    "test": "baldrick test check",
-    "test:cov": "baldrick test cov",
-    "test:fix": "baldrick test fix",
-    "release:check": "baldrick release check",
-    "release:ci": "baldrick release ci",
-    "h": "cat commands.txt",
-    "norm": "npx baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix",
-    "norm:g": "baldrick-ts generate -f lib -ga 'flarebyte' -ch 'Flarebyte.com' -cy 2022 -l MIT && yarn md:fix",
-    "spec": "node --loader ts-node/esm spec/spec.ts"
+    "test": "node --test --loader ts-node/esm test/*.test.ts",
+    "cli": "node --loader ts-node/esm src/cli.mts",
+    "spec": "node --loader ts-node/esm .baldrick-zest.ts"
   },
   "dependencies": {
-    "chalk": "^5.0.1",
-    "jest-diff": "^29.0.2",
-    "yaml": "^2.1.1",
-    "zod": "^3.18.0"
+    "chalk": "^5.2.0",
+    "jest-diff": "^29.4.3",
+    "yaml": "^2.2.1",
+    "zod": "^3.20.6"
   },
   "devDependencies": {
     "baldrick-dev-ts": "^0.17.0",
-    "baldrick-tsconfig-es2021": "^0.5.0",
     "object-crumble": "^0.6.6",
     "ts-node": "^10.9.1",
-    "typescript": "^4.8.2",
-    "zod-to-json-schema": "^3.18.0"
+    "typescript": "^4.9.5",
+    "zod-to-json-schema": "^3.20.4"
   },
   "peerDependencies": {}
 }
