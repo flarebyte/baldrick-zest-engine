@@ -1,7 +1,7 @@
 ---
 testing:
   style: function a b
-  import: ../src/testing-field-validation.ts
+  import: ./src/testing-field-validation.ts
   function: safeParseField
 cases:
   valid:
@@ -14,7 +14,7 @@ cases:
         value: this title will be first be converted to uppercase
         transform:
           - style: function a
-            import: ../spec/example-transformer.ts
+            import: ./spec/example-transformer.ts
             function: makeUpperCase
   with-prefix:
     a: snapshot
@@ -26,10 +26,10 @@ cases:
         value: should have a prefix and uppercase
         transform:
           - style: function a
-            import: ../spec/example-transformer.ts
+            import: ./spec/example-transformer.ts
             function: makeUpperCase
           - style: config -> function a
-            import: ../spec/example-transformer.ts
+            import: ./spec/example-transformer.ts
             function: addPrefix3
             config:
               prefix: lowercase prefix
@@ -44,6 +44,6 @@ cases:
     result:
         transform:
           - style: function a
-            import: ../spec/example-transformer.ts
+            import: ./spec/example-transformer.ts
             function: simpleAbstract
 

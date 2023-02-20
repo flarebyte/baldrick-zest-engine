@@ -1,7 +1,7 @@
 ---
 testing:
   style: function a
-  import: ../src/testing-model.ts
+  import: ./src/testing-model.ts
   function: safeParseTestingModel
 cases:
   valid:
@@ -22,7 +22,7 @@ cases:
     result:
       transform:
         - style: function a
-          import: ../spec/example-transformer.ts
+          import: ./spec/example-transformer.ts
           function: crumbleAbstractor
     snapshot: YAML
   too-large:
@@ -33,7 +33,7 @@ cases:
         filename: spec/fixtures/example-zest.yaml
         transform:
           - style: config -> function a
-            import: ../spec/example-transformer.ts
+            import: ./spec/example-transformer.ts
             function: crumbleMutate
             config:
               path: cases.valid.title
@@ -49,7 +49,7 @@ cases:
         parser: YAML
     tumble:
       style: config + table -> function
-      import: ../spec/example-transformer.ts
+      import: ./spec/example-transformer.ts
       function: crumbleTumble
       config:
         signature: A

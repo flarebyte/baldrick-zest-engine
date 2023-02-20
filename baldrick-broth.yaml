@@ -24,7 +24,6 @@ model:
     url: https://github.com/olih
   implementation:
     tags:
-      - cli
       - zest
       - pest
       - zod
@@ -32,7 +31,6 @@ model:
       - commander
   workflow-version: 0.1.0
   pest-filenames:
-    - cli-help
     - cli
 workflows:
   test:
