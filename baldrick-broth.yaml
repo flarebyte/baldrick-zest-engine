@@ -2,7 +2,7 @@ model:
   project:
     title: Run tests declaratively with a few cunning plans
     description: Run tests declaratively with a few cunning plans
-    version: 0.7.0
+    version: 0.8.0
     keywords:
       - Unit tests
   readme:

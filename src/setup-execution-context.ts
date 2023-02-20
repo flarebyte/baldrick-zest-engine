@@ -25,7 +25,7 @@ export async function setupExecutionContext(
       snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
         opts.runOpts.specFile,
         testCase.name,
-        { parser: testCase.snapshot}
+        { parser: testCase.snapshot }
       ),
       duration: 0,
       err: {
@@ -53,7 +53,8 @@ export async function setupExecutionContext(
     );
   };
 
-  const transformerHolder = await createTransformerFunctions(opts.runOpts.inject,
+  const transformerHolder = await createTransformerFunctions(
+    opts.runOpts.inject,
     testCase.result?.transform === undefined ? [] : testCase.result?.transform
   );
 
@@ -68,9 +69,14 @@ export async function setupExecutionContext(
 
   let tumble: TumbleWrapper | undefined;
   if (testCase.tumble !== undefined) {
-    const tumbleHolder = await createTumbleFunction(opts.runOpts.inject, testCase.tumble);
+    const tumbleHolder = await createTumbleFunction(
+      opts.runOpts.inject,
+      testCase.tumble
+    );
     if (tumbleHolder.status === 'failure') {
-      reportErrorCase(`${tumbleHolder.error.message} for tumble in result (743857)`);
+      reportErrorCase(
+        `${tumbleHolder.error.message} for tumble in result (743857)`
+      );
       return false;
     } else {
       tumble = tumbleHolder.value;
@@ -84,7 +90,11 @@ export async function setupExecutionContext(
   }
   const firstValue = await getParamData(opts.runOpts.inject, first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
-    reportNotLoadableParameter('First', firstValue.error.message, firstValue.error.stack);
+    reportNotLoadableParameter(
+      'First',
+      firstValue.error.message,
+      firstValue.error.stack
+    );
     return false;
   }
   const expectedValue = await readDataFileSafely(
@@ -92,7 +102,7 @@ export async function setupExecutionContext(
     opts.runOpts.inject.filename.getSnapshotFilename(
       opts.runOpts.specFile,
       testCase.name,
-      { parser: testCase.snapshot}
+      { parser: testCase.snapshot }
     ),
     {
       parser: testCase.snapshot,
@@ -153,7 +163,11 @@ export async function setupExecutionContext(
   }
   const thirdValue = await getParamData(opts.runOpts.inject, third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
-    reportNotLoadableParameter('Third', thirdValue.error.message, thirdValue.error.stack);
+    reportNotLoadableParameter(
+      'Third',
+      thirdValue.error.message,
+      thirdValue.error.stack
+    );
     return false;
   }
   return {

@@ -13,8 +13,14 @@ interface fun<a, b> {
   (a: a): b;
 }
 
-export const zestOk = <a>(a: a): Success<a> => ({ status: 'success', value: a });
-export const zestFail = <e>(e: e): Failure<e> => ({ status: 'failure', error: e });
+export const zestOk = <a>(a: a): Success<a> => ({
+  status: 'success',
+  value: a,
+});
+export const zestFail = <e>(e: e): Failure<e> => ({
+  status: 'failure',
+  error: e,
+});
 
 export const map =
   <a, b, e>(f: fun<a, b>): fun<Result<a, e>, Result<b, e>> =>

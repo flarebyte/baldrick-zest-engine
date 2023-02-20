@@ -23,7 +23,7 @@
                   "type": "string",
                   "minLength": 1,
                   "maxLength": 50,
-                  "pattern": "[a-z][\\d_a-zA-Z]+",
+                  "pattern": "[a-z]\\w+",
                   "description": "A function name"
                 }
               },
@@ -175,7 +175,7 @@
                                   "propertyNames": {
                                     "minLength": 1,
                                     "maxLength": 30,
-                                    "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+                                    "pattern": "[A-Za-z]\\w+"
                                   },
                                   "description": "A configuration made of keys and values"
                                 }
@@ -232,7 +232,7 @@
                         "propertyNames": {
                           "minLength": 1,
                           "maxLength": 30,
-                          "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+                          "pattern": "[A-Za-z]\\w+"
                         },
                         "description": "A configuration made of keys and values"
                       },
@@ -246,7 +246,7 @@
                           "propertyNames": {
                             "minLength": 1,
                             "maxLength": 30,
-                            "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+                            "pattern": "[A-Za-z]\\w+"
                           }
                         },
                         "minItems": 1,
@@ -364,7 +364,7 @@
           "propertyNames": {
             "minLength": 1,
             "maxLength": 30,
-            "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+            "pattern": "[A-Za-z]\\w+"
           }
         }
       },

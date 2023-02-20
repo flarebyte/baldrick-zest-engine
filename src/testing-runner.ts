@@ -42,7 +42,7 @@ const runTestCase =
         snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
           opts.runOpts.specFile,
           testCase.name,
-          { parser: testCase.snapshot}
+          { parser: testCase.snapshot }
         ),
         duration: 0,
       };
@@ -64,7 +64,10 @@ const runTestCase =
         );
         return;
       }
-      const executed = await executeCase(opts.runOpts.inject,testCaseExecutionContext);
+      const executed = await executeCase(
+        opts.runOpts.inject,
+        testCaseExecutionContext
+      );
       if (executed.status === 'failure') {
         reportErrorCase(executed.error.message);
         return;
@@ -75,7 +78,7 @@ const runTestCase =
           opts.runOpts.inject.filename.getSnapshotFilename(
             opts.runOpts.specFile,
             testCase.name,
-            { parser: testCase.snapshot}
+            { parser: testCase.snapshot }
           ),
           testCase.snapshot
         );
