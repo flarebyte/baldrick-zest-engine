@@ -4,7 +4,13 @@ model:
     description: Run tests declaratively with a few cunning plans
     version: 0.8.0
     keywords:
-      - Unit tests
+      - unit-testing
+      - testing
+      - TDD
+      - assert
+      - expect
+      - snapshot
+      - ESM
   readme:
     highlights:
       - Written in `Typescript`

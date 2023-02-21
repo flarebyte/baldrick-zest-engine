@@ -7,7 +7,13 @@
     "url": "https://github.com/olih"
   },
   "keywords": [
-    "Unit tests"
+    "unit-testing",
+    "testing",
+    "tdd",
+    "assert",
+    "expect",
+    "snapshot",
+    "ESM"
   ],
   "license": "MIT",
   "homepage": "https://github.com/flarebyte/baldrick-zest-engine",

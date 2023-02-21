@@ -63,7 +63,7 @@ const addSnapshot = (snapshotFile?: string) =>
   snapshotFile === undefined ? '' : '   ' + colors.log('📷 ' + snapshotFile);
 
 export const prettyReportCase = (reportingCase: ReportingCase) => {
-  if (reportingCase.err === undefined) {
+  if (reportingCase.err.code === 'PASS') {
     console.error(
       colors.pass('✓ PASS') +
         ' ' +
