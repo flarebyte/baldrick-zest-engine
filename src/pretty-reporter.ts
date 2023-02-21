@@ -1,5 +1,5 @@
 import { ReportingCase } from './reporter-model.js';
-import { Chalk } from 'chalk';
+import { Chalk } from 'chalk'; // eslint-disable-line  unicorn/import-style
 const chalk = new Chalk();
 
 // Inspired by AVA colors management

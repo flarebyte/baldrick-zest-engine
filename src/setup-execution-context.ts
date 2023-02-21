@@ -14,19 +14,21 @@ export async function setupExecutionContext(
   opts: ZestFileSuiteOpts,
   testCase: TestingFunctionSnapshotTestCaseModel
 ): Promise<TestCaseExecutionContext | false> {
-  const { params } = testCase;
+  const { name, params, title, snapshot } = testCase;
+  const { runOpts, testingModel, reportTracker } = opts;
+  const { specFile, inject } = runOpts;
+  const { testing } = testingModel;
+  const { filename } = inject;
 
   const reportErrorCase = (message: string, stack?: string) => {
-    reportCase(opts.reportTracker, {
-      title: testCase.title,
-      fullTitle: testCase.title,
-      file: opts.runOpts.specFile,
-      sourceFile: opts.testingModel.testing.import,
-      snapshotFile: opts.runOpts.inject.filename.getSnapshotFilename(
-        opts.runOpts.specFile,
-        testCase.name,
-        { parser: testCase.snapshot }
-      ),
+    reportCase(reportTracker, {
+      title,
+      fullTitle: title,
+      file: specFile,
+      sourceFile: testing.import,
+      snapshotFile: filename.getSnapshotFilename(specFile, name, {
+        parser: snapshot,
+      }),
       duration: 0,
       err: {
         code: 'ERR_GENERAL',
@@ -54,8 +56,8 @@ export async function setupExecutionContext(
   };
 
   const transformerHolder = await createTransformerFunctions(
-    opts.runOpts.inject,
-    testCase.result?.transform === undefined ? [] : testCase.result?.transform
+    inject,
+    testCase.result?.transform === undefined ? [] : testCase.result?.transform // eslint-disable-line unicorn/consistent-destructuring
   );
 
   if (transformerHolder.status === 'failure') {
@@ -69,10 +71,7 @@ export async function setupExecutionContext(
 
   let tumble: TumbleWrapper | undefined;
   if (testCase.tumble !== undefined) {
-    const tumbleHolder = await createTumbleFunction(
-      opts.runOpts.inject,
-      testCase.tumble
-    );
+    const tumbleHolder = await createTumbleFunction(inject, testCase.tumble);
     if (tumbleHolder.status === 'failure') {
       reportErrorCase(
         `${tumbleHolder.error.message} for tumble in result (743857)`
@@ -88,7 +87,7 @@ export async function setupExecutionContext(
     reportImpossibleParameter('First');
     return false;
   }
-  const firstValue = await getParamData(opts.runOpts.inject, first);
+  const firstValue = await getParamData(inject, first);
   if (typeof firstValue !== 'string' && firstValue.status === 'failure') {
     reportNotLoadableParameter(
       'First',
@@ -98,14 +97,12 @@ export async function setupExecutionContext(
     return false;
   }
   const expectedValue = await readDataFileSafely(
-    opts.runOpts.inject,
-    opts.runOpts.inject.filename.getSnapshotFilename(
-      opts.runOpts.specFile,
-      testCase.name,
-      { parser: testCase.snapshot }
-    ),
+    inject,
+    filename.getSnapshotFilename(specFile, name, {
+      parser: snapshot,
+    }),
     {
-      parser: testCase.snapshot,
+      parser: snapshot,
     }
   );
   const isNewSnapshot = expectedValue.status === 'failure';
@@ -114,8 +111,8 @@ export async function setupExecutionContext(
     expectedValue.status === 'success' ? expectedValue.value : undefined;
 
   const defaultSuccess = {
-    testing: opts.testingModel.testing,
-    title: testCase.title,
+    testing,
+    title,
     expected,
     isNewSnapshot,
     transform,
@@ -136,7 +133,7 @@ export async function setupExecutionContext(
     reportImpossibleParameter('Second');
     return false;
   }
-  const secondValue = await getParamData(opts.runOpts.inject, second);
+  const secondValue = await getParamData(inject, second);
   if (typeof secondValue !== 'string' && secondValue.status === 'failure') {
     reportNotLoadableParameter(
       'Second',
@@ -161,7 +158,7 @@ export async function setupExecutionContext(
     reportImpossibleParameter('Third');
     return false;
   }
-  const thirdValue = await getParamData(opts.runOpts.inject, third);
+  const thirdValue = await getParamData(inject, third);
   if (typeof thirdValue !== 'string' && thirdValue.status === 'failure') {
     reportNotLoadableParameter(
       'Third',

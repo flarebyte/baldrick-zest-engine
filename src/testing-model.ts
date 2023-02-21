@@ -196,7 +196,7 @@ export const safeParseTestingModel = (
   const errors = issues.map(formatMessage);
   return zestFail(errors);
 };
-
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export const getSchema = (_name: 'default') => {
   return schema;
 };
