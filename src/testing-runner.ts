@@ -45,7 +45,7 @@ const runTestCase =
           { parser: testCase.snapshot }
         ),
         duration: 0,
-        err: { code: 'PASS'}
+        err: { code: 'PASS' },
       };
 
       const reportErrorCase = (message: string) => {
