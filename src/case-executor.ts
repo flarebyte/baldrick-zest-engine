@@ -81,10 +81,7 @@ export const executeCase = async (
       if (context.params.count === 2) {
         const result =
           context.tumble === undefined
-            ? thisFunction.value(
-                context.params.first,
-                context.params.second
-              )
+            ? thisFunction.value(context.params.first, context.params.second)
             : runWithTumbleTwoParams(
                 thisFunction,
                 context.tumble,
@@ -225,9 +222,7 @@ function runWithTumbleThreeParams(
     ) {
       throw new Error('At least three parameters were expected (578992)');
     }
-    return expectAsObject(
-      thisFunction.value(values[0], values[1], values[2])
-    );
+    return expectAsObject(thisFunction.value(values[0], values[1], values[2]));
   };
   const result = tumble(wrapped, [
     expectAsObject(params.first),

@@ -4,7 +4,7 @@ export const ciReportStartSuite = (title: string, secondary: string) => {
   console.group(`${title}; ${secondary}`);
 };
 export const ciReportCase = (reportingCase: ReportingCase) => {
-  if (reportingCase.err === undefined) {
+  if (reportingCase.err.code === 'PASS') {
     console.error(
       `✓ PASS ${reportingCase.title} ${reportingCase.snapshotFile}`
     );

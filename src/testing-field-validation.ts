@@ -37,20 +37,21 @@ export const stringFunctionName = z
   .string()
   .min(1)
   .max(50)
-  .regex(/[a-z][\d_a-zA-Z]+/)
+  .regex(/[a-z]\w+/)
   .describe('A function name');
 
 export const stringClassName = z
   .string()
   .min(1)
   .max(50)
-  .regex(/[A-Z][\d_a-z]+/).describe('A class name');
+  .regex(/[A-Z][\d_a-z]+/)
+  .describe('A class name');
 
 export const stringCustomKey = z
   .string()
   .min(1)
   .max(30)
-  .regex(/[A-Za-z][a-zA-Z\d_]+/);
+  .regex(/[A-Za-z]\w+/);
 
 export const stringParserKey = z
   .string()

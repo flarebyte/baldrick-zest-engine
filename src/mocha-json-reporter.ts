@@ -3,10 +3,10 @@ import { ZestFileSuiteOpts } from './run-opts-model.js';
 
 const expandReportTracker = (opts: ZestFileSuiteOpts): FullReport => {
   const passes = opts.reportTracker.tests.filter(
-    (test) => test.err === undefined
+    (test) => test.err.code === 'PASS'
   );
   const failures = opts.reportTracker.tests.filter(
-    (test) => test.err !== undefined
+    (test) => test.err.code !== 'PASS'
   );
   const duration = opts.reportTracker.tests.reduce(
     (sum, t) => sum + t.duration,

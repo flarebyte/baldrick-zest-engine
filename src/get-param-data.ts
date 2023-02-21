@@ -32,7 +32,7 @@ export const getParamData = async (
   if (functionParamData.from === 'string') {
     try {
       const value = transformer(functionParamData.value);
-      return zestOk( value );
+      return zestOk(value);
     } catch (error) {
       return zestFail({
         message: 'Transformation of string data failed',
@@ -57,7 +57,7 @@ export const getParamData = async (
   if (loadedValue.status === 'success') {
     try {
       const value = transformer(loadedValue.value);
-      return zestOk( value );
+      return zestOk(value);
     } catch (error) {
       return zestFail({
         message: 'Transformation of data file failed',

@@ -1,7 +1,7 @@
 ---
 testing:
   style: function a
-  import: ../src/testing-model.ts
+  import: ./src/testing-model.ts
   function: getSchema
 cases:
   schema:
@@ -13,7 +13,7 @@ cases:
     result:
       transform:
         - style: function a
-          import: ../spec/example-transformer.ts
+          import: ./spec/example-transformer.ts
           function: toJSONSchema
     snapshot: JSON
 

@@ -1,5 +1,4 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
   "$ref": "#/definitions/baldrick-zest-schema",
   "definitions": {
     "baldrick-zest-schema": {
@@ -24,7 +23,7 @@
                   "type": "string",
                   "minLength": 1,
                   "maxLength": 50,
-                  "pattern": "[a-z][\\d_a-zA-Z]+",
+                  "pattern": "[a-z]\\w+",
                   "description": "A function name"
                 }
               },
@@ -176,7 +175,7 @@
                                   "propertyNames": {
                                     "minLength": 1,
                                     "maxLength": 30,
-                                    "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+                                    "pattern": "[A-Za-z]\\w+"
                                   },
                                   "description": "A configuration made of keys and values"
                                 }
@@ -233,7 +232,7 @@
                         "propertyNames": {
                           "minLength": 1,
                           "maxLength": 30,
-                          "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+                          "pattern": "[A-Za-z]\\w+"
                         },
                         "description": "A configuration made of keys and values"
                       },
@@ -247,7 +246,7 @@
                           "propertyNames": {
                             "minLength": 1,
                             "maxLength": 30,
-                            "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+                            "pattern": "[A-Za-z]\\w+"
                           }
                         },
                         "minItems": 1,
@@ -284,10 +283,12 @@
                             },
                             "parser": {
                               "$ref": "#/definitions/baldrick-zest-schema/properties/cases/additionalProperties/anyOf/0/properties/snapshot",
-                              "default": "Text"
+                              "default": "Text",
+                              "description": "The parsing format such as JSON or YAML"
                             },
                             "transform": {
-                              "$ref": "#/definitions/baldrick-zest-schema/properties/cases/additionalProperties/anyOf/0/properties/result/properties/transform"
+                              "$ref": "#/definitions/baldrick-zest-schema/properties/cases/additionalProperties/anyOf/0/properties/result/properties/transform",
+                              "description": "A list of transformers in order"
                             }
                           },
                           "required": [
@@ -309,7 +310,8 @@
                               "description": "A string value that can be used by the function"
                             },
                             "transform": {
-                              "$ref": "#/definitions/baldrick-zest-schema/properties/cases/additionalProperties/anyOf/0/properties/result/properties/transform"
+                              "$ref": "#/definitions/baldrick-zest-schema/properties/cases/additionalProperties/anyOf/0/properties/result/properties/transform",
+                              "description": "A list of transformers in order"
                             }
                           },
                           "required": [
@@ -362,7 +364,7 @@
           "propertyNames": {
             "minLength": 1,
             "maxLength": 30,
-            "pattern": "[A-Za-z][a-zA-Z\\d_]+"
+            "pattern": "[A-Za-z]\\w+"
           }
         }
       },
@@ -373,5 +375,6 @@
       "additionalProperties": false,
       "description": "A list of tests for a given function"
     }
-  }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#"
 }

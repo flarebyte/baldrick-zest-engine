@@ -1,5 +1,5 @@
 import { ReportingCase } from './reporter-model.js';
-import { Chalk } from 'chalk';
+import { Chalk } from 'chalk'; // eslint-disable-line  unicorn/import-style
 const chalk = new Chalk();
 
 // Inspired by AVA colors management
@@ -63,7 +63,7 @@ const addSnapshot = (snapshotFile?: string) =>
   snapshotFile === undefined ? '' : '   ' + colors.log('📷 ' + snapshotFile);
 
 export const prettyReportCase = (reportingCase: ReportingCase) => {
-  if (reportingCase.err === undefined) {
+  if (reportingCase.err.code === 'PASS') {
     console.error(
       colors.pass('✓ PASS') +
         ' ' +
