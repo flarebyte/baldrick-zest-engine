@@ -2,7 +2,7 @@ model:
   project:
     title: Run tests declaratively with a few cunning plans
     description: Run tests declaratively with a few cunning plans
-    version: 0.8.0
+    version: 0.9.0
     keywords:
       - unit-testing
       - testing
@@ -30,12 +30,13 @@ model:
     url: https://github.com/olih
   implementation:
     tags:
+      - lib
       - zest
       - pest
       - zod
       - railway
       - commander
-  workflow-version: 0.1.0
+  workflow-version: 0.3.0
   pest-filenames:
     - cli
 workflows:
@@ -64,21 +65,17 @@ workflows:
           commands:
             - title: Run all baldrick zest files
               run: node --loader ts-node/esm .baldrick-zest.ts
-      pest:
-        title: Run acceptance tests for the CLI
-        description: Run acceptance tests declaratively using YAML files
-        motivation: Check that the CLI application behaves as intended
+      unit:
+        title: Run node.js unit tests
+        description: Run traditional unit tests
+        motivation: Test what is not easily covered with zest
         links:
-          - title: Testing with baldrick-pest
-            url: https://github.com/flarebyte/baldrick-pest
+          - title: JavaScript tests that report results in TAP format
+            url: https://nodejs.org/dist/latest-v18.x/docs/api/test.html
         main:
-          each:
-            - name: pest-filename
-              values: build.model.pest-filenames
           commands:
-            - title: Run regression on file
-              name: Run regression on {{pest-filename}}.pest.yaml
-              run: npx baldrick-pest@latest test --spec-file pest-spec/{{pest-filename}}.pest.yaml
+            - title: Run unit tests
+              run: yarn test
       scc:
         title: Count lines of code
         description: Count lines of code
@@ -106,8 +103,7 @@ workflows:
       cli:
         title: Run client directly
         description: Run the client with ts-node during development
-        motivation:
-          Simulate a CLI app in development without the need to install it
+        motivation: Simulate a CLI app in development without the need to install it
           globally
         main:
           commands:
@@ -234,8 +230,7 @@ workflows:
               run: npx baldrick-dev-ts@latest markdown check -s .github/
       fix:
         title: Fix Markdown files
-        description:
-          Modify the markdown documents to ensure they follow some consistent
+        description: Modify the markdown documents to ensure they follow some consistent
           guidelines
         motivation: Make the markdown documents consistent in style
         main:
@@ -249,12 +244,17 @@ workflows:
     tasks:
       ready:
         title: Ready for publishing
-        description:
-          Run a sequence of commands to check that the library is ready to be
+        description: Run a sequence of commands to check that the library is ready to be
           published
         motivation: Detect quality flaws before pushing the code
         main:
           commands:
+            - name: remove-build
+              title: Remove previous build
+              run: rm -rf dist
+            - name: build
+              title: Build the project
+              run: yarn build
             - name: release-check
               title: Checks that the version has been incremented
               run: npx baldrick-dev-ts@latest release check
@@ -273,6 +273,33 @@ workflows:
             - name: outdated
               title: Audit some libraries
               run: yarn audit
+      publish:
+        title: Publish the current library
+        description: Publih the current library to npm
+        motivation: Detect quality flaws before pushing the code
+        main:
+          commands:
+            - name: checkout-main
+              title: Checkout main
+              run: git checkout main
+            - name: fetch-all
+              title: Fetch all
+              run: git fetch --all
+            - name: rebase-main
+              title: Rebase main
+              run: git rebase
+            - name: status
+              title: Git status
+              run: git status
+            - name: remove-build
+              title: Remove previous build
+              run: rm -rf dist
+            - name: build
+              title: Build the project
+              run: yarn build
+            - name: release
+              title: Release the library to NPM and Github
+              run: npx baldrick-dev-ts@latest release ci
   scaffold:
     title: Scaffolding for the project
     tasks:
@@ -311,8 +338,7 @@ workflows:
             - title: Create all github repositories
               run: mkdir -p .github/workflows .github/ISSUE_TEMPLATE
             - title: Github - create bug report form
-              run:
-                npx baldrick-whisker@latest object .github/ISSUE_TEMPLATE/bug_report.yaml
+              run: npx baldrick-whisker@latest object .github/ISSUE_TEMPLATE/bug_report.yaml
                 github:flarebyte:baldrick-reserve:data/ts/bug-report.yaml
             - title: Github - create feature request form
               run: npx baldrick-whisker@latest object
@@ -335,13 +361,11 @@ workflows:
               links:
                 - title: Specify files to ignore in source control
                   url: https://git-scm.com/docs/gitignore
-              run:
-                npx baldrick-whisker@latest render --no-ext baldrick-broth.yaml
+              run: npx baldrick-whisker@latest render --no-ext baldrick-broth.yaml
                 github:flarebyte:baldrick-reserve:template/ts/gitignore.hbs
                 .gitignore.sh
             - title: Create .editorconfig
-              run:
-                npx baldrick-whisker@latest render --no-ext baldrick-broth.yaml
+              run: npx baldrick-whisker@latest render --no-ext baldrick-broth.yaml
                 github:flarebyte:baldrick-reserve:template/editorconfig.hbs
                 .editorconfig.sh
               links:
@@ -385,9 +409,12 @@ workflows:
               run: npx baldrick-whisker@latest render baldrick-broth.yaml
                 github:flarebyte:baldrick-reserve:template/ts/technical-design.hbs
                 TECHNICAL_DESIGN.md
+            - title: Create MAINTENANCE.md
+              run: npx baldrick-whisker@latest render baldrick-broth.yaml
+                github:flarebyte:baldrick-reserve:template/ts/maintenance.hbs
+                MAINTENANCE.md
             - title: Create LICENSE
-              run:
-                npx baldrick-whisker@latest render --no-ext baldrick-broth.yaml
+              run: npx baldrick-whisker@latest render --no-ext baldrick-broth.yaml
                 github:flarebyte:baldrick-reserve:template/ts/license.hbs
                 LICENSE.md
             - title: Fix markdown
