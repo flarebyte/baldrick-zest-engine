@@ -1,7 +1,7 @@
 {
   "name": "baldrick-zest-engine",
   "description": "Run tests declaratively with a few cunning plans",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "author": {
     "name": "Olivier Huin",
     "url": "https://github.com/olih"
@@ -9,7 +9,7 @@
   "keywords": [
     "unit-testing",
     "testing",
-    "tdd",
+    "TDD",
     "assert",
     "expect",
     "snapshot",
@@ -22,14 +22,12 @@
     "url": "https://github.com/flarebyte/baldrick-zest-engine.git"
   },
   "bugs": "https://github.com/flarebyte/baldrick-zest-engine/issues",
-  "bin": {
-    "baldrick-zest-engine": "dist/src/cli.mjs"
-  },
   "type": "module",
+  "types": "./dist/src/index.d.mts",
   "exports": {
     ".": {
-      "import": "./dist/src/cli.mjs",
-      "default": "./dist/src/cli.mjs",
+      "import": "./dist/src/index.mjs",
+      "default": "./dist/src/index.mjs",
       "types": "./dist/src"
     },
     "./package.json": {
@@ -41,13 +39,13 @@
     "dist/src",
     "src"
   ],
+  "bin": {},
   "engines": {
     "node": ">=18"
   },
   "scripts": {
     "build": "tsc --outDir dist",
     "test": "node --test --loader ts-node/esm test/*.test.ts",
-    "cli": "node --loader ts-node/esm src/cli.mts",
     "spec": "node --loader ts-node/esm .baldrick-zest.ts"
   },
   "dependencies": {
@@ -58,7 +56,7 @@
   },
   "devDependencies": {
     "baldrick-dev-ts": "^0.17.0",
-    "baldrick-zest-mess": "^0.16.0",
+    "baldrick-zest-mess": "^0.17.0",
     "object-crumble": "^0.6.6",
     "ts-node": "^10.9.1",
     "typescript": "^4.9.5",
