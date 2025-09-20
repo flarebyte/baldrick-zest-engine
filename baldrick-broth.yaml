@@ -2,7 +2,7 @@ model:
   project:
     title: Run tests declaratively with a few cunning plans
     description: Run tests declaratively with a few cunning plans
-    version: 0.9.0
+    version: 1.0.0
     keywords:
       - unit-testing
       - testing
