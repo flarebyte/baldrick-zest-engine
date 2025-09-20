@@ -1,9 +1,9 @@
-name: CI
+name: CI (decommissioned)
 on:
   - push
 jobs:
   build:
-    name: Build, lint, and test on Node ${{ matrix.node }} and ${{ matrix.os }}
+    name: Build only on Node ${{ matrix.node }} and ${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -20,17 +20,8 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - name: Installation
-        run: yarn install
-      - name: Run zest unit tests
-        run: npx baldrick-broth test spec
-      - name: Run pest integration tests
-        run: npx baldrick-broth test pest
+        run: yarn install --frozen-lockfile
+      - name: Skip tests and lint (decommissioned)
+        run: echo "Project decommissioned — skipping tests and linting."
       - name: Build
         run: yarn build
-      - name: Test Report
-        uses: dorny/test-reporter@v1
-        if: success() || failure()
-        with:
-          name: Pest
-          path: report/*.pest.mocha.json
-          reporter: mocha-json
