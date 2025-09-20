@@ -1,8 +1,8 @@
 model:
   project:
-    title: Run tests declaratively with a few cunning plans
-    description: Run tests declaratively with a few cunning plans
-    version: 0.9.0
+    title: [Decommissioned] Run tests declaratively with a few cunning plans
+    description: DECOMMISSIONED — Prefer classic unit tests with AI assistance and helpers; see README for migration guidance.
+    version: 1.0.0
     keywords:
       - unit-testing
       - testing
@@ -13,6 +13,7 @@ model:
       - ESM
   readme:
     highlights:
+      - Project decommissioned — use conventional tests instead
       - Written in `Typescript`
     links:
       - "[Usage](USAGE.md)"
