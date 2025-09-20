@@ -1,6 +1,6 @@
 {
   "name": "baldrick-zest-engine",
-  "description": "Run tests declaratively with a few cunning plans",
+  "description": "DECOMMISSIONED: Prefer classic unit tests with AI assistance; see README for migration.",
   "version": "1.0.0",
   "author": {
     "name": "Olivier Huin",
@@ -13,7 +13,9 @@
     "assert",
     "expect",
     "snapshot",
-    "ESM"
+    "ESM",
+    "decommissioned",
+    "deprecated"
   ],
   "license": "MIT",
   "homepage": "https://github.com/flarebyte/baldrick-zest-engine",
@@ -44,7 +46,7 @@
     "node": ">=18"
   },
   "scripts": {
-    "build": "tsc --outDir dist",
+    "build": "rm -rf dist && tsc --outDir dist",
     "test": "node --test --loader ts-node/esm test/*.test.ts",
     "spec": "node --loader ts-node/esm .baldrick-zest.ts"
   },
